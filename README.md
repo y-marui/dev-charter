@@ -21,6 +21,7 @@ and development rules used across projects.
 | [PROJECT_LIFECYCLE.md](PROJECT_LIFECYCLE.md) | Project lifecycle and team structure |
 | [UI_GUIDELINES.md](UI_GUIDELINES.md) | UI guidelines, color palette, iconography |
 | [MONETIZATION_POLICY.md](MONETIZATION_POLICY.md) | Monetization policy and platform-specific guidelines |
+| [SECURITY_POLICY.md](SECURITY_POLICY.md) | Security policy and hook configuration reference |
 
 ## How to Use
 
