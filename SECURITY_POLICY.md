@@ -17,7 +17,7 @@
 | 1 | 他人管理リポジトリはスキップ（`hooks.skip-policy-check = true`） | 全チェックをスキップ |
 | 2 | `user.name` / `user.email` が `anonymous` のまま | コミットをブロック |
 | 3 | `.env` ファイルがステージされている（`.env.example` 等は許可） | コミットをブロック |
-| 4 | SSH 秘密鍵ヘッダー（`BEGIN PRIVATE KEY` ブロック）を検知 | コミットをブロック |
+| 4 | SSH 秘密鍵ヘッダー（PEM 形式の秘密鍵ブロック）を検知 | コミットをブロック |
 | 5 | `.pre-commit-config.yaml` が存在しない | コミットをブロック |
 | 6 | `.pre-commit-config.yaml` に必須セキュリティフックが揃っていない | コミットをブロック |
 | 7 | `pre-commit install` が未実行（`.git/hooks/pre-commit` に pre-commit が含まれない） | コミットをブロック |
