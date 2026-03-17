@@ -31,8 +31,18 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 ### 2. プロジェクト初回に AI_CONTEXT.md を生成する
 新規プロジェクトの開始時に、AI に dev-charter を読ませ、プロジェクトルートの `AI_CONTEXT.md` を生成・編集させる。これにより、憲章をプロジェクト固有のコンテキストファイルにコンパイルする。
 
-### 3. 通常セッションでは AI_CONTEXT.md のみ読ませる
-以降のセッションでは、AI は dev-charter を直接読まず `AI_CONTEXT.md` のみを読む。トークン消費を最小化しながら、憲章の原則を継続的に反映させる。
+### 3. AI ツールが AI_CONTEXT.md を自動参照するよう設定する
+
+AI ツールごとに設定ファイルを作成し、セッション開始時に自動で読み込まれるようにする。
+
+**Claude Code** — プロジェクトルートに `CLAUDE.md` を作成：
+
+```
+@AI_CONTEXT.md
+```
+
+**GitHub Copilot** — `.github/copilot-instructions.md` に `AI_CONTEXT.md` の内容をコピーする。
+Copilot はファイルを動的に読めないため直接内容を記載する。`AI_CONTEXT.md` を更新したときは同一コミットで更新すること。
 
 ### 4. 憲章が更新されたら
 `git subtree pull` 後、AI に差分を確認させ、必要に応じて `AI_CONTEXT.md` を更新する。

@@ -31,8 +31,18 @@ Use `git subtree` to pull dev-charter into `docs/dev-charter/`. Commit the files
 ### 2. Generate AI_CONTEXT.md at project setup
 At the start of a new project, have the AI read the dev-charter files and generate or update `AI_CONTEXT.md` at the project root. This compiles the charter into a project-specific context file.
 
-### 3. Use AI_CONTEXT.md in day-to-day sessions
-In subsequent sessions, the AI reads only `AI_CONTEXT.md` — not the dev-charter directly. This minimizes token consumption while keeping the principles in effect.
+### 3. Configure AI tools to auto-load AI_CONTEXT.md
+
+Create a config file for each AI tool so it is loaded automatically at the start of every session.
+
+**Claude Code** — create `CLAUDE.md` at the project root:
+
+```
+@AI_CONTEXT.md
+```
+
+**GitHub Copilot** — copy the contents of `AI_CONTEXT.md` into `.github/copilot-instructions.md`.
+Copilot cannot read files dynamically, so the content must be included directly. Keep it in sync with `AI_CONTEXT.md` in the same commit whenever `AI_CONTEXT.md` changes.
 
 ### 4. Update when the charter changes
 After `git subtree pull`, have the AI review the diff and update `AI_CONTEXT.md` as needed.
