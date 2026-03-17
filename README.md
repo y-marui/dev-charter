@@ -44,6 +44,9 @@ Create a config file for each AI tool so it is loaded automatically at the start
 **GitHub Copilot** — copy the contents of `AI_CONTEXT.md` into `.github/copilot-instructions.md`.
 Copilot cannot read files dynamically, so the content must be included directly. Keep it in sync with `AI_CONTEXT.md` in the same commit whenever `AI_CONTEXT.md` changes.
 
+**Gemini CLI** — no automatic loading is available; pass `AI_CONTEXT.md` manually at each session.
+Update this instruction when Gemini CLI gains an auto-loading mechanism.
+
 ### 4. Update when the charter changes
 After `git subtree pull`, have the AI review the diff and update `AI_CONTEXT.md` as needed.
 
