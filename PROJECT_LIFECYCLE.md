@@ -9,6 +9,7 @@
 
 ## Git Workflow
 
+- **ホスティング**：GitHub（`github.com`）、デフォルトブランチは `main`
 - **コミット粒度**：機能単位・動作確認OK後
 - **コミットメッセージ**：Conventional Commits形式（feat/fix/refactor/docs）
 - **WIP禁止**：動作しないコードはコミットしない

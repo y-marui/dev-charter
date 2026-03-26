@@ -10,7 +10,7 @@
 |---|---|---|
 | 研究・実験系（配布しない） | Closed | All Rights Reserved |
 | 研究・実験系（配布する） | MIT | 制限なく利用できるよう MIT を基本とする |
-| コンパイル配布系（Swift アプリ・Chrome 拡張など） | Closed または AGPL/GPL/LGPL | 将来の再ライセンスの余地を確保したい場合は準 CLA 対応を推奨（[GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) 参照） |
+| コンパイル配布系（Swift アプリ・Chrome 拡張など） | Closed または AGPL/GPL/LGPL | 将来の再ライセンスの余地を確保したい場合は準 CLA 対応を推奨（[topics/GITHUB_CONTRIBUTING.md](topics/GITHUB_CONTRIBUTING.md) 参照） |
 | ソースコードで配布系（Alfred、Python など） | Closed（配布しない）または MIT | |
 | 配布なし（Web app） | Closed | API ドキュメントのみ公開も選択肢 |
 | 商用利用を制限したいドキュメント系 | CC BY-NC 4.0 など | ドキュメント系に限る |
@@ -80,7 +80,7 @@ SOFTWARE.
 | GPL v3 | スタンドアローンアプリ等、配布バイナリにコピーレフトを及ぼしたい場合 |
 | LGPL v3 | ライブラリ等、リンクするコードへの影響を最小化したい場合 |
 
-将来的な再ライセンスの余地を確保したい場合は [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) の準 CLA 設定を参照。
+将来的な再ライセンスの余地を確保したい場合は [topics/GITHUB_CONTRIBUTING.md](topics/GITHUB_CONTRIBUTING.md) の準 CLA 設定を参照。
 
 ---
 
