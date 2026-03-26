@@ -117,7 +117,7 @@
 | ケース | 対応 |
 |---|---|
 | テンプレートのライセンスを引き継ぐ | `[YEAR]` と `[AUTHOR]` を更新するだけでよい |
-| ライセンスを変更する | [TEMPLATE_README_GUIDELINES.md](TEMPLATE_README_GUIDELINES.md) §4 を参照してライセンスを選択し、`LICENSE` ファイルを差し替える |
+| ライセンスを変更する | [LICENSE_POLICY.md](../LICENSE_POLICY.md) を参照してライセンスを選択し、`LICENSE` ファイルを差し替える |
 
 README のライセンスセクション・ライセンスバッジは選択したライセンスと一致させること。
 
