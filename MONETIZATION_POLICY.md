@@ -10,19 +10,31 @@
 
 ## Platform-Specific Policy
 
-### Closed Projects
+Open/Closed を問わず、プラットフォームに応じて以下の方式を選択する。
 
 | プラットフォーム | 方式 |
 |---|---|
 | Mac app / iOS app | Sublime Text 方式（時々購入を促すポップアップを表示し、正式購入で解除） |
 | Chrome 拡張 | Buy Me a Coffee |
+| Alfred workflow | Buy Me a Coffee |
 | Web app / site | Buy Me a Coffee ＋ 可能なら広告 |
+| Python library / app | Buy Me a Coffee |
 
-### OSS Projects
+## GitHub Published Projects
 
-| プラットフォーム | 方式 |
-|---|---|
-| OSS project | Buy Me a Coffee ＋ GitHub Sponsors |
+GitHub 上で公開するプロジェクトは、Open/Closed にかかわらず、プラットフォーム別の方式に加えて **GitHub Sponsors** を追加する。
+
+### .github/FUNDING.yml
+
+GitHub Sponsors を有効化するために `.github/FUNDING.yml` を作成する。
+
+```yaml
+github: y-marui
+custom:
+  - https://www.buymeacoffee.com/y.marui
+```
+
+`github` フィールドに GitHub ユーザー名を設定することで、リポジトリページに「Sponsor」ボタンが表示される。
 
 ## Buy Me a Coffee Implementation
 
