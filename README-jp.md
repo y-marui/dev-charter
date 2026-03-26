@@ -23,6 +23,7 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 | [MONETIZATION_POLICY.md](MONETIZATION_POLICY.md) | マネタイズポリシーとプラットフォーム別方針 |
 | [SECURITY_POLICY.md](SECURITY_POLICY.md) | セキュリティポリシーとフック設定リファレンス |
 | [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) | GitHubを前提としたコード管理・Issue・PR・CI設計方針 |
+| [LICENSE_POLICY.md](LICENSE_POLICY.md) | ライセンス選択基準・テンプレート（Closed / MIT / AGPL・GPL・LGPL） |
 | [topics/TEMPLATE_README_GUIDELINES.md](topics/TEMPLATE_README_GUIDELINES.md) | GitHub テンプレートリポジトリの README 設計規約（開発環境・言語・LICENSE・必須セクション） |
 | [topics/PROJECT_README_GUIDELINES.md](topics/PROJECT_README_GUIDELINES.md) | テンプレートから作成したプロジェクトの README 整備手順 |
 

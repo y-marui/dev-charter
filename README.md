@@ -23,6 +23,7 @@ and development rules used across projects.
 | [MONETIZATION_POLICY.md](MONETIZATION_POLICY.md) | Monetization policy and platform-specific guidelines |
 | [SECURITY_POLICY.md](SECURITY_POLICY.md) | Security policy and hook configuration reference |
 | [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) | GitHub-based code management, issue, PR, and CI policy |
+| [LICENSE_POLICY.md](LICENSE_POLICY.md) | License selection criteria and templates (Closed / MIT / AGPL·GPL·LGPL) |
 | [topics/TEMPLATE_README_GUIDELINES.md](topics/TEMPLATE_README_GUIDELINES.md) | GitHub template repository README guidelines (environment, language, LICENSE, required sections) |
 | [topics/PROJECT_README_GUIDELINES.md](topics/PROJECT_README_GUIDELINES.md) | README setup guide for projects created from a template |
 
