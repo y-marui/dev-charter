@@ -31,7 +31,8 @@ GitHub Issueでバグ・機能要望を管理する。
 - コードの変更はすべてPR経由でマージする（`main` への直接pushは禁止）
 - PRタイトルはConventional Commits形式（`feat:` / `fix:` / `docs:` 等）
 - 関連Issueはdescriptionで参照する（`closes #123`）
-- マージ条件：レビュー承認1名以上・全会話解決済み・CI通過
+- マージ条件：全会話解決済み・CI通過
+- レビュー承認数はプロジェクト規模に応じて設定する（個人開発：0、複数人：1以上）
 
 ## CI Policy
 
@@ -109,7 +110,7 @@ Enforcement: Active
 
 Rules:
 ☑ Require a pull request before merging
-  └ Required approvals: 1
+  └ Required approvals: 0（個人開発）/ 1以上（複数人）
 ☑ Require status checks to pass before merging
   └ Status checks: build
 ☑ Require conversation resolution before merging
