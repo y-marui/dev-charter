@@ -142,3 +142,7 @@ and update only the sections affected by charter changes.
 update-charter:
 	git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
+
+---
+
+*This document has a Japanese canonical version [README-jp.md](README-jp.md). Update both in the same commit when editing.*
