@@ -81,7 +81,3 @@ SOFTWARE.
 | LGPL v3 | ライブラリ等、リンクするコードへの影響を最小化したい場合 |
 
 将来的な再ライセンスの余地を確保したい場合は [topics/GITHUB_CONTRIBUTING.md](topics/GITHUB_CONTRIBUTING.md) の準 CLA 設定を参照。
-
----
-
-*このドキュメントには英語版 [README.md](README.md) があります。編集時は同一コミットで更新してください。*
