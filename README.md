@@ -22,6 +22,7 @@ and development rules used across projects.
 | [UI_GUIDELINES.md](UI_GUIDELINES.md) | UI guidelines, color palette, iconography |
 | [MONETIZATION_POLICY.md](MONETIZATION_POLICY.md) | Monetization policy and platform-specific guidelines |
 | [SECURITY_POLICY.md](SECURITY_POLICY.md) | Security policy and hook configuration reference |
+| [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) | GitHub-based code management, issue, PR, and CI policy |
 | [topics/TEMPLATE_README_GUIDELINES.md](topics/TEMPLATE_README_GUIDELINES.md) | GitHub template repository README guidelines (environment, language, LICENSE, required sections) |
 | [topics/PROJECT_README_GUIDELINES.md](topics/PROJECT_README_GUIDELINES.md) | README setup guide for projects created from a template |
 
