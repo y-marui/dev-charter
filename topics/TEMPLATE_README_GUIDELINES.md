@@ -169,8 +169,8 @@ SOFTWARE.
 
 1. **タイトル** — `# [技術名] [種類] Template` の形式
 2. **言語宣言** — 正本・参照の宣言（§3.3 の形式）
-3. **メタ情報テーブル** — 開発対象・開発環境・主言語・ライセンス（+ オプション: AI ツール・動作環境）
-4. **バッジ** — CI バッジ（GitHub Actions がある場合）＋ ライセンスバッジ
+3. **バッジ** — CI バッジ（GitHub Actions がある場合）＋ ライセンスバッジ（§5.3 参照）
+4. **メタ情報テーブル** — 開発対象・開発環境・主言語・ライセンス（+ オプション: AI ツール・動作環境）
 5. **一行概要** — 「[技術スタック]で[開発対象]を作るためのテンプレート。[開発環境]向け。」
 6. **特徴** — 5〜8 項目、`✅` チェックマーク必須、技術名は具体的に
 7. **クイックスタート** — `git clone` から始め、環境構築コマンドまで
@@ -179,7 +179,29 @@ SOFTWARE.
 10. **ドキュメント索引** — `docs/architecture.md`・`docs/development.md` は最低限必須
 11. **ライセンス** — ライセンス名と `LICENSE` ファイルへのリンク
 
-### 5.3 Conditional Sections
+### 5.3 Badge Format
+
+バッジは**言語宣言の直後**（§5.2 位置 3）に配置する。テンプレートリポジトリ固有の URL・ライセンス種別に合わせて記述すること。
+
+**CI バッジ:**
+
+```
+[![CI](https://github.com/{user}/{repo}/actions/workflows/{workflow}.yml/badge.svg)](https://github.com/{user}/{repo}/actions/workflows/{workflow}.yml)
+```
+
+`{user}` / `{repo}` / `{workflow}` をこのテンプレートリポジトリの値に置き換える。ワークフローファイルが複数ある場合はメインの CI ワークフローのみ掲載する。
+
+**ライセンスバッジ（§4 のライセンス選択に対応する行を使用）:**
+
+| ライセンス | バッジ |
+|---|---|
+| MIT | `[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)` |
+| All Rights Reserved | `[![License: All Rights Reserved](https://img.shields.io/badge/License-All%20Rights%20Reserved-red.svg)](LICENSE)` |
+| CC BY-NC 4.0 | `[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](LICENSE)` |
+
+ライセンスバッジのリンク先は常にリポジトリルートの `LICENSE` ファイル。
+
+### 5.4 Conditional Sections
 
 以下のセクションは条件を満たす場合のみ追加する。
 
@@ -192,7 +214,7 @@ SOFTWARE.
 | AI 支援開発 | Claude Code / Copilot を使用 + `AI_CONTEXT.md` が存在 | 「ドキュメント索引」の直後 |
 | リリース手順 | ビルド成果物あり + 配布プロセスがある | 「ライセンス」の直前 |
 
-### 5.4 Information Gathering When AI Generates README
+### 5.5 Information Gathering When AI Generates README
 
 AI は README 生成前に以下を確認する。情報が不足している場合は推測せずユーザーに質問すること。
 既存ファイル（`Package.swift`、`pyproject.toml` 等）から判定可能な項目は自動入力してよい。
@@ -208,7 +230,7 @@ README 生成に必要な情報を教えてください:
 7. AI 対応: [Claude Code / GitHub Copilot / なし]
 ```
 
-### 5.5 Validation Checklist
+### 5.6 Validation Checklist
 
 README 作成後、以下を確認する。
 
@@ -216,6 +238,8 @@ README 作成後、以下を確認する。
 [ ] 必須セクション（§5.2）が全て存在し、順序通りか
 [ ] 言語宣言が主言語（日本語 / 英語）と一致しているか
 [ ] セクションヘッダが英語か（日本語文書でも）
+[ ] CI バッジの URL がこのテンプレートリポジトリを指しているか
+[ ] ライセンスバッジが §4 のライセンス選択と一致しているか
 [ ] メタ情報テーブルに開発対象・開発環境・主言語・ライセンスの 4 フィールドがあるか
 [ ] 特徴セクションが 5〜8 項目か
 [ ] プロジェクト構造にコメントが付いているか
