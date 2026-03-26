@@ -107,6 +107,18 @@ Roles for Claude Code / Copilot / Gemini CLI
 ### Prohibited Actions
 Security constraints and out-of-scope changes
 
+## Step 3: Create or update AI tool config files
+
+Create or update the following config files.
+If a file already exists, check whether it includes a reference to `AI_CONTEXT.md`;
+if not, add it at the top.
+Do not duplicate content from `AI_CONTEXT.md` — append only tool-specific settings.
+
+- `CLAUDE.md` → put `@AI_CONTEXT.md` at the top; append Claude Code-specific settings only
+- `GEMINI.md` → put `@AI_CONTEXT.md` at the top; append Gemini CLI-specific settings only
+  (note that manual loading is required until auto-loading is supported)
+- `.github/copilot-instructions.md` → include a reference to `AI_CONTEXT.md`; append Copilot-specific settings only
+
 ## Notes
 
 - If you have questions or ambiguities, ask all of them at once before starting
@@ -131,11 +143,15 @@ and update only the sections affected by charter changes.
 1. Read docs/dev-charter/*.md
 2. Read AI_CONTEXT.md
 3. Identify the differences and rewrite only the affected sections
+4. Review `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md`;
+   update tool-specific sections if the charter diff affects them
+   (keep the `AI_CONTEXT.md` reference intact — do not duplicate content)
 
 ## Notes
 
 - No need to re-explore the entire project
 - If AI_CONTEXT.md does not exist, use the install prompt instead
+- If a config file does not exist, use the install prompt to create it
 - If a charter change conflicts with a project-specific rule, list the conflicts and confirm priority with the user
 - Do not commit after updating (let the user review first)
 ```
