@@ -29,9 +29,9 @@
 |---|---|---|---|
 | Mac app / iOS app | App Store・直接配布（バイナリ） | Closed または AGPL/GPL/LGPL | Sublime Text 方式（+ GitHub Sponsors） |
 | Chrome 拡張 | Chrome Web Store（バイナリ相当） | Closed または AGPL/GPL/LGPL | Buy Me a Coffee（+ GitHub Sponsors） |
-| Alfred workflow | Alfred Gallery・GitHub（ソースコード） | Closed（配布しない）または MIT | Buy Me a Coffee（+ GitHub Sponsors） |
+| Alfred workflow | Alfred Gallery・GitHub（ソースコード） | Closed（配布しない）または MIT | 要検討（+ GitHub Sponsors） |
 | Web app / site | ブラウザアクセス（配布なし） | Closed | Buy Me a Coffee ＋ 可能なら広告 |
-| Python library / app | PyPI・GitHub（ソースコード） | Closed（配布しない）または MIT | Buy Me a Coffee（+ GitHub Sponsors） |
+| Python library / app | PyPI・GitHub（ソースコード） | Closed（配布しない）または MIT | 要検討（+ GitHub Sponsors） |
 
 > **凡例**: 括弧内の「+ GitHub Sponsors」は GitHub 上で公開する場合に追加（[MONETIZATION_POLICY.md](../MONETIZATION_POLICY.md) 参照）。ライセンス選択は case by case であり、この表は傾向の参考にとどめる。
 
