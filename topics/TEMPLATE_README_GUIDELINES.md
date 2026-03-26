@@ -192,11 +192,13 @@ AGPL/GPL/LGPL を採用し、将来の再ライセンスの余地を確保した
 コントリビューションの条件を明示するファイル。以下の条項を含める：
 
 ```text
-By contributing, you agree that your contributions are licensed under AGPL v3
-and that you grant the project maintainer a non-exclusive, perpetual, worldwide,
-royalty-free right to use, reproduce, modify, distribute, sublicense, and
-relicense your contributions under any license.
+By contributing, you agree that your contributions are licensed under
+[AGPL v3 / GPL v3 / LGPL v3] and that you grant the project maintainer
+a non-exclusive, perpetual, worldwide, royalty-free right to use, reproduce,
+modify, distribute, sublicense, and relicense your contributions under any license.
 ```
+
+`[AGPL v3 / GPL v3 / LGPL v3]` はプロジェクトのライセンスに合わせて置き換えること。
 
 **`.github/PULL_REQUEST_TEMPLATE.md`**
 
