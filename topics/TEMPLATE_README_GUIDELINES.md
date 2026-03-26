@@ -149,10 +149,14 @@ SOFTWARE.
 | `README-jp.md` | ✅ | 日本語版（正本） |
 | `README.md` | ✅ | 英語版（参照） |
 | `LICENSE` | ✅ | §4 に従ったライセンス |
+| `.gitignore` | ✅ | 言語・OS・IDE に合わせた無視パターン |
 | `AI_CONTEXT.md` | AI 対応時 | AI ツール向けコンテキスト |
 | `CLAUDE.md` | Claude Code 使用時 | `@AI_CONTEXT.md` を記載 |
 | `GEMINI.md` | Gemini CLI 使用時 | `@AI_CONTEXT.md` を記載 |
 | `.github/copilot-instructions.md` | Copilot 使用時 | `AI_CONTEXT.md` を参照する旨を記載 |
+| `.github/workflows/ci.yml` | CI 使用時 | テスト・ビルド・リントの自動実行 |
+| `.github/ISSUE_TEMPLATE/` | OSS で外部 Issue を受け付ける場合 | バグ報告・機能要望テンプレート |
+| `.github/PULL_REQUEST_TEMPLATE.md` | OSS で外部 PR を受け付ける場合 | PR チェックリスト |
 
 ### 5.2 Required README Sections (Follow Order)
 
