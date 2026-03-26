@@ -50,7 +50,7 @@ the express written permission of the author.
 - GPL v3: https://www.gnu.org/licenses/gpl-3.0.txt
 - LGPL v3: https://www.gnu.org/licenses/lgpl-3.0.txt
 
-取得したテキストをそのまま `LICENSE` ファイルとして配置する。
+`LICENSE` ファイルの先頭に `Copyright (c) [YEAR] [AUTHOR]` を追加した上で配置する。
 
 **選択の目安：**
 
