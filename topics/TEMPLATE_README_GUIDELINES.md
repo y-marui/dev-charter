@@ -185,13 +185,39 @@ SOFTWARE.
 
 AGPL/GPL/LGPL を採用し、将来の再ライセンスの余地を確保したい場合、外部コントリビューターから必要な許諾を事前に取得しておく。本格的な CLA サービスは導入せず、`CONTRIBUTING.md` と PR テンプレートによる **準 CLA 方式**で運用する。
 
-#### Required Files
+#### CONTRIBUTING.md Template
 
-**`CONTRIBUTING.md`**
+```markdown
+## How to Contribute
 
-コントリビューションの条件を明示するファイル。以下の条項を含める：
+大きな変更（新機能・設計変更）は PR の前に issue で相談してください。
+小さなバグ修正や typo は直接 PR を送っていただいて構いません。
 
-```text
+## Development Setup
+
+セットアップ手順は [README-jp.md](README-jp.md) を参照してください。
+
+## Code Style
+
+[CODE_STYLE.md](docs/dev-charter/CODE_STYLE.md) に従ってください。
+
+## Commit Messages
+
+[Conventional Commits](https://www.conventionalcommits.org/) 形式を使用してください（例: `fix: ...`、`feat: ...`）。
+
+## Pull Request Checklist
+
+- [ ] lint が通る
+- [ ] 型チェックが通る（該当する場合）
+- [ ] テストが通る（該当する場合）
+- [ ] ビルドが成功する（成果物がある場合）
+- [ ] 新機能にはテストを追加した
+- [ ] ユーザー向けの変更はドキュメントを更新した
+- [ ] CHANGELOG.md の [Unreleased] セクションにエントリを追加した（該当する場合）
+- [ ] 動作確認済み（該当する場合）
+
+## Contribution Terms
+
 By contributing, you agree that your contributions are licensed under
 [AGPL v3 / GPL v3 / LGPL v3] and that you grant the project maintainer
 a non-exclusive, perpetual, worldwide, royalty-free right to use, reproduce,
@@ -199,24 +225,32 @@ modify, distribute, sublicense, and relicense your contributions under any licen
 ```
 
 `[AGPL v3 / GPL v3 / LGPL v3]` はプロジェクトのライセンスに合わせて置き換えること。
+チェックリストの項目はプロジェクトに合わせて取捨選択すること。
 
-**`.github/PULL_REQUEST_TEMPLATE.md`**
+#### .github/PULL_REQUEST_TEMPLATE.md Template
 
-PR テンプレートに以下のチェックボックスを追加し、明示的同意のログを残す：
+PR テンプレートは CONTRIBUTING.md のチェックリストと対応させる。
+**CONTRIBUTING.md を編集した場合は PR テンプレートも合わせて見直すこと。**
 
 ```markdown
+## Description
+
+<!-- 変更内容を簡潔に説明してください -->
+
+## Checklist
+
+- [ ] lint が通る
+- [ ] 型チェックが通る（該当する場合）
+- [ ] テストが通る（該当する場合）
+- [ ] ビルドが成功する（成果物がある場合）
+- [ ] 新機能にはテストを追加した
+- [ ] ユーザー向けの変更はドキュメントを更新した
+- [ ] CHANGELOG.md の [Unreleased] セクションにエントリを追加した（該当する場合）
+- [ ] 動作確認済み（該当する場合）
 - [ ] I have read and agree to the terms in CONTRIBUTING.md.
 ```
 
 > **運用上の注意**: GitHub はチェックボックスの完了を強制しない。チェックなしの PR はマージしないこと。これが準 CLA の唯一の強制機構である。
-
-**`README.md` / `README-jp.md`（任意）**
-
-CONTRIBUTING.md への参照を追記する：
-
-```
-See CONTRIBUTING.md for contribution terms.
-```
 
 #### Phased Approach
 
@@ -247,9 +281,9 @@ See CONTRIBUTING.md for contribution terms.
 | `.github/copilot-instructions.md` | Copilot 使用時 | `AI_CONTEXT.md` を参照する旨を記載 |
 | `.github/workflows/ci.yml` | CI 使用時 | テスト・ビルド・リントの自動実行 |
 | `.github/FUNDING.yml` | GitHub 公開プロジェクト | GitHub Sponsors・Buy Me a Coffee の設定（[MONETIZATION_POLICY.md](../MONETIZATION_POLICY.md) 参照） |
-| `CONTRIBUTING.md` | OSS で外部 PR を受け付ける場合 | コントリビューション条件の明示。AGPL/GPL/LGPL プロジェクトは準 CLA 条項を含める（§4.6 参照） |
+| `CONTRIBUTING.md` | OSS で外部 PR を受け付ける場合 | Issues first ルール・コードスタイル・コミット形式・PR チェックリスト・準 CLA 条項（§4.6 参照） |
 | `.github/ISSUE_TEMPLATE/` | OSS で外部 Issue を受け付ける場合 | バグ報告・機能要望テンプレート |
-| `.github/PULL_REQUEST_TEMPLATE.md` | OSS で外部 PR を受け付ける場合 | PR チェックリスト。AGPL/GPL/LGPL プロジェクトは CONTRIBUTING.md への同意チェックボックスを追加（§4.6 参照） |
+| `.github/PULL_REQUEST_TEMPLATE.md` | OSS で外部 PR を受け付ける場合 | CONTRIBUTING.md のチェックリストと対応させる。AGPL/GPL/LGPL プロジェクトは CLA 同意チェックボックスを末尾に追加（§4.6 参照） |
 
 ### 5.2 Required README Sections (Follow Order)
 
