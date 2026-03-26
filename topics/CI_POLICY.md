@@ -23,7 +23,10 @@ on:
 
 jobs:
   security:
-    name: Security scan
+    name: Security scan (pre-commit)
+    # pre-commit run --all-files を実行する
+    # gitleaks 等のシークレット検知フックを含める
+    # gitleaks はフル履歴が必要なため fetch-depth: 0 を指定する
     # ...
 
   lint:
