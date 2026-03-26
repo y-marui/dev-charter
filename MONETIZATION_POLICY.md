@@ -1,6 +1,6 @@
-# マネタイズポリシー
+# Monetization Policy
 
-## 基本方針
+## Basic Policy
 
 作成するツールは自分の必要性に基づいて決定しており、マーケティング主導ではない。
 需要の有無は不明なため、**課金収益への期待は最小限にとどめる**。
@@ -8,9 +8,9 @@
 独自の課金システムはメンテナンスコストとセキュリティリスクを伴うため、**原則禁止**。
 既存の信頼されたプラットフォームを使用すること。
 
-## プラットフォーム別の方針
+## Platform-Specific Policy
 
-### クローズドプロジェクト
+### Closed Projects
 
 | プラットフォーム | 方式 |
 |---|---|
@@ -18,15 +18,15 @@
 | Chrome 拡張 | Buy Me a Coffee |
 | Web app / site | Buy Me a Coffee ＋ 可能なら広告 |
 
-### OSSプロジェクト
+### OSS Projects
 
 | プラットフォーム | 方式 |
 |---|---|
 | OSS project | Buy Me a Coffee ＋ GitHub Sponsors |
 
-## Buy Me a Coffee の実装
+## Buy Me a Coffee Implementation
 
-### 文言
+### Wording
 
 ```
 役に立ったらサポートしてもらえると嬉しいです[コーヒーの絵文字]
@@ -34,7 +34,7 @@
 
 `[コーヒーの絵文字]` はプロジェクトの性質に応じた非ユニコード絵文字（SF Symbols / Material Symbols等）に置き換えること。
 
-### ボタン（標準）
+### Button (Standard)
 
 サイズはデフォルト値を維持し、特別な事情がない限り変更しない。
 
@@ -46,7 +46,7 @@
 </a>
 ```
 
-### ウィジェット（任意）
+### Widget (Optional)
 
 ページに常駐させる場合に使用可。
 
@@ -62,7 +62,7 @@
   data-y_margin="18"></script>
 ```
 
-## マネタイズ計画の記録
+## Monetization Plan Record
 
 市場調査等に基づいてマネタイズを本格的に検討する場合は、以下のルールに従う。
 
