@@ -43,6 +43,34 @@
 ### When Using Separate Files
 日本語版を正本、英語版を参照とし、それぞれの冒頭でその旨を宣言すること。
 
+**日本語版冒頭:**
+```
+> **このファイルは正本（日本語版）です。**
+> 英語版（参照）は [README.md](README.md) を参照してください。
+```
+
+**英語版冒頭:**
+```
+> **This is the reference (English) version.**
+> The canonical (Japanese) version is [README-jp.md](README-jp.md).
+```
+
+末尾には編集ルールフッターを記載する。
+
+**日本語版末尾:**
+```
+---
+*この文書には英語版 [README.md](README.md) があります。編集時は同一コミットで更新してください。*
+```
+
+**英語版末尾:**
+```
+---
+*This document has a Japanese canonical version [README-jp.md](README-jp.md). Update both in the same commit when editing.*
+```
+
 ## Editing Rules
 
 日本語と英語の両方が存在する場合、**日本語を主として編集し、英語はそれに合わせて更新する**。英語版を独立して編集してはならない。
+
+日本語版と英語版は**同一コミットで更新**する。
