@@ -63,6 +63,10 @@ build:
 | PR | 短期（例：7日） |
 | main | 長期（例：30日） |
 
+## Dependabot
+
+`.github/dependabot.yml` の導入を検討する。依存パッケージがあるプロジェクトでは自動でアップデートPRを作成し、脆弱性対応を省力化できる。ドキュメントのみのリポジトリや依存パッケージが存在しないプロジェクトでは不要。
+
 ## Branch Protection (Ruleset)
 
 `main` ブランチに以下のRulesetを適用する（全リポジトリ共通）：
