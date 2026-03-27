@@ -3,6 +3,8 @@
 > **このファイルは正本（日本語版）です。**
 > 英語版（参照）は [README.md](README.md) を参照してください。
 
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
+
 AI支援ソフトウェアプロジェクトのための共有開発憲章。
 
 このリポジトリは、プロジェクト横断的に使用される共通の哲学、アーキテクチャ原則、

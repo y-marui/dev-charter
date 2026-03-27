@@ -3,6 +3,8 @@
 > **This is the reference (English) version.**
 > For the canonical (Japanese) version, see [README-jp.md](README-jp.md).
 
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
+
 Shared development charter for AI-assisted software projects.
 
 This repository defines common philosophy, architecture principles,
