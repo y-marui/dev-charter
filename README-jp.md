@@ -48,8 +48,12 @@ git subtree add --prefix=docs/dev-charter dev-charter main --squash
 インストール後、以下のプロンプトを AI に貼り付けて実行する：
 
 ```
-docs/dev-charter/ 内の全ファイルを読み、このプロジェクトを調査した上で、
-docs/dev-charter/AI_TOOL_SETUP.md の仕様に従い AI コンテキストファイルをセットアップしてください。
+docs/dev-charter/ 内の全ファイルを読み、このプロジェクトを調査した上で、以下を実施してください。
+
+1. docs/dev-charter/AI_TOOL_SETUP.md の仕様に従い AI コンテキストファイルをセットアップする
+2. 憲章の要件とプロジェクトの現状を照合し、満たせていない箇所を特定・修正する
+   （例：CI 設定の不足、セキュリティフックの未設定、CONTRIBUTING.md の欠如 等）
+   大きなスコープになる場合は修正前にユーザーに確認する
 
 - 不明点・確認事項は作業前に 1 回まとめて質問する
 - 憲章と既存規約が矛盾する場合は矛盾点を列挙し、優先順位をユーザーに確認してから進める
@@ -71,8 +75,10 @@ git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 更新後、以下のプロンプトを AI に貼り付けて実行する：
 
 ```
-docs/dev-charter/ 内の全ファイルを読み、現在の AI コンテキストファイルと比較して、
-docs/dev-charter/AI_TOOL_SETUP.md の仕様に従い、憲章の変更が影響する箇所のみ更新してください。
+docs/dev-charter/ 内の全ファイルを読み、憲章の変更が影響する箇所のみ更新してください。
+
+1. docs/dev-charter/AI_TOOL_SETUP.md の仕様に従い AI コンテキストファイルを更新する
+2. 憲章の変更がプロジェクトファイル（CI 設定・セキュリティフック等）に影響する場合は修正する
 
 - プロジェクト全体の再調査は不要
 - AI_CONTEXT.md が存在しない場合はインストール用プロンプトを使うこと

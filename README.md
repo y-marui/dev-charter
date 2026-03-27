@@ -48,8 +48,12 @@ git subtree add --prefix=docs/dev-charter dev-charter main --squash
 After installing, paste the following prompt into your AI tool:
 
 ```
-Read all files in docs/dev-charter/, explore this project, and set up AI context files
-following the spec in docs/dev-charter/AI_TOOL_SETUP.md.
+Read all files in docs/dev-charter/, explore this project, then do the following:
+
+1. Set up AI context files following the spec in docs/dev-charter/AI_TOOL_SETUP.md
+2. Compare the project against charter requirements and fix any gaps
+   (e.g., missing CI jobs, security hooks not configured, missing CONTRIBUTING.md)
+   For large-scope changes, confirm with the user before proceeding
 
 - If you have questions or ambiguities, ask all of them at once before starting
 - If the charter conflicts with existing conventions, list the conflicts and confirm priority with the user before proceeding
@@ -71,8 +75,10 @@ git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 After updating, paste the following prompt into your AI tool:
 
 ```
-Read all files in docs/dev-charter/, compare them with the current AI context files, and update
-only the sections affected by charter changes, following the spec in docs/dev-charter/AI_TOOL_SETUP.md.
+Read all files in docs/dev-charter/ and update only what is affected by charter changes:
+
+1. Update AI context files following the spec in docs/dev-charter/AI_TOOL_SETUP.md
+2. If charter changes affect project files (CI config, security hooks, etc.), fix them too
 
 - No need to re-explore the entire project
 - If AI_CONTEXT.md does not exist, use the install prompt instead
