@@ -16,6 +16,7 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 | [CODE_STYLE.md](CODE_STYLE.md) | コードスタイル |
 | [AI_COLLABORATION_RULES.md](AI_COLLABORATION_RULES.md) | AI 協働ルールと役割分担 |
 | [AI_CONTEXT_HIERARCHY.md](AI_CONTEXT_HIERARCHY.md) | AI コンテキスト優先階層 |
+| [AI_TOOL_SETUP.md](AI_TOOL_SETUP.md) | AI コンテキストファイルの構成仕様（AI_CONTEXT.md・各ツール設定ファイル） |
 | [LANGUAGE_POLICY.md](LANGUAGE_POLICY.md) | 言語ポリシー（正本＝日本語） |
 | [LOCALIZATION_POLICY.md](LOCALIZATION_POLICY.md) | ローカライゼーションポリシー |
 | [PROJECT_LIFECYCLE.md](PROJECT_LIFECYCLE.md) | プロジェクトライフサイクルと体制 |
@@ -30,34 +31,11 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 
 ## How to Use
 
-### 1. Add to Your Project
-`git subtree` を使い、`docs/dev-charter/` に取り込む。ファイルはコミットし、`.gitignore` しない。これにより、オフラインでも参照可能でバージョン管理された状態を保てる。
+1. `git subtree` で `docs/dev-charter/` に取り込む
+2. AI に dev-charter を読ませ、プロジェクトルートに `AI_CONTEXT.md` と AI ツール設定ファイルを生成させる
+3. 憲章が更新されたら `git subtree pull` 後、AI にコンテキストファイルを追従させる
 
-### 2. Generate AI_CONTEXT.md at Project Setup
-新規プロジェクトの開始時に、AI に dev-charter を読ませ、プロジェクトルートの `AI_CONTEXT.md` を生成・編集させる。これにより、憲章をプロジェクト固有のコンテキストファイルにコンパイルする。
-
-### 3. Configure AI Tools to Auto-Load AI_CONTEXT.md
-
-AI ツールごとに設定ファイルを作成し、セッション開始時に自動で読み込まれるようにする。
-
-**Claude Code** — プロジェクトルートに `CLAUDE.md` を作成：
-
-```
-@AI_CONTEXT.md
-```
-
-**Gemini CLI** — プロジェクトルートに `GEMINI.md` を作成：
-
-```
-@AI_CONTEXT.md
-```
-
-自動読み込みが未サポートの場合は使用時に手動で渡すこと。自動読み込み機能が追加された際はこの手順を更新すること。
-
-**GitHub Copilot** — `.github/copilot-instructions.md` に `AI_CONTEXT.md` を参照する旨を記載し、個別設定のみ追記する。
-
-### 4. When the Charter Is Updated
-`git subtree pull` 後、AI に差分を確認させ、必要に応じて `AI_CONTEXT.md` を更新する。
+構成仕様は [AI_TOOL_SETUP.md](AI_TOOL_SETUP.md) を参照。
 
 ## Install (git subtree)
 
@@ -67,95 +45,39 @@ git fetch dev-charter
 git subtree add --prefix=docs/dev-charter dev-charter main --squash
 ```
 
-インストール後、以下のプロンプトを Claude Code に貼り付けて実行すると、
-プロジェクト固有の `AI_CONTEXT.md` が生成されます。
+インストール後、以下のプロンプトを AI に貼り付けて実行する：
 
 ```
 docs/dev-charter/ 内の全ファイルを読み、このプロジェクトを調査した上で、
-プロジェクトルートに AI_CONTEXT.md を生成または更新してください。
-AI_CONTEXT.md は、以後のセッションで AI が唯一参照するコンテキストファイルです。
-
-## Step 1: Explore
-
-以下を読んで把握してください：
-
-- 憲章：docs/dev-charter/*.md（全ファイル）
-- プロジェクト概要：README、既存ドキュメント
-- 技術スタック：使用言語・FW・バージョン（package.json、go.mod、Podfile 等）
-- 既存規約：.editorconfig、lint 設定、pre-commit 設定、CI 設定
-- 既存 AI 設定：CLAUDE.md、AI_CONTEXT.md（存在する場合は内容を確認し、差分を反映して更新）
-
-## Step 2: Generate AI_CONTEXT.md
-
-以下のセクション構成で作成してください。
-憲章全文は転記せず、このプロジェクトの技術スタック・ワークフローに
-直接関係する内容のみを抽出・要約すること。
-関係しない憲章ドキュメントはスキップしてよい。
-
-### Project Overview
-目的・技術スタック（言語・FW・バージョン）・主要ディレクトリ一覧
-
-### Applied Charter Principles
-このプロジェクトの開発・運用フローに直接影響する原則とルール
-
-### Project-Specific Rules
-憲章に含まれない既存規約、または憲章を上書き・補足する事項
-
-### AI Tool Assignments
-Claude Code / Copilot / Gemini CLI の担当範囲
-（未使用ツールは省略し、実際の体制に合わせて記載）
-
-### Prohibited Actions
-セキュリティ制約・スコープ外変更の禁止事項
-
-## Step 3: AI ツール設定ファイルを作成・更新する
-
-以下の設定ファイルを作成または更新してください。
-既存ファイルがある場合は AI_CONTEXT.md への参照が含まれているか確認し、
-含まれていない場合は先頭に追加すること。
-AI_CONTEXT.md の内容は重複させず、ツール固有の設定のみ追記する。
-
-- `CLAUDE.md` → 先頭に `@AI_CONTEXT.md` を記載し、Claude Code 固有の設定のみ追記
-- `GEMINI.md` → 先頭に `@AI_CONTEXT.md` を記載し、Gemini CLI 固有の設定のみ追記
-  （自動読み込み未サポートの場合は使用時に手動で渡す旨を記載）
-- `.github/copilot-instructions.md` → AI_CONTEXT.md への参照を記載し、Copilot 固有の設定のみ追記
-
-## Notes
+docs/dev-charter/AI_TOOL_SETUP.md の仕様に従い AI コンテキストファイルをセットアップしてください。
 
 - 不明点・確認事項は作業前に 1 回まとめて質問する
 - 憲章と既存規約が矛盾する場合は矛盾点を列挙し、優先順位をユーザーに確認してから進める
-- 生成後にコミットしない（ユーザーが確認してから行う）
+- 完了後はコミットしない（ユーザーが確認してから行う）
 ```
 
 ## Update
+
+`dev-charter` リモートが未設定の場合（プロジェクトを clone した直後など）は先に追加する：
+
+```
+git remote add dev-charter https://github.com/y-marui/dev-charter
+```
 
 ```
 git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
 
-更新後、以下のプロンプトを Claude Code に貼り付けて実行すると、
-AI_CONTEXT.md が最新の憲章に追従します。
+更新後、以下のプロンプトを AI に貼り付けて実行する：
 
 ```
-docs/dev-charter/ 内の全ファイルを読み、現在の AI_CONTEXT.md と比較して、
-憲章の変更が影響するセクションのみ更新してください。
-
-## Steps
-
-1. docs/dev-charter/*.md を読む
-2. AI_CONTEXT.md を読む
-3. 差分を特定し、影響するセクションのみ書き換える
-4. CLAUDE.md・GEMINI.md・`.github/copilot-instructions.md` を確認し、
-   憲章の差分がツール固有の設定に影響する場合は更新する
-   （AI_CONTEXT.md への参照はそのまま残し、内容を重複させない）
-
-## Notes
+docs/dev-charter/ 内の全ファイルを読み、現在の AI コンテキストファイルと比較して、
+docs/dev-charter/AI_TOOL_SETUP.md の仕様に従い、憲章の変更が影響する箇所のみ更新してください。
 
 - プロジェクト全体の再調査は不要
-- AI_CONTEXT.md が存在しない場合はインストール時のプロンプトを使うこと
-- 設定ファイルが存在しない場合はインストール時のプロンプトで作成すること
-- 憲章の変更がプロジェクト固有ルールと矛盾する場合は、矛盾点を列挙してユーザーに確認する
-- 更新後にコミットしない（ユーザーが確認してから行う）
+- AI_CONTEXT.md が存在しない場合はインストール用プロンプトを使うこと
+- 憲章の変更がプロジェクト固有ルールと矛盾する場合は矛盾点を列挙してユーザーに確認する
+- 完了後はコミットしない（ユーザーが確認してから行う）
 ```
 
 ## Makefile Helper
