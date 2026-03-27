@@ -2,6 +2,14 @@
 
 すべてのリポジトリに `LICENSE` ファイルを含める。ライセンスなしでの公開は禁止。
 
+## Copyright Notice Format
+
+`LICENSE` ファイルの著作権者名は **フルネームまたはペンネーム**を使用する。GitHub ユーザー名（ハンドル）は使わない。
+
+```
+Copyright (c) [YEAR] [フルネームまたはペンネーム]
+```
+
 ## Code License Selection
 
 ライセンスは **Closed / AGPL・GPL・LGPL / MIT** の3分類から選択する。OSS だからといって必ずしも MIT ではない。
