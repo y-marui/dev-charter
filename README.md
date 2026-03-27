@@ -25,6 +25,7 @@ and development rules used across projects.
 | [SECURITY_POLICY.md](SECURITY_POLICY.md) | Security policy and hook configuration reference |
 | [LICENSE_POLICY.md](LICENSE_POLICY.md) | License selection criteria and templates (Closed / MIT / AGPL·GPL·LGPL) |
 | [topics/CI_POLICY.md](topics/CI_POLICY.md) | CI job design and Branch Protection Ruleset |
+| [topics/GITHUB_SETTINGS.md](topics/GITHUB_SETTINGS.md) | GitHub repository settings review (Ruleset, Sponsors) |
 | [topics/GITHUB_CONTRIBUTING.md](topics/GITHUB_CONTRIBUTING.md) | Issue, PR, CONTRIBUTING.md, PR template, and Quasi-CLA (for OSS) |
 | [topics/TEMPLATE_README_GUIDELINES.md](topics/TEMPLATE_README_GUIDELINES.md) | GitHub template repository README guidelines (environment, language, LICENSE, required sections) |
 | [topics/PROJECT_README_GUIDELINES.md](topics/PROJECT_README_GUIDELINES.md) | README setup guide for projects created from a template |
