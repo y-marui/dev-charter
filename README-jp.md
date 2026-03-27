@@ -25,7 +25,7 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 | [UI_GUIDELINES.md](UI_GUIDELINES.md) | UI ガイドライン・カラー・アイコン |
 | [MONETIZATION_POLICY.md](MONETIZATION_POLICY.md) | マネタイズポリシーとプラットフォーム別方針 |
 | [SECURITY_POLICY.md](SECURITY_POLICY.md) | セキュリティポリシーとフック設定リファレンス |
-| [LICENSE_POLICY.md](LICENSE_POLICY.md) | ライセンス選択基準・テンプレート（Closed / MIT / AGPL・GPL・LGPL） |
+| [LEGAL_POLICY.md](LEGAL_POLICY.md) | ライセンス選択基準・テンプレート（Closed / MIT / AGPL・GPL・LGPL） |
 | [topics/CI_POLICY.md](topics/CI_POLICY.md) | CI job設計方針・Branch Protection Ruleset |
 | [topics/GITHUB_SETTINGS.md](topics/GITHUB_SETTINGS.md) | GitHub リポジトリ設定確認（Ruleset・Sponsors） |
 | [topics/GITHUB_CONTRIBUTING.md](topics/GITHUB_CONTRIBUTING.md) | Issue・PR・CONTRIBUTING.md・PRテンプレート・準CLA（OSS向け） |

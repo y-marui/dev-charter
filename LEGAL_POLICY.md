@@ -24,9 +24,9 @@
 |---|---|---|---|---|
 | CC BY 4.0 | MIT | ✅ | ✅ | 自由 |
 | CC BY-SA 4.0 | GPL | ✅ | ✅ | 同一ライセンス必須 |
-| CC BY-ND 4.0 | — | ✅ | ❌ | — |
+| CC BY-ND 4.0 | — | ✅ | ❌ | 改変禁止（派生物なし） |
 | CC BY-NC-SA 4.0 | — | ❌ | ✅ | 同一ライセンス必須 |
-| CC BY-NC-ND 4.0 | — | ❌ | ❌ | — |
+| CC BY-NC-ND 4.0 | — | ❌ | ❌ | 改変禁止（派生物なし） |
 | All Rights Reserved | Closed | ❌ | ❌ | CC は使わない |
 
 > **dev-charter 自体は CC BY 4.0 を採用している。**
