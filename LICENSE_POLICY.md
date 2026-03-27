@@ -20,12 +20,14 @@
 
 ドキュメントリポジトリ（設計書・チュートリアル・規約等）にはコード向けライセンスではなく **CC ライセンス**を使用する。ただし Closed の場合は CC を使わず All Rights Reserved で統一する。
 
-| ドキュメントライセンス | コード相当 | 特徴 |
-|---|---|---|
-| CC BY 4.0 | MIT | 帰属表示のみ。商用利用・改変・再配布自由 |
-| CC BY-SA 4.0 | GPL | 帰属表示 + 派生物に同じライセンスを適用（コピーレフト） |
-| CC BY-NC 4.0 | — | 帰属表示 + 非商用限定 |
-| All Rights Reserved | Closed | 全権留保。CC は使わない |
+| ドキュメントライセンス | コード相当 | 商用 | 改変 | 派生物のライセンス |
+|---|---|---|---|---|
+| CC BY 4.0 | MIT | ✅ | ✅ | 自由 |
+| CC BY-SA 4.0 | GPL | ✅ | ✅ | 同一ライセンス必須 |
+| CC BY-ND 4.0 | — | ✅ | ❌ | — |
+| CC BY-NC-SA 4.0 | — | ❌ | ✅ | 同一ライセンス必須 |
+| CC BY-NC-ND 4.0 | — | ❌ | ❌ | — |
+| All Rights Reserved | Closed | ❌ | ❌ | CC は使わない |
 
 > **dev-charter 自体は CC BY 4.0 を採用している。**
 
@@ -80,7 +82,9 @@ CC ライセンスの本文は公式ソースから取得すること：
 
 - CC BY 4.0: https://creativecommons.org/licenses/by/4.0/legalcode
 - CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/legalcode
-- CC BY-NC 4.0: https://creativecommons.org/licenses/by-nc/4.0/legalcode
+- CC BY-ND 4.0: https://creativecommons.org/licenses/by-nd/4.0/legalcode
+- CC BY-NC-SA 4.0: https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+- CC BY-NC-ND 4.0: https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
 
 `LICENSE` ファイルには以下の形式で記載する：
 
