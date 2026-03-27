@@ -48,9 +48,6 @@ AI ツールごとの設定ファイルは `AI_CONTEXT.md` への参照のみを
 （ツール固有の設定があればここに追記）
 ```
 
-Gemini CLI は自動読み込み未サポート。使用時に手動で渡すこと。
-自動読み込み機能が追加された際はこの記述を更新すること。
-
 ### .github/copilot-instructions.md（GitHub Copilot）
 
 ```
