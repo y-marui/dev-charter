@@ -96,6 +96,30 @@ update-charter:
 	git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
 
+## Version Check (CI)
+
+`.github/workflows/dev-charter-check.yml` をプロジェクトに追加すると、
+毎週自動で最新バージョンを確認し、古い場合は update PR を作成します。
+
+```yaml
+name: check-dev-charter
+on:
+  schedule:
+    - cron: "0 3 * * 1"  # 毎週月曜 3:00 UTC
+  workflow_dispatch:
+
+jobs:
+  check:
+    uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
+    permissions:
+      contents: write
+      pull-requests: write
+```
+
+> **Note:** Branch Protection で direct push が禁止されている場合は、
+> GitHub Actions bot の bypass rule を追加してください
+> （Settings > Rules > Rulesets > Bypass list > GitHub Actions）。
+
 ---
 
 *この文書には英語版 [README.md](README.md) があります。編集時は同一コミットで更新してください。*

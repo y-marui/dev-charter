@@ -96,6 +96,30 @@ update-charter:
 	git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
 
+## Version Check (CI)
+
+Add `.github/workflows/dev-charter-check.yml` to your project to automatically
+check for updates weekly and open a PR when a new version is available.
+
+```yaml
+name: check-dev-charter
+on:
+  schedule:
+    - cron: "0 3 * * 1"  # Every Monday at 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  check:
+    uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
+    permissions:
+      contents: write
+      pull-requests: write
+```
+
+> **Note:** If your repository has Branch Protection rules that prevent direct pushes,
+> add a bypass rule for the GitHub Actions bot
+> (Settings > Rules > Rulesets > Bypass list > GitHub Actions).
+
 ---
 
 *This document has a Japanese canonical version [README-jp.md](README-jp.md). Update both in the same commit when editing.*
