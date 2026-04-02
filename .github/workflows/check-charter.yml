@@ -36,8 +36,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch remote VERSION
-        id: remote
+      - name: Check VERSION
+        id: versions
         run: |
           REMOTE=$(curl -sf --max-time 10 \
             "https://raw.githubusercontent.com/y-marui/dev-charter/main/VERSION" \
@@ -46,88 +46,43 @@ jobs:
             echo "::error::Failed to fetch remote VERSION from dev-charter"
             exit 1
           fi
-          echo "version=${REMOTE}" >> "$GITHUB_OUTPUT"
 
-      - name: Read local VERSION
-        id: local
-        run: |
           LOCAL=$(head -1 "${{ inputs.prefix }}/VERSION" 2>/dev/null || echo "")
           if [ -z "$LOCAL" ]; then
             echo "::error::Local VERSION not found at ${{ inputs.prefix }}/VERSION"
             exit 1
           fi
-          echo "version=${LOCAL}" >> "$GITHUB_OUTPUT"
 
-      - name: Compare versions
-        id: compare
-        run: |
-          LOCAL="${{ steps.local.outputs.version }}"
-          REMOTE="${{ steps.remote.outputs.version }}"
           echo "local:  ${LOCAL}"
           echo "remote: ${REMOTE}"
+          echo "remote=${REMOTE}" >> "$GITHUB_OUTPUT"
+
           if [ "$LOCAL" = "$REMOTE" ]; then
             echo "dev-charter is up to date"
             echo "outdated=false" >> "$GITHUB_OUTPUT"
           else
-            echo "dev-charter is outdated (local: ${LOCAL}, remote: ${REMOTE})"
+            echo "dev-charter is outdated"
             echo "outdated=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Check existing update branch
-        if: steps.compare.outputs.outdated == 'true'
-        id: existing
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          REMOTE="${{ steps.remote.outputs.version }}"
-          BRANCH="update-charter"
-
-          # Check if branch exists on remote
-          if git ls-remote --exit-code --heads origin "${BRANCH}" > /dev/null 2>&1; then
-            # Branch exists — check its VERSION
-            git fetch origin "${BRANCH}"
-            BRANCH_VERSION=$(git show "origin/${BRANCH}:${{ inputs.prefix }}/VERSION" 2>/dev/null | head -1 || echo "")
-            if [ "$BRANCH_VERSION" = "$REMOTE" ]; then
-              echo "Existing PR branch is already up to date with remote VERSION ${REMOTE}, skipping"
-              echo "skip=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "Existing branch has VERSION ${BRANCH_VERSION}, needs update to ${REMOTE}"
-              echo "skip=false" >> "$GITHUB_OUTPUT"
-              echo "update_existing=true" >> "$GITHUB_OUTPUT"
-            fi
-          else
-            echo "No existing branch, will create new"
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-            echo "update_existing=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Create or update update-charter branch
-        if: >
-          steps.compare.outputs.outdated == 'true' &&
-          steps.existing.outputs.skip != 'true'
+      - name: Update branch
+        if: steps.versions.outputs.outdated == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          REMOTE="${{ steps.remote.outputs.version }}"
+          REMOTE="${{ steps.versions.outputs.remote }}"
           BRANCH="update-charter"
           PREFIX="${{ inputs.prefix }}"
 
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
 
-          # Add dev-charter remote
           git remote add dev-charter https://github.com/y-marui/dev-charter.git || true
           git fetch dev-charter main
 
-          if [ "${{ steps.existing.outputs.update_existing }}" = "true" ]; then
-            # Reset branch to current main, then re-apply subtree pull
-            git checkout -B "${BRANCH}" origin/main
-          else
-            git checkout -b "${BRANCH}"
-          fi
+          git checkout -B "${BRANCH}" origin/main
 
-          # Apply subtree pull (exit 1 on conflict — developer must resolve manually)
           git subtree pull \
             --prefix="${PREFIX}" \
             dev-charter main \
@@ -137,15 +92,11 @@ jobs:
           git push origin "${BRANCH}" --force-with-lease
 
       - name: Create PR
-        if: >
-          steps.compare.outputs.outdated == 'true' &&
-          steps.existing.outputs.skip != 'true' &&
-          steps.existing.outputs.update_existing != 'true'
+        if: steps.versions.outputs.outdated == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          REMOTE="${{ steps.remote.outputs.version }}"
-          REPO_URL="https://github.com/${{ github.repository }}"
+          REMOTE="${{ steps.versions.outputs.remote }}"
           CHECKLIST_URL="https://github.com/y-marui/dev-charter/blob/main/UPDATE_CHECKLIST.md"
 
           gh pr create \
@@ -159,15 +110,4 @@ jobs:
           )" \
             --base main \
             --head update-charter \
-            --label "dev-charter" 2>/dev/null || \
-          gh pr create \
-            --title "chore: update dev-charter to ${REMOTE}" \
-            --body "$(cat <<EOF
-          ## dev-charter を ${REMOTE} に更新
-
-          \`git subtree pull\` を自動的に適用しました。
-          マージ後、[更新チェックリスト](${CHECKLIST_URL}) に従って対応してください。
-          EOF
-          )" \
-            --base main \
-            --head update-charter
+            --label "dev-charter" 2>/dev/null || true
