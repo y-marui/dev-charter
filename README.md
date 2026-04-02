@@ -48,18 +48,35 @@ git fetch dev-charter
 git subtree add --prefix=docs/dev-charter dev-charter main --squash
 ```
 
-After installing, paste the following prompt into your AI tool:
+After installing, paste the following prompts into your AI tool in order:
+
+**Step 1 — bulk setup**
 
 ```
 Read all files in docs/dev-charter/, explore this project, then do the following:
 
 1. Set up AI context files following the spec in docs/dev-charter/AI_TOOL_SETUP.md
-2. Compare the project against charter requirements and fix any gaps
-   (e.g., missing CI jobs, security hooks not configured, missing CONTRIBUTING.md)
-   For large-scope changes, confirm with the user before proceeding
+2. Compare the project against charter requirements and fix all gaps
+   (cover the entire project: file structure, CI, security, docs, license, coding conventions, etc.)
+3. Read docs/dev-charter/topics/GITHUB_SETTINGS.md and apply any repository settings that can be configured via gh commands
 
 - If you have questions or ambiguities, ask all of them at once before starting
 - If the charter conflicts with existing conventions, list the conflicts and confirm priority with the user before proceeding
+- For large-scope changes, confirm with the user before proceeding
+- Do not commit after completing (let the user review first)
+```
+
+**Step 2 — file-by-file review**
+
+```
+Re-read each file in docs/dev-charter/ one at a time and verify that the project fully reflects it.
+
+For each file in order:
+1. Read the file
+2. Check the corresponding project files and settings
+3. Fix anything that is missing or incomplete
+
+- Re-check items already addressed in Step 1
 - Do not commit after completing (let the user review first)
 ```
 
@@ -75,17 +92,33 @@ git remote add dev-charter https://github.com/y-marui/dev-charter
 git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
 
-After updating, paste the following prompt into your AI tool:
+After updating, paste the following prompts into your AI tool in order:
+
+**Step 1 — bulk update**
 
 ```
-Read all files in docs/dev-charter/ and update only what is affected by charter changes:
+Read all files in docs/dev-charter/ and update the project to reflect charter changes:
 
 1. Update AI context files following the spec in docs/dev-charter/AI_TOOL_SETUP.md
-2. If charter changes affect project files (CI config, security hooks, etc.), fix them too
+2. Review the impact of charter changes on the entire project (CI, security, docs, license, etc.) and fix as needed
+3. Read docs/dev-charter/topics/GITHUB_SETTINGS.md and apply any setting changes that can be configured via gh commands
 
-- No need to re-explore the entire project
 - If AI_CONTEXT.md does not exist, use the install prompt instead
 - If a charter change conflicts with a project-specific rule, list the conflicts and confirm priority with the user
+- Do not commit after completing (let the user review first)
+```
+
+**Step 2 — file-by-file review**
+
+```
+Re-read each file in docs/dev-charter/ one at a time and verify that the project fully reflects it.
+
+For each file in order:
+1. Read the file
+2. Check the corresponding project files and settings
+3. Fix anything that is missing or incomplete
+
+- Re-check items already addressed in Step 1
 - Do not commit after completing (let the user review first)
 ```
 
@@ -95,6 +128,30 @@ Read all files in docs/dev-charter/ and update only what is affected by charter 
 update-charter:
 	git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
+
+## Version Check (CI)
+
+Add `.github/workflows/dev-charter-check.yml` to your project to automatically
+check for updates weekly and open a PR when a new version is available.
+
+```yaml
+name: check-dev-charter
+on:
+  schedule:
+    - cron: "23 3 * * 1"  # Every Monday at 03:23 UTC
+  workflow_dispatch:
+
+jobs:
+  check:
+    uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
+    permissions:
+      contents: write
+      pull-requests: write
+```
+
+> **Note:** If your repository has Branch Protection rules that prevent direct pushes,
+> add a bypass rule for the GitHub Actions bot
+> (Settings > Rules > Rulesets > Bypass list > GitHub Actions).
 
 ---
 
