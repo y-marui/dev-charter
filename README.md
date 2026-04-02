@@ -105,7 +105,7 @@ check for updates weekly and open a PR when a new version is available.
 name: check-dev-charter
 on:
   schedule:
-    - cron: "0 3 * * 1"  # Every Monday at 03:00 UTC
+    - cron: "23 3 * * 1"  # Every Monday at 03:23 UTC
   workflow_dispatch:
 
 jobs:

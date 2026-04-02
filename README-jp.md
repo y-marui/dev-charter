@@ -105,7 +105,7 @@ update-charter:
 name: check-dev-charter
 on:
   schedule:
-    - cron: "0 3 * * 1"  # 毎週月曜 3:00 UTC
+    - cron: "23 3 * * 1"  # 毎週月曜 3:23 UTC
   workflow_dispatch:
 
 jobs:
