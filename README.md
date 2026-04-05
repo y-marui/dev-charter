@@ -4,6 +4,7 @@
 > For the canonical (Japanese) version, see [README-jp.md](README-jp.md).
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
+[![dev-charter](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/y-marui/dev-charter/main/badge.json)](https://github.com/y-marui/dev-charter)
 
 Shared development charter for AI-assisted software projects.
 
@@ -58,7 +59,9 @@ Read all files in docs/dev-charter/, explore this project, then do the following
 1. Set up AI context files following the spec in docs/dev-charter/AI_TOOL_SETUP.md
 2. Compare the project against charter requirements and fix all gaps
    (cover the entire project: file structure, CI, security, docs, license, coding conventions, etc.)
-3. Read docs/dev-charter/topics/GITHUB_SETTINGS.md and apply any repository settings that can be configured via gh commands
+3. Read docs/dev-charter/topics/PROJECT_README_GUIDELINES.md and validate the project README against it
+   (if the README is template-style, reformat to project format; if it doesn't exist, create it)
+4. Read docs/dev-charter/topics/GITHUB_SETTINGS.md and apply any repository settings that can be configured via gh commands
 
 - If you have questions or ambiguities, ask all of them at once before starting
 - If the charter conflicts with existing conventions, list the conflicts and confirm priority with the user before proceeding
@@ -101,7 +104,8 @@ Read all files in docs/dev-charter/ and update the project to reflect charter ch
 
 1. Update AI context files following the spec in docs/dev-charter/AI_TOOL_SETUP.md
 2. Review the impact of charter changes on the entire project (CI, security, docs, license, etc.) and fix as needed
-3. Read docs/dev-charter/topics/GITHUB_SETTINGS.md and apply any setting changes that can be configured via gh commands
+3. Read docs/dev-charter/topics/PROJECT_README_GUIDELINES.md and update the project README to reflect any changes
+4. Read docs/dev-charter/topics/GITHUB_SETTINGS.md and apply any setting changes that can be configured via gh commands
 
 - If AI_CONTEXT.md does not exist, use the install prompt instead
 - If a charter change conflicts with a project-specific rule, list the conflicts and confirm priority with the user
@@ -126,6 +130,9 @@ For each file in order:
 
 ```
 update-charter:
+	git remote | grep -q '^dev-charter$$' || \
+	  git remote add dev-charter https://github.com/y-marui/dev-charter
+	git fetch dev-charter
 	git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
 
@@ -152,6 +159,48 @@ jobs:
 > **Note:** If your repository has Branch Protection rules that prevent direct pushes,
 > add a bypass rule for the GitHub Actions bot
 > (Settings > Rules > Rulesets > Bypass list > GitHub Actions).
+
+## Badges for Adopting Projects
+
+Place these badges in your project README to show dev-charter installation status and update health.
+
+### Version Badge
+
+Shows the installed dev-charter version. Automatically updated on `git subtree pull`.
+Shows an error state if dev-charter is not installed.
+
+```markdown
+[![dev-charter](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/{owner}/{repo}/main/docs/dev-charter/badge.json)](https://github.com/y-marui/dev-charter)
+```
+
+Replace `{owner}` and `{repo}` with your GitHub organization and repository name.
+
+### Workflow Status Badge
+
+Shows whether dev-charter is up to date. Add `fail_if_outdated: true` to make the badge turn red when an update PR is pending.
+
+```markdown
+![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)
+```
+
+To enable the red badge on outdated state:
+
+```yaml
+jobs:
+  check:
+    uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
+    with:
+      fail_if_outdated: true
+    permissions:
+      contents: write
+      pull-requests: write
+```
+
+| State | Version Badge | Status Badge |
+|---|---|---|
+| Not installed | error | red (VERSION not found) |
+| Installed, up to date | date shown | green |
+| Installed, outdated | old date | red (with `fail_if_outdated: true`) |
 
 ---
 
