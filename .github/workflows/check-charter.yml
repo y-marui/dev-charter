@@ -91,7 +91,6 @@ jobs:
             --prefix="${PREFIX}" \
             dev-charter main \
             --squash \
-            -X theirs \
             -m "chore: update dev-charter to ${REMOTE}"
 
           git push origin "${BRANCH}" --force-with-lease
