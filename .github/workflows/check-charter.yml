@@ -5,8 +5,8 @@
 #   name: Dev Charter
 #   on:
 #     schedule:
-#       # Use random minute/hour values to spread load across GitHub Actions runners
-#       - cron: "23 3 * * 1"  # Every Monday at 03:23 UTC — change to your own random minute/hour
+#       # Use random minute/hour/day-of-week values to spread load across GitHub Actions runners
+#       - cron: "23 3 * * 3"  # Every Wednesday at 03:23 UTC — change to your own random minute/hour/day-of-week
 #     workflow_dispatch:
 #
 #   jobs:
@@ -48,7 +48,7 @@ on:
       - ".github/workflows/check-charter.yml"
       - "VERSION"
   schedule:
-    - cron: "40 3 * * 1"  # Every Monday at 03:40 UTC
+    - cron: "40 3 * * 4"  # Every Thursday at 03:40 UTC
 
 jobs:
   check:
