@@ -5,8 +5,8 @@
 #   name: Dev Charter
 #   on:
 #     schedule:
-#       # Use a random minute/hour to spread load (e.g. run: python3 -c "import random; print(random.randint(0,59), random.randint(0,23))")
-#       - cron: "23 3 * * 1"  # Every Monday — change 23 and 3 to your own random values
+#       # Replace minute (0-59) and hour (0-23) with values random to your project to spread load
+#       - cron: "47 14 * * 1"  # Every Monday at 14:47 UTC — use your own random minute/hour
 #     workflow_dispatch:
 #
 #   jobs:
