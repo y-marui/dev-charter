@@ -4,8 +4,7 @@
 > 英語版（参照）は [README.md](README.md) を参照してください。
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
-[![dev-charter](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/y-marui/dev-charter/main/badge.json)](https://github.com/y-marui/dev-charter)
-![check-charter CI](https://github.com/y-marui/dev-charter/actions/workflows/check-charter.yml/badge.svg)
+[![check-charter CI](https://github.com/y-marui/dev-charter/actions/workflows/check-charter.yml/badge.svg)](https://github.com/y-marui/dev-charter/actions/workflows/check-charter.yml)
 
 AI支援ソフトウェアプロジェクトのための共有開発憲章。
 
@@ -143,7 +142,7 @@ update-charter:
 毎週自動で最新バージョンを確認し、古い場合は update PR を作成します。
 
 ```yaml
-name: check-dev-charter
+name: Dev Charter
 on:
   schedule:
     - cron: "23 3 * * 1"  # 毎週月曜 3:23 UTC
@@ -151,7 +150,10 @@ on:
 
 jobs:
   check:
+    name: Check
     uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
+    with:
+      fail_if_outdated: true
     permissions:
       contents: write
       pull-requests: write
@@ -161,47 +163,25 @@ jobs:
 > GitHub Actions bot の bypass rule を追加してください
 > （Settings > Rules > Rulesets > Bypass list > GitHub Actions）。
 
-## Badges for Adopting Projects
+## Badge for Adopting Projects
 
-プロジェクトの README にこれらのバッジを追加すると、dev-charter の導入状況と更新状態を可視化できます。
+プロジェクトの README にこのバッジを追加すると、dev-charter の更新状態を可視化できます。
 
-### Version Badge
+### Workflow Status Badge
 
-インストール済みの dev-charter バージョンを表示します。`git subtree pull` のたびに自動更新されます。
-dev-charter が未導入の場合は error 状態を表示します。
+dev-charter が最新かどうかを表示します。バッジが機能するには上記ワークフローに `fail_if_outdated: true` が必要です。
 
 ```markdown
-[![dev-charter](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/{owner}/{repo}/main/docs/dev-charter/badge.json)](https://github.com/y-marui/dev-charter)
+[![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml)
 ```
 
 `{owner}` と `{repo}` を自分のリポジトリのオーナー名・リポジトリ名に置き換えてください。
 
-### Workflow Status Badge
-
-dev-charter が最新かどうかを表示します。`fail_if_outdated: true` を設定すると、更新 PR が作成された際にバッジが赤になります。
-
-```markdown
-![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)
-```
-
-更新時にバッジを赤にするには：
-
-```yaml
-jobs:
-  check:
-    uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
-    with:
-      fail_if_outdated: true
-    permissions:
-      contents: write
-      pull-requests: write
-```
-
-| 状態 | Version Badge | Status Badge |
-|---|---|---|
-| 未導入 | error | 赤（VERSION not found） |
-| 導入済み・最新 | バージョン日付を表示 | 緑 |
-| 導入済み・更新必要 | 古い日付を表示 | 赤（`fail_if_outdated: true` 時） |
+| 状態 | Status Badge |
+|---|---|
+| 未導入 / CI 未設定 | 赤（VERSION not found） |
+| 導入済み・最新 | 緑 |
+| 導入済み・更新必要 | 赤 |
 
 ---
 

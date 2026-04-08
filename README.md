@@ -4,8 +4,7 @@
 > For the canonical (Japanese) version, see [README-jp.md](README-jp.md).
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
-[![dev-charter](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/y-marui/dev-charter/main/badge.json)](https://github.com/y-marui/dev-charter)
-![check-charter CI](https://github.com/y-marui/dev-charter/actions/workflows/check-charter.yml/badge.svg)
+[![check-charter CI](https://github.com/y-marui/dev-charter/actions/workflows/check-charter.yml/badge.svg)](https://github.com/y-marui/dev-charter/actions/workflows/check-charter.yml)
 
 Shared development charter for AI-assisted software projects.
 
@@ -143,7 +142,7 @@ Add `.github/workflows/dev-charter-check.yml` to your project to automatically
 check for updates weekly and open a PR when a new version is available.
 
 ```yaml
-name: check-dev-charter
+name: Dev Charter
 on:
   schedule:
     - cron: "23 3 * * 1"  # Every Monday at 03:23 UTC
@@ -151,7 +150,10 @@ on:
 
 jobs:
   check:
+    name: Check
     uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
+    with:
+      fail_if_outdated: true
     permissions:
       contents: write
       pull-requests: write
@@ -161,47 +163,25 @@ jobs:
 > add a bypass rule for the GitHub Actions bot
 > (Settings > Rules > Rulesets > Bypass list > GitHub Actions).
 
-## Badges for Adopting Projects
+## Badge for Adopting Projects
 
-Place these badges in your project README to show dev-charter installation status and update health.
+Place this badge in your project README to show dev-charter update health.
 
-### Version Badge
+### Workflow Status Badge
 
-Shows the installed dev-charter version. Automatically updated on `git subtree pull`.
-Shows an error state if dev-charter is not installed.
+Shows whether dev-charter is up to date. Requires `fail_if_outdated: true` in the workflow (see above).
 
 ```markdown
-[![dev-charter](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/{owner}/{repo}/main/docs/dev-charter/badge.json)](https://github.com/y-marui/dev-charter)
+[![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml)
 ```
 
 Replace `{owner}` and `{repo}` with your GitHub organization and repository name.
 
-### Workflow Status Badge
-
-Shows whether dev-charter is up to date. Add `fail_if_outdated: true` to make the badge turn red when an update PR is pending.
-
-```markdown
-![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)
-```
-
-To enable the red badge on outdated state:
-
-```yaml
-jobs:
-  check:
-    uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
-    with:
-      fail_if_outdated: true
-    permissions:
-      contents: write
-      pull-requests: write
-```
-
-| State | Version Badge | Status Badge |
-|---|---|---|
-| Not installed | error | red (VERSION not found) |
-| Installed, up to date | date shown | green |
-| Installed, outdated | old date | red (with `fail_if_outdated: true`) |
+| State | Status Badge |
+|---|---|
+| Not installed / CI not set up | red (VERSION not found) |
+| Installed, up to date | green |
+| Installed, outdated | red |
 
 ---
 
