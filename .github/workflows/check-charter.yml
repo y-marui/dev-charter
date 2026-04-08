@@ -129,6 +129,8 @@ jobs:
           REMOTE="${{ steps.versions.outputs.remote }}"
           CHECKLIST_URL="https://github.com/y-marui/dev-charter/blob/main/UPDATE_CHECKLIST.md"
 
+          gh label create "dev-charter" --color "#0075ca" --description "dev-charter update" --force
+
           gh pr create \
             --title "chore: update dev-charter to ${REMOTE}" \
             --body "$(cat <<EOF
@@ -140,7 +142,8 @@ jobs:
           )" \
             --base main \
             --head update-charter \
-            --label "dev-charter" 2>/dev/null || true
+            --label "dev-charter" || \
+            gh pr list --head update-charter --base main --json number --jq length | grep -q '^[1-9]'
 
       - name: Fail if outdated
         if: steps.versions.outputs.outdated == 'true' && inputs.fail_if_outdated
