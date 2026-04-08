@@ -161,23 +161,9 @@ jobs:
 > add a bypass rule for the GitHub Actions bot
 > (Settings > Rules > Rulesets > Bypass list > GitHub Actions).
 
-## Badges for Adopting Projects
+## Badge for Adopting Projects
 
-Place these badges in your project README to show dev-charter installation status and update health.
-
-### Version Badge
-
-Shows the installed dev-charter version. Automatically updated on `git subtree pull`.
-Shows an error state if dev-charter is not installed.
-
-> **Note:** This badge uses `raw.githubusercontent.com` and only works for **public repositories**.
-> For private repositories, omit this badge.
-
-```markdown
-[![dev-charter](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/{owner}/{repo}/main/docs/dev-charter/badge.json)](https://github.com/y-marui/dev-charter)
-```
-
-Replace `{owner}` and `{repo}` with your GitHub organization and repository name.
+Place this badge in your project README to show dev-charter update health.
 
 ### Workflow Status Badge
 
@@ -186,6 +172,8 @@ Shows whether dev-charter is up to date. Add `fail_if_outdated: true` to make th
 ```markdown
 [![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml)
 ```
+
+Replace `{owner}` and `{repo}` with your GitHub organization and repository name.
 
 To enable the red badge on outdated state:
 
@@ -200,11 +188,11 @@ jobs:
       pull-requests: write
 ```
 
-| State | Version Badge | Status Badge |
-|---|---|---|
-| Not installed | error | red (VERSION not found) |
-| Installed, up to date | date shown | green |
-| Installed, outdated | old date | red (with `fail_if_outdated: true`) |
+| State | Status Badge |
+|---|---|
+| Not installed / CI not set up | red (VERSION not found) |
+| Installed, up to date | green |
+| Installed, outdated | red (with `fail_if_outdated: true`) |
 
 ---
 
