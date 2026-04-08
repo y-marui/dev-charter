@@ -49,39 +49,7 @@ git fetch dev-charter
 git subtree add --prefix=docs/dev-charter dev-charter main --squash
 ```
 
-インストール後、以下のプロンプトを順に AI に貼り付けて実行する：
-
-**Step 1 — 一括セットアップ**
-
-```
-docs/dev-charter/ 内の全ファイルを読み、このプロジェクトを調査した上で、以下を実施してください。
-
-1. docs/dev-charter/AI_TOOL_SETUP.md の仕様に従い AI コンテキストファイルをセットアップする
-2. 憲章の要件とプロジェクトの現状を照合し、未対応箇所をすべて特定・修正する
-   （ファイル構成・CI・セキュリティ・ドキュメント・ライセンス・コーディング規約など、プロジェクト全体を対象とする）
-3. docs/dev-charter/topics/PROJECT_README_GUIDELINES.md を読み、プロジェクトの README を検証・更新する
-   （テンプレート形式の README はプロジェクト形式に再フォーマットし、存在しない場合は新規作成する）
-4. docs/dev-charter/topics/GITHUB_SETTINGS.md を読み、gh コマンドで適用できるリポジトリ設定を実行する
-
-- 不明点・確認事項は作業前に 1 回まとめて質問する
-- 憲章と既存規約が矛盾する場合は矛盾点を列挙し、優先順位をユーザーに確認してから進める
-- 大きなスコープになる場合は修正前にユーザーに確認する
-- 完了後はコミットしない（ユーザーが確認してから行う）
-```
-
-**Step 2 — ファイル単位の精査**
-
-```
-docs/dev-charter/ 内の各ファイルを1つずつ読み直し、プロジェクトへの反映を確認・補完してください。
-
-各ファイルについて順に:
-1. ファイルを読む
-2. 対応するプロジェクトファイル・設定を確認する
-3. 未反映・不十分な箇所があれば修正する
-
-- Step 1 で対応済みの箇所も再確認する
-- 完了後はコミットしない（ユーザーが確認してから行う）
-```
+インストール後、[インストールチェックリスト](INSTALL_CHECKLIST.md) に従って対応してください。
 
 ## Update
 
@@ -95,36 +63,7 @@ git remote add dev-charter https://github.com/y-marui/dev-charter
 git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
 
-更新後、以下のプロンプトを順に AI に貼り付けて実行する：
-
-**Step 1 — 一括更新**
-
-```
-docs/dev-charter/ 内の全ファイルを読み、憲章の変更が影響する箇所を更新してください。
-
-1. docs/dev-charter/AI_TOOL_SETUP.md の仕様に従い AI コンテキストファイルを更新する
-2. 憲章の変更がプロジェクト全体（CI・セキュリティ・ドキュメント・ライセンス等）に与える影響を確認し修正する
-3. docs/dev-charter/topics/PROJECT_README_GUIDELINES.md を読み、プロジェクトの README を変更内容に合わせて更新する
-4. docs/dev-charter/topics/GITHUB_SETTINGS.md を読み、gh コマンドで適用できる設定変更を実行する
-
-- AI_CONTEXT.md が存在しない場合はインストール用プロンプトを使うこと
-- 憲章の変更がプロジェクト固有ルールと矛盾する場合は矛盾点を列挙してユーザーに確認する
-- 完了後はコミットしない（ユーザーが確認してから行う）
-```
-
-**Step 2 — ファイル単位の精査**
-
-```
-docs/dev-charter/ 内の各ファイルを1つずつ読み直し、プロジェクトへの反映を確認・補完してください。
-
-各ファイルについて順に:
-1. ファイルを読む
-2. 対応するプロジェクトファイル・設定を確認する
-3. 未反映・不十分な箇所があれば修正する
-
-- Step 1 で対応済みの箇所も再確認する
-- 完了後はコミットしない（ユーザーが確認してから行う）
-```
+更新後、[更新チェックリスト](UPDATE_CHECKLIST.md) に従って対応してください。
 
 ## Makefile Helper
 
