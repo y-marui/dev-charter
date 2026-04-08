@@ -143,7 +143,7 @@ Add `.github/workflows/dev-charter-check.yml` to your project to automatically
 check for updates weekly and open a PR when a new version is available.
 
 ```yaml
-name: check-dev-charter
+name: Dev Charter
 on:
   schedule:
     - cron: "23 3 * * 1"  # Every Monday at 03:23 UTC

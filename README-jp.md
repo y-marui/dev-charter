@@ -143,7 +143,7 @@ update-charter:
 毎週自動で最新バージョンを確認し、古い場合は update PR を作成します。
 
 ```yaml
-name: check-dev-charter
+name: Dev Charter
 on:
   schedule:
     - cron: "23 3 * * 1"  # 毎週月曜 3:23 UTC

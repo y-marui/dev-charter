@@ -2,6 +2,12 @@
 #
 # Usage in your project:
 #
+#   name: Dev Charter
+#   on:
+#     schedule:
+#       - cron: "23 3 * * 1"  # Every Monday at 03:23 UTC
+#     workflow_dispatch:
+#
 #   jobs:
 #     check:
 #       uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
