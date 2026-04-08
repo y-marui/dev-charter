@@ -57,9 +57,6 @@ git subtree add --prefix=docs/dev-charter dev-charter main --squash
 
 ```
 git remote add dev-charter https://github.com/y-marui/dev-charter
-```
-
-```
 git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
 
@@ -84,7 +81,7 @@ update-charter:
 name: Dev Charter
 on:
   schedule:
-    - cron: "23 3 * * 1"  # 毎週月曜 3:23 UTC
+    - cron: "23 3 * * 1"  # 毎週月曜 3:23 UTC — minute/hour/day-of-week はランダムな値に変更してください
   workflow_dispatch:
 
 jobs:

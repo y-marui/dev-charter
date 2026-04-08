@@ -57,9 +57,6 @@ If the `dev-charter` remote is not set up (e.g., after cloning the project), add
 
 ```
 git remote add dev-charter https://github.com/y-marui/dev-charter
-```
-
-```
 git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
 
@@ -84,7 +81,7 @@ check for updates weekly and open a PR when a new version is available.
 name: Dev Charter
 on:
   schedule:
-    - cron: "23 3 * * 1"  # Every Monday at 03:23 UTC
+    - cron: "23 3 * * 1"  # Every Monday at 03:23 UTC — change to your own random minute/hour/day-of-week
   workflow_dispatch:
 
 jobs:
