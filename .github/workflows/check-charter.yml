@@ -27,7 +27,7 @@ on:
       - ".github/workflows/check-charter.yml"
       - "VERSION"
   schedule:
-    - cron: "40 3 * * 4"  # Every Thursday at 03:40 UTC
+    - cron: "23 3 * * 1"  # Every Monday at 03:23 UTC
 
 jobs:
   check:
