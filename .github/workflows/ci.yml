@@ -9,6 +9,8 @@ jobs:
   security:
     name: Security scan (pre-commit)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -19,5 +21,6 @@ jobs:
     name: Build
     needs: [security]
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - run: echo "All checks passed"
