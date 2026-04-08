@@ -34,7 +34,8 @@ Rules:
 ☑ Require a pull request before merging
   └ Required approvals: 0（個人開発）/ 1 以上（複数人）
 ☑ Require status checks to pass before merging
-  └ Status checks: Build (GitHub Actions)  ← 名前とソースを確認
+  └ Status checks: Build (GitHub Actions)  ← job name と GitHub Actions ソースを確認
+     ※ job name に説明がある場合は "Build (installability check)" 等、実際の名前で登録する
 ☑ Require conversation resolution before merging
 ☑ Block force pushes
 ☑ Restrict deletions
