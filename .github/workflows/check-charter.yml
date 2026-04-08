@@ -26,6 +26,19 @@ on:
         description: "Exit with code 1 when dev-charter needs an update (makes CI badge turn red)"
         default: false
         type: boolean
+  workflow_dispatch:
+    inputs:
+      prefix:
+        description: "Path to the dev-charter subtree within the project"
+        default: "."
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/check-charter.yml"
+      - "VERSION"
+  schedule:
+    - cron: "40 3 * * 1"  # Every Monday at 03:40 UTC
 
 jobs:
   check:
@@ -43,6 +56,9 @@ jobs:
       - name: Check VERSION
         id: versions
         run: |
+          PREFIX="${{ inputs.prefix }}"
+          PREFIX="${PREFIX:-"."}"
+
           REMOTE=$(curl -sf --max-time 10 \
             "https://raw.githubusercontent.com/y-marui/dev-charter/main/VERSION" \
             | head -1)
@@ -51,15 +67,16 @@ jobs:
             exit 1
           fi
 
-          LOCAL=$(head -1 "${{ inputs.prefix }}/VERSION" 2>/dev/null || echo "")
+          LOCAL=$(head -1 "${PREFIX}/VERSION" 2>/dev/null || echo "")
           if [ -z "$LOCAL" ]; then
-            echo "::error::Local VERSION not found at ${{ inputs.prefix }}/VERSION"
+            echo "::error::Local VERSION not found at ${PREFIX}/VERSION"
             exit 1
           fi
 
           echo "local:  ${LOCAL}"
           echo "remote: ${REMOTE}"
           echo "remote=${REMOTE}" >> "$GITHUB_OUTPUT"
+          echo "prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
 
           if [ "$LOCAL" = "$REMOTE" ]; then
             echo "dev-charter is up to date"
@@ -77,7 +94,7 @@ jobs:
           set -euo pipefail
           REMOTE="${{ steps.versions.outputs.remote }}"
           BRANCH="update-charter"
-          PREFIX="${{ inputs.prefix }}"
+          PREFIX="${{ steps.versions.outputs.prefix }}"
 
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
