@@ -1,6 +1,6 @@
 # Reusable workflow: check if dev-charter is up to date and open a PR if not.
 #
-# Usage in your project:
+# Usage in your project (.github/workflows/dev-charter-check.yml):
 #
 #   name: Dev Charter
 #   on:

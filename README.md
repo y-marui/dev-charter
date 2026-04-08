@@ -139,7 +139,7 @@ update-charter:
 
 ## Version Check (CI)
 
-Add `.github/workflows/charter-check.yml` to your project to automatically
+Add `.github/workflows/dev-charter-check.yml` to your project to automatically
 check for updates weekly and open a PR when a new version is available.
 
 ```yaml
@@ -170,7 +170,7 @@ Place this badge in your project README to show dev-charter update health.
 Shows whether dev-charter is up to date. Add `fail_if_outdated: true` to make the badge turn red when an update PR is pending.
 
 ```markdown
-[![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/charter-check.yml)
+[![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml)
 ```
 
 Replace `{owner}` and `{repo}` with your GitHub organization and repository name.
