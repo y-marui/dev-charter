@@ -84,7 +84,7 @@ update-charter:
 name: Dev Charter
 on:
   schedule:
-    - cron: "23 3 * * 1"  # 毎週月曜 3:23 UTC
+    - cron: "23 3 * * 1"  # 毎週月曜 3:23 UTC — minute/hour/day-of-week はランダムな値に変更してください
   workflow_dispatch:
 
 jobs:
