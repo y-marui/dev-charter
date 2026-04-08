@@ -1,5 +1,25 @@
 # CI Policy
 
+## Naming Convention
+
+| 対象 | 規則 | 例 |
+|---|---|---|
+| ワークフローファイル名 | 機能を表す小文字 + ハイフン | `ci.yml`, `dev-charter-check.yml` |
+| ワークフロー `name` | タイトルケース、短く端的に | `CI`, `Dev Charter` |
+| job ID | 小文字スネークケース | `lint`, `test`, `build` |
+| job `name` | タイトルケース。追加説明が必要な場合は括弧付きで補足 | `Lint`, `Test`, `Test (pytest)`, `Build`, `Security scan (pre-commit)` |
+
+### 標準 job 名
+
+| job ID | `name` | 用途 |
+|---|---|---|
+| `security` | `Security scan (pre-commit)` | pre-commit によるシークレット検知・静的解析 |
+| `lint` | `Lint` | コードスタイル・フォーマット検査 |
+| `test` | `Test` / `Test (pytest)` など | ユニットテスト・インテグレーションテスト |
+| `build` | `Build` / `Build (installability check)` など | ビルド成果物の生成、またはインストール可能性の検証 |
+
+`build` は全 job の集約点として必ず最後に配置し、Branch Protection の必須ステータスチェックに登録する。
+
 ## Job Design
 
 **CIのjob構成とRuleset設定を分離し、Ruleset管理を最小化する。**
