@@ -57,9 +57,6 @@ git subtree add --prefix=docs/dev-charter dev-charter main --squash
 
 ```
 git remote add dev-charter https://github.com/y-marui/dev-charter
-```
-
-```
 git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
 
