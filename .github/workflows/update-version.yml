@@ -35,7 +35,6 @@ jobs:
           else
             echo "Updating VERSION: ${ACTUAL} → ${EXPECTED}"
             printf '%s\n' "${EXPECTED}" > VERSION
-            bash scripts/update-badge.sh
             echo "updated=true" >> "$GITHUB_OUTPUT"
           fi
 
@@ -45,6 +44,6 @@ jobs:
           set -euo pipefail
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
-          git add VERSION badge.json
+          git add VERSION
           git commit -m "chore: update VERSION to ${{ steps.check.outputs.expected }}"
           git push

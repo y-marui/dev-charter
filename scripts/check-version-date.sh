@@ -4,7 +4,7 @@
 # Usage:
 #   pre-commit run check-version-date            # local: compares to today
 #   CI=1 pre-commit run --all-files              # CI: compares to git log -1 date
-#   UPDATE=1 bash scripts/check-version-date.sh  # write expected date to VERSION + update badge
+#   UPDATE=1 bash scripts/check-version-date.sh  # write expected date to VERSION
 set -euo pipefail
 
 if [ -n "${CI:-}" ]; then
@@ -17,7 +17,6 @@ ACTUAL=$(head -1 VERSION 2>/dev/null || echo "")
 
 if [ "${UPDATE:-}" = "1" ]; then
   printf '%s\n' "${EXPECTED}" > VERSION
-  bash "$(dirname "$0")/update-badge.sh"
   echo "VERSION updated to ${EXPECTED}"
   exit 0
 fi
