@@ -4,7 +4,7 @@
 
 | 対象 | 規則 | 例 |
 |---|---|---|
-| ワークフローファイル名 | 機能を表す小文字 + ハイフン | `ci.yml`, `dev-charter-check.yml` |
+| ワークフローファイル名 | 機能を表す小文字 + ハイフン | `ci.yml`, `charter-check.yml` |
 | ワークフロー `name` | タイトルケース、短く端的に | `CI`, `Dev Charter` |
 | job ID | 小文字スネークケース | `lint`, `test`, `build` |
 | job `name` | タイトルケース。追加説明が必要な場合は括弧付きで補足 | `Lint`, `Test`, `Test (pytest)`, `Build`, `Security scan (pre-commit)` |

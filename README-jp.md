@@ -139,7 +139,7 @@ update-charter:
 
 ## Version Check (CI)
 
-`.github/workflows/dev-charter-check.yml` をプロジェクトに追加すると、
+`.github/workflows/charter-check.yml` をプロジェクトに追加すると、
 毎週自動で最新バージョンを確認し、古い場合は update PR を作成します。
 
 ```yaml
@@ -170,7 +170,7 @@ jobs:
 dev-charter が最新かどうかを表示します。`fail_if_outdated: true` を設定すると、更新 PR が作成された際にバッジが赤になります。
 
 ```markdown
-[![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml)
+[![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/charter-check.yml)
 ```
 
 `{owner}` と `{repo}` を自分のリポジトリのオーナー名・リポジトリ名に置き換えてください。
