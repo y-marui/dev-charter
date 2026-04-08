@@ -84,7 +84,7 @@ check for updates weekly and open a PR when a new version is available.
 name: Dev Charter
 on:
   schedule:
-    - cron: "23 3 * * 1"  # Every Monday at 03:23 UTC
+    - cron: "23 3 * * 1"  # Every Monday at 03:23 UTC — change to your own random minute/hour/day-of-week
   workflow_dispatch:
 
 jobs:
