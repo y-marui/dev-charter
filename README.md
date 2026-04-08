@@ -5,7 +5,7 @@
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
 [![dev-charter](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/y-marui/dev-charter/main/badge.json)](https://github.com/y-marui/dev-charter)
-![check-charter CI](https://github.com/y-marui/dev-charter/actions/workflows/check-charter.yml/badge.svg)
+[![check-charter CI](https://github.com/y-marui/dev-charter/actions/workflows/check-charter.yml/badge.svg)](https://github.com/y-marui/dev-charter/actions/workflows/check-charter.yml)
 
 Shared development charter for AI-assisted software projects.
 
@@ -170,6 +170,9 @@ Place these badges in your project README to show dev-charter installation statu
 Shows the installed dev-charter version. Automatically updated on `git subtree pull`.
 Shows an error state if dev-charter is not installed.
 
+> **Note:** This badge uses `raw.githubusercontent.com` and only works for **public repositories**.
+> For private repositories, omit this badge.
+
 ```markdown
 [![dev-charter](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/{owner}/{repo}/main/docs/dev-charter/badge.json)](https://github.com/y-marui/dev-charter)
 ```
@@ -181,7 +184,7 @@ Replace `{owner}` and `{repo}` with your GitHub organization and repository name
 Shows whether dev-charter is up to date. Add `fail_if_outdated: true` to make the badge turn red when an update PR is pending.
 
 ```markdown
-![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)
+[![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml)
 ```
 
 To enable the red badge on outdated state:

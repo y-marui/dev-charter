@@ -5,7 +5,7 @@
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
 [![dev-charter](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/y-marui/dev-charter/main/badge.json)](https://github.com/y-marui/dev-charter)
-![check-charter CI](https://github.com/y-marui/dev-charter/actions/workflows/check-charter.yml/badge.svg)
+[![check-charter CI](https://github.com/y-marui/dev-charter/actions/workflows/check-charter.yml/badge.svg)](https://github.com/y-marui/dev-charter/actions/workflows/check-charter.yml)
 
 AI支援ソフトウェアプロジェクトのための共有開発憲章。
 
@@ -170,6 +170,9 @@ jobs:
 インストール済みの dev-charter バージョンを表示します。`git subtree pull` のたびに自動更新されます。
 dev-charter が未導入の場合は error 状態を表示します。
 
+> **Note:** このバッジは `raw.githubusercontent.com` を使用するため、**public リポジトリでのみ**機能します。
+> private リポジトリでは省略してください。
+
 ```markdown
 [![dev-charter](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/{owner}/{repo}/main/docs/dev-charter/badge.json)](https://github.com/y-marui/dev-charter)
 ```
@@ -181,7 +184,7 @@ dev-charter が未導入の場合は error 状態を表示します。
 dev-charter が最新かどうかを表示します。`fail_if_outdated: true` を設定すると、更新 PR が作成された際にバッジが赤になります。
 
 ```markdown
-![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)
+[![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml)
 ```
 
 更新時にバッジを赤にするには：
