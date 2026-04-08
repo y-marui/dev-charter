@@ -153,6 +153,8 @@ jobs:
   check:
     name: Check
     uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
+    with:
+      fail_if_outdated: true
     permissions:
       contents: write
       pull-requests: write
@@ -168,7 +170,7 @@ Place this badge in your project README to show dev-charter update health.
 
 ### Workflow Status Badge
 
-Shows whether dev-charter is up to date. Add `fail_if_outdated: true` to make the badge turn red when an update PR is pending.
+Shows whether dev-charter is up to date. Requires `fail_if_outdated: true` in the workflow (see above).
 
 ```markdown
 [![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml)
@@ -176,25 +178,11 @@ Shows whether dev-charter is up to date. Add `fail_if_outdated: true` to make th
 
 Replace `{owner}` and `{repo}` with your GitHub organization and repository name.
 
-To enable the red badge on outdated state:
-
-```yaml
-jobs:
-  check:
-    name: Check
-    uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
-    with:
-      fail_if_outdated: true
-    permissions:
-      contents: write
-      pull-requests: write
-```
-
 | State | Status Badge |
 |---|---|
 | Not installed / CI not set up | red (VERSION not found) |
 | Installed, up to date | green |
-| Installed, outdated | red (with `fail_if_outdated: true`) |
+| Installed, outdated | red |
 
 ---
 
