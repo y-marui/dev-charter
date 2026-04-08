@@ -10,6 +10,7 @@
 #
 #   jobs:
 #     check:
+#       name: Check
 #       uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
 #       permissions:
 #         contents: write

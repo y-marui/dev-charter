@@ -151,6 +151,7 @@ on:
 
 jobs:
   check:
+    name: Check
     uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
     permissions:
       contents: write
@@ -180,6 +181,7 @@ To enable the red badge on outdated state:
 ```yaml
 jobs:
   check:
+    name: Check
     uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
     with:
       fail_if_outdated: true
