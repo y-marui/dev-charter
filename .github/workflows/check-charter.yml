@@ -5,8 +5,8 @@
 #   name: Dev Charter
 #   on:
 #     schedule:
-#       # Replace minute (0-59) and hour (0-23) with values random to your project to spread load
-#       - cron: "47 14 * * 1"  # Every Monday at 14:47 UTC — use your own random minute/hour
+#       # Use random minute/hour values to spread load across GitHub Actions runners
+#       - cron: "23 3 * * 1"  # Every Monday at 03:23 UTC — change to your own random minute/hour
 #     workflow_dispatch:
 #
 #   jobs:
