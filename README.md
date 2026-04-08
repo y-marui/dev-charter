@@ -57,9 +57,6 @@ If the `dev-charter` remote is not set up (e.g., after cloning the project), add
 
 ```
 git remote add dev-charter https://github.com/y-marui/dev-charter
-```
-
-```
 git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
 
