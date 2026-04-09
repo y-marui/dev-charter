@@ -49,23 +49,25 @@ Rules:
 
 ### Workflow permissions（デフォルト権限）
 
-| 設定値 | 意味 |
-|---|---|
-| Read and write permissions | ワークフローがリポジトリへの書き込みを許可（プッシュ・PR作成など） |
-| Read repository contents and packages permissions | 読み取り専用（デフォルト） |
+**設定値:** `Read repository contents and packages permissions`（デフォルト）のまま使う。
 
-`update-version.yml` でVERSIONファイルをコミット・プッシュする場合は **Read and write permissions** が必要。ただし workflow ファイル内で `permissions: contents: write` を明示的に指定すれば、リポジトリレベルのデフォルトが Read only のままでも動作する（個別指定が優先されるため）。
+リポジトリレベルの権限は Read only のままにしておき、書き込みが必要なワークフローでは workflow ファイル内で `permissions` を個別に指定する。
+
+```yaml
+# 例: update-version.yml でコミット・プッシュする場合
+permissions:
+  contents: write
+```
+
+個別指定はリポジトリのデフォルト設定より優先されるため、グローバルを変更する必要はない。
 
 ### Allow GitHub Actions to create and approve pull requests
 
-このチェックボックスは **デフォルトで OFF**。`gh pr create` 等でPRを作成するワークフローを使う場合は **ON にする必要がある**。
+**設定値:** dev-charter を導入するリポジトリでは **ON にする**。
 
-| リポジトリで使用するワークフロー | 設定 |
-|---|---|
-| `check-charter.yml`（dev-charterの自動更新PR作成）を使う | **ON** |
-| PRを作成・承認するワークフローが存在しない | OFF のまま |
+`check-charter.yml` は `gh pr create` でプルリクエストを作成するため、このチェックボックスが OFF のままだとワークフローが失敗する。
 
-> **設定がリポジトリごとにバラバラになりがちな理由：** この設定はリポジトリ作成時に自動で有効化されず、ワークフロー追加時に手動で設定が必要なため。`check-charter.yml` を導入する際は必ず本設定を確認すること。
+> このチェックボックスはリポジトリ作成時にデフォルトで OFF。`check-charter.yml` を導入する際は必ず ON になっているか確認すること。
 
 ## Sponsors (FUNDING.yml)
 
