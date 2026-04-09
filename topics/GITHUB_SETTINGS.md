@@ -43,6 +43,32 @@ Rules:
 
 > **Status check の名前とソースについて：** job `name` フィールドの値（例：`Build`）がチェック名になる。ソースは `GitHub Actions` を指定する（`Any source` にしない）。詳細は [topics/CI_POLICY.md](CI_POLICY.md) を参照。
 
+## Actions: Workflow permissions
+
+**確認場所:** GitHub リポジトリ → Settings → Actions → General → Workflow permissions
+
+### Workflow permissions（デフォルト権限）
+
+**設定値:** `Read repository contents and packages permissions`（デフォルト）のまま使う。
+
+リポジトリレベルの権限は Read only のままにしておき、書き込みが必要なワークフローでは workflow ファイル内で `permissions` を個別に指定する。
+
+```yaml
+# 例: update-version.yml でコミット・プッシュする場合
+permissions:
+  contents: write
+```
+
+個別指定はリポジトリのデフォルト設定より優先されるため、グローバルを変更する必要はない。
+
+### Allow GitHub Actions to create and approve pull requests
+
+**設定値:** dev-charter を導入するリポジトリでは **ON にする**。
+
+`check-charter.yml` は `gh pr create` でプルリクエストを作成するため、このチェックボックスが OFF のままだとワークフローが失敗する。
+
+> このチェックボックスはリポジトリ作成時にデフォルトで OFF。`check-charter.yml` を導入する際は必ず ON になっているか確認すること。
+
 ## Sponsors (FUNDING.yml)
 
 GitHub Sponsors の設定状態はリポジトリの種別（テンプレート / プロジェクト）によって異なる。
