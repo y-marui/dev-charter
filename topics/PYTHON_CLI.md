@@ -47,27 +47,27 @@ class Settings(BaseSettings):
 
 ## Non-Interactive Execution
 
-**対話プロンプトを実装する場合、引数で同等の操作が必ず行えることを保証する。**
+**全てのコマンドで、対話プロンプトなしに実行できることを保証する。**
 これにより CI・スクリプトからの非対話実行を保証する。
 
-- 確認プロンプト（`typer.confirm`）には `--yes` フラグで自動承認できるようにする
-- 入力プロンプト（`typer.prompt`）には対応する引数を用意し、引数が与えられた場合はプロンプトをスキップする
+対話プロンプトは利便性のために使ってよい。ただし、**そのプロンプトに対応する引数を必ず用意し、引数が指定された場合はプロンプトをスキップする**。
+
+| プロンプトの種類 | 対応する引数パターン |
+|---|---|
+| 確認（yes/no） | `--yes` / `-y` フラグ |
+| 値の入力 | 対応するオプション引数（例：`--token`） |
 
 ```python
+# 確認プロンプト：--yes で自動承認
 @app.command()
-def init(yes: bool = typer.Option(False, "--yes", "-y", help="確認をスキップする")) -> None:
-    """グローバル設定ファイルを初期化する。"""
+def init(yes: bool = typer.Option(False, "--yes", "-y")) -> None:
     if not yes and not typer.confirm(f"{CONFIG_FILE} を作成しますか？"):
         raise typer.Exit()
     _do_init()
-```
 
-```python
+# 入力プロンプト：引数が指定されたらスキップ
 @app.command()
-def login(
-    token: str = typer.Option(None, "--token", help="APIトークン"),
-) -> None:
-    """認証情報を設定する。"""
+def login(token: str = typer.Option(None, "--token")) -> None:
     if token is None:
         token = typer.prompt("APIトークンを入力してください", hide_input=True)
     _save_token(token)
