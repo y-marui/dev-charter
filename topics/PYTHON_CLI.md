@@ -45,6 +45,41 @@ class Settings(BaseSettings):
     )
 ```
 
+## Non-Interactive Execution
+
+**対話プロンプトを実装する場合、引数で同等の操作が必ず行えることを保証する。**
+これにより CI・スクリプトからの非対話実行を保証する。
+
+- 確認プロンプト（`typer.confirm`）には `--yes` フラグで自動承認できるようにする
+- 入力プロンプト（`typer.prompt`）には対応する引数を用意し、引数が与えられた場合はプロンプトをスキップする
+
+```python
+@app.command()
+def init(yes: bool = typer.Option(False, "--yes", "-y", help="確認をスキップする")) -> None:
+    """グローバル設定ファイルを初期化する。"""
+    if not yes and not typer.confirm(f"{CONFIG_FILE} を作成しますか？"):
+        raise typer.Exit()
+    _do_init()
+```
+
+```python
+@app.command()
+def login(
+    token: str = typer.Option(None, "--token", help="APIトークン"),
+) -> None:
+    """認証情報を設定する。"""
+    if token is None:
+        token = typer.prompt("APIトークンを入力してください", hide_input=True)
+    _save_token(token)
+```
+
+CI での実行例：
+
+```bash
+appname init --yes
+appname login --token "$API_TOKEN"
+```
+
 ## Missing Config Handling
 
 設定ファイルが存在しない場合は、単純にエラー終了せず作成を促す。
@@ -74,7 +109,7 @@ import typer
 EXAMPLE_FILE = Path(__file__).parent / ".env.example"
 
 @app.command()
-def init() -> None:
+def init(yes: bool = typer.Option(False, "--yes", "-y", help="確認をスキップする")) -> None:
     """グローバル設定ファイルを初期化する。"""
     if CONFIG_FILE.exists():
         typer.echo(f"設定ファイルはすでに存在します: {CONFIG_FILE}")
@@ -83,6 +118,9 @@ def init() -> None:
     if not EXAMPLE_FILE.exists():
         typer.echo("テンプレートファイルが見つかりません。", err=True)
         raise typer.Exit(1)
+
+    if not yes and not typer.confirm(f"{CONFIG_FILE} を作成しますか？"):
+        raise typer.Exit()
 
     CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy(EXAMPLE_FILE, CONFIG_FILE)
