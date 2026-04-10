@@ -240,3 +240,9 @@ README 作成後、以下を確認する。
 7. AI 対応の場合は `AI_CONTEXT.md`・`CLAUDE.md`・`GEMINI.md` を作成する
 8. `.github/copilot-instructions.md` を作成する（Copilot 使用時）
 9. GitHub 公開プロジェクトの場合は `.github/FUNDING.yml` を作成する（[MONETIZATION_POLICY.md](../MONETIZATION_POLICY.md) 参照）
+
+> **Note（dev-charter を含むテンプレートの場合）:**
+> GitHub テンプレートはファイルのみコピーし git 履歴を引き継がないため、
+> テンプレートから作成したプロジェクトでは `git subtree pull` による dev-charter 更新が失敗する。
+> `check-charter.yml` ワークフローがこのケースを自動検出して対処するため、手動対応は不要。
+> 手動更新が必要な場合は [README-jp.md](../README-jp.md) の **Update** セクションを参照。

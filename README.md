@@ -67,6 +67,23 @@ git remote add dev-charter https://github.com/y-marui/dev-charter
 git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
 
+> **Note (projects created from a template repository):**
+> GitHub templates copy files only — git history is not carried over — so `git subtree pull` will fail.
+> The `check-charter.yml` workflow detects this automatically and handles it.
+> For manual updates, use the following instead of `git subtree pull`:
+> ```bash
+> git remote add dev-charter https://github.com/y-marui/dev-charter || true
+> git fetch dev-charter
+> SPLIT=$(git rev-parse dev-charter/main)
+> git rm -rf docs/dev-charter/
+> git archive dev-charter/main | tar -x -C docs/dev-charter/
+> git add docs/dev-charter/
+> git commit -m "Squashed 'docs/dev-charter/' content from commit ${SPLIT}
+>
+> git-subtree-dir: docs/dev-charter
+> git-subtree-split: ${SPLIT}"
+> ```
+
 After updating, paste the following prompt into your AI tool:
 
 ```
