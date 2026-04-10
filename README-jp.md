@@ -15,6 +15,7 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 
 | ファイル | 内容 |
 |---|---|
+| [CHARTER_INDEX.md](CHARTER_INDEX.md) | 憲章ドキュメントのインデックス（トピック → ファイル対応表） |
 | [PRINCIPLES.md](PRINCIPLES.md) | 開発哲学・デザイン・アーキテクチャ原則 |
 | [CODE_STYLE.md](CODE_STYLE.md) | コードスタイル |
 | [AI_COLLABORATION_RULES.md](AI_COLLABORATION_RULES.md) | AI 協働ルールと役割分担 |

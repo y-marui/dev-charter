@@ -15,6 +15,7 @@ and development rules used across projects.
 
 | File | Description |
 |---|---|
+| [CHARTER_INDEX.md](CHARTER_INDEX.md) | Charter document index (topic-to-file lookup table for efficient reference) |
 | [PRINCIPLES.md](PRINCIPLES.md) | Development philosophy, design and architecture principles |
 | [CODE_STYLE.md](CODE_STYLE.md) | Code style guide |
 | [AI_COLLABORATION_RULES.md](AI_COLLABORATION_RULES.md) | AI collaboration rules and role assignments |
