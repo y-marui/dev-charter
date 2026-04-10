@@ -45,41 +45,6 @@ class Settings(BaseSettings):
     )
 ```
 
-## Non-Interactive Execution
-
-**全てのコマンドで、対話プロンプトなしに実行できることを保証する。**
-これにより CI・スクリプトからの非対話実行を保証する。
-
-対話プロンプトは利便性のために使ってよい。ただし、**そのプロンプトに対応する引数を必ず用意し、引数が指定された場合はプロンプトをスキップする**。
-
-| プロンプトの種類 | 対応する引数パターン |
-|---|---|
-| 確認（yes/no） | `--yes` / `-y` フラグ |
-| 値の入力 | 対応するオプション引数（例：`--token`） |
-
-```python
-# 確認プロンプト：--yes で自動承認
-@app.command()
-def init(yes: bool = typer.Option(False, "--yes", "-y")) -> None:
-    if not yes and not typer.confirm(f"{CONFIG_FILE} を作成しますか？"):
-        raise typer.Exit()
-    _do_init()
-
-# 入力プロンプト：引数が指定されたらスキップ
-@app.command()
-def login(token: str = typer.Option(None, "--token")) -> None:
-    if token is None:
-        token = typer.prompt("APIトークンを入力してください", hide_input=True)
-    _save_token(token)
-```
-
-CI での実行例：
-
-```bash
-appname init --yes
-appname login --token "$API_TOKEN"
-```
-
 ## Missing Config Handling
 
 設定ファイルが存在しない場合は、単純にエラー終了せず作成を促す。
@@ -105,6 +70,7 @@ cp .env.example .env
 ```python
 import shutil
 import typer
+from pathlib import Path
 
 EXAMPLE_FILE = Path(__file__).parent / ".env.example"
 
@@ -150,6 +116,35 @@ def run() -> None:
     """設定が必須なコマンド。"""
     ensure_config()
     ...
+```
+
+## Non-Interactive Execution
+
+**全てのコマンドで、引数を適切に指定すれば対話プロンプトなしに実行できることを保証する。**
+これにより CI・スクリプトからの非対話実行を保証する。
+
+対話プロンプトは利便性のために使ってよい。ただし、**そのプロンプトに対応する引数を必ず用意し、引数が指定された場合はプロンプトをスキップする**。
+
+| プロンプトの種類 | 対応する引数パターン |
+|---|---|
+| 確認（yes/no） | `--yes` / `-y` フラグ（上記 `init` コマンドが例） |
+| 値の入力 | 対応するオプション引数 |
+
+値の入力プロンプトの例：
+
+```python
+@app.command()
+def login(token: str = typer.Option(None, "--token", help="APIトークン")) -> None:
+    if token is None:
+        token = typer.prompt("APIトークンを入力してください", hide_input=True)
+    _save_token(token)
+```
+
+CI での実行例：
+
+```bash
+appname init --yes
+appname login --token "$API_TOKEN"
 ```
 
 ## Key Points
