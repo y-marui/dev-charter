@@ -32,6 +32,8 @@ and development rules used across projects.
 | [topics/GITHUB_CONTRIBUTING.md](topics/GITHUB_CONTRIBUTING.md) | Issue, PR, CONTRIBUTING.md, PR template, and Quasi-CLA (for OSS) |
 | [topics/TEMPLATE_README_GUIDELINES.md](topics/TEMPLATE_README_GUIDELINES.md) | GitHub template repository README guidelines (environment, language, LICENSE, required sections) |
 | [topics/PROJECT_README_GUIDELINES.md](topics/PROJECT_README_GUIDELINES.md) | README setup guide for projects created from a template |
+| [topics/PYTHON_DEV_ENV.md](topics/PYTHON_DEV_ENV.md) | Python development environment (pyenv, uv, ruff, mypy, pytest) |
+| [topics/PYTHON_CLI.md](topics/PYTHON_CLI.md) | Python CLI implementation (typer, pydantic-settings, XDG config) |
 
 ## How to Use
 

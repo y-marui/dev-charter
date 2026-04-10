@@ -32,6 +32,8 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 | [topics/GITHUB_CONTRIBUTING.md](topics/GITHUB_CONTRIBUTING.md) | Issue・PR・CONTRIBUTING.md・PRテンプレート・準CLA（OSS向け） |
 | [topics/TEMPLATE_README_GUIDELINES.md](topics/TEMPLATE_README_GUIDELINES.md) | GitHub テンプレートリポジトリの README 設計規約（開発環境・言語・LICENSE・必須セクション） |
 | [topics/PROJECT_README_GUIDELINES.md](topics/PROJECT_README_GUIDELINES.md) | テンプレートから作成したプロジェクトの README 整備手順 |
+| [topics/PYTHON_DEV_ENV.md](topics/PYTHON_DEV_ENV.md) | Python 開発環境構成（pyenv・uv・ruff・mypy・pytest） |
+| [topics/PYTHON_CLI.md](topics/PYTHON_CLI.md) | Python CLI 実装方針（typer・pydantic-settings・XDG設定） |
 
 ## How to Use
 
