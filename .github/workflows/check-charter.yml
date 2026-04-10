@@ -109,10 +109,8 @@ jobs:
             git archive dev-charter/main | tar -x -C "${PREFIX}/"
             git add "${PREFIX}/"
 
-            git commit -m "Squashed '${PREFIX}/' content from commit ${SPLIT}
-
-git-subtree-dir: ${PREFIX}
-git-subtree-split: ${SPLIT}"
+            git commit -m "$(printf "Squashed '%s/' content from commit %s\n\ngit-subtree-dir: %s\ngit-subtree-split: %s" \
+              "${PREFIX}" "${SPLIT}" "${PREFIX}" "${SPLIT}")"
           fi
 
           git push origin "${BRANCH}" --force-with-lease
