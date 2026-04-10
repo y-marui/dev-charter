@@ -67,6 +67,23 @@ git remote add dev-charter https://github.com/y-marui/dev-charter
 git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 ```
 
+> **Note（テンプレートリポジトリから作成したプロジェクト）:**
+> GitHub テンプレートはファイルのみコピーし git 履歴を引き継がないため、`git subtree pull` は失敗します。
+> `check-charter.yml` ワークフローがこのケースを自動検出して対処します。
+> 手動で更新する場合は `git subtree pull` の代わりに以下を実行してください：
+> ```bash
+> git remote add dev-charter https://github.com/y-marui/dev-charter || true
+> git fetch dev-charter
+> SPLIT=$(git rev-parse dev-charter/main)
+> git rm -rf docs/dev-charter/
+> git archive dev-charter/main | tar -x -C docs/dev-charter/
+> git add docs/dev-charter/
+> git commit -m "Squashed 'docs/dev-charter/' content from commit ${SPLIT}
+>
+> git-subtree-dir: docs/dev-charter
+> git-subtree-split: ${SPLIT}"
+> ```
+
 更新後、以下のプロンプトを AI ツールに貼り付けてください：
 
 ```
