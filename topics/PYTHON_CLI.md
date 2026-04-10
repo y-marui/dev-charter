@@ -62,7 +62,10 @@ cp .env.example .env
 
 ### For installed package (pip/uv install した場合)
 
-初回起動時にグローバル設定の不在を検出し、`.env.example` をコピーするか対話的に確認する：
+設定ファイルのコピーは `init` コマンドとして独立させる。
+`ensure_config()` はその `init` コマンドの実行を促すだけにとどめる。
+
+**`init` コマンド（設定ファイルのセットアップ）：**
 
 ```python
 import shutil
@@ -70,34 +73,45 @@ import typer
 
 EXAMPLE_FILE = Path(__file__).parent / ".env.example"
 
+@app.command()
+def init() -> None:
+    """グローバル設定ファイルを初期化する。"""
+    if CONFIG_FILE.exists():
+        typer.echo(f"設定ファイルはすでに存在します: {CONFIG_FILE}")
+        raise typer.Exit()
+
+    if not EXAMPLE_FILE.exists():
+        typer.echo("テンプレートファイルが見つかりません。", err=True)
+        raise typer.Exit(1)
+
+    CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy(EXAMPLE_FILE, CONFIG_FILE)
+    typer.echo(f"設定ファイルを作成しました: {CONFIG_FILE}")
+    typer.echo("必要な値を設定してから再度実行してください。")
+```
+
+**`ensure_config()`（設定が必須のコマンド専用）：**
+
+設定がなければエラーを出し、`init` コマンドの実行を促す。
+設定がオプションのコマンドでは呼び出さない。
+
+```python
 def ensure_config() -> None:
-    """設定ファイルが存在しない場合、作成を促す。"""
     if CONFIG_FILE.exists() or Path(".env").exists():
         return
-
-    typer.echo(f"設定ファイルが見つかりません: {CONFIG_FILE}", err=True)
-
-    if EXAMPLE_FILE.exists() and typer.confirm(
-        f".env.example を {CONFIG_FILE} にコピーしますか？"
-    ):
-        CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy(EXAMPLE_FILE, CONFIG_FILE)
-        typer.echo(f"コピーしました: {CONFIG_FILE}")
-        typer.echo("必要な値を設定してから再度実行してください。")
-    else:
-        typer.echo(f"次のファイルを作成して設定してください: {CONFIG_FILE}", err=True)
-
+    typer.echo("設定ファイルが見つかりません。", err=True)
+    typer.echo("まず次のコマンドを実行してください: appname init", err=True)
     raise typer.Exit(1)
 ```
 
-エントリポイントで各コマンドの前に呼び出す：
+設定が必須のコマンドでのみ呼び出す：
 
 ```python
-app = typer.Typer()
-
-@app.callback()
-def main() -> None:
+@app.command()
+def run() -> None:
+    """設定が必須なコマンド。"""
     ensure_config()
+    ...
 ```
 
 ## Key Points
