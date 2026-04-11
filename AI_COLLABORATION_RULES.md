@@ -60,6 +60,16 @@
   - 審査用ドキュメントの整備
   - プロジェクト全体のドキュメント管理
 
+## GitHub Operations
+
+Issue を作成する場合は、必ずリポジトリオーナーを `assignee` に設定する。
+
+```
+gh issue create --title "..." --body "..." --assignee @me
+```
+
+> `@me` はトークンのオーナーに解決されるため、ユーザー名のハードコードは不要。
+
 ## Rules for Multi-AI Usage
 
 - Claude Code作業中はCopilot提案を**参考程度**に（盲目的に受け入れない）
