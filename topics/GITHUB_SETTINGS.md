@@ -68,15 +68,18 @@ GitHub Dashboard の "Needs your review" を機能させるために CODEOWNERS 
 
 `*` はリポジトリ全体を対象にする。Bot PR（Dependabot など）・他者の PR・自分の PR のすべてで、オーナーがコードレビュアーとして自動追加される。
 
-### Branch Protection との連携
+### Require a review from Code Owners との違い
 
-CODEOWNERS を有効にするには、Ruleset で "Require a review from Code Owners" を ON にする。
+**レビュアー自動追加**（Dashboard 表示）は CODEOWNERS ファイルがあれば Ruleset 設定に関係なく動作する。
 
-**確認場所:** GitHub リポジトリ → Settings → Rules → Rulesets → `main-protection` → Rules
+Ruleset の "Require a review from Code Owners"（`require_code_owner_review`）は別機能で、**マージ時に code owner の承認を必須にするか**を制御する。
 
-- [ ] `Require a review from Code Owners` が有効になっている
+| 設定 | 効果 |
+|---|---|
+| OFF（推奨：個人開発） | PR 作成時にレビュアー自動追加のみ。マージは承認なしでも可 |
+| ON | code owner の承認がないとマージ不可。自分が唯一の code owner の場合、自分の PR は自己承認できないため詰まる |
 
-> このオプションが OFF の場合、CODEOWNERS ファイルは存在してもレビュアー自動追加が行われない。
+個人開発リポジトリでは **OFF のまま**使う。
 
 ## Issue Auto-assign
 
