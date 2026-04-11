@@ -56,6 +56,63 @@ permissions:
 
 > このチェックボックスはリポジトリ作成時にデフォルトで OFF。`check-charter.yml` を導入する際は必ず ON になっているか確認すること。
 
+## PR Review Assignment (CODEOWNERS)
+
+GitHub Dashboard の "Needs your review" を機能させるために CODEOWNERS を設定する。
+
+**ファイルパス:** `.github/CODEOWNERS`
+
+```
+* @your-github-username
+```
+
+`*` はリポジトリ全体を対象にする。Bot PR（Dependabot など）・他者の PR・自分の PR のすべてで、オーナーがコードレビュアーとして自動追加される。
+
+### Branch Protection との連携
+
+CODEOWNERS を有効にするには、Ruleset で "Require a review from Code Owners" を ON にする。
+
+**確認場所:** GitHub リポジトリ → Settings → Rules → Rulesets → `main-protection` → Rules
+
+- [ ] `Require a review from Code Owners` が有効になっている
+
+> このオプションが OFF の場合、CODEOWNERS ファイルは存在してもレビュアー自動追加が行われない。
+
+## Issue Auto-assign
+
+リポジトリオーナーが Issue を作成したときに自動で自分にアサインする。
+GitHub Dashboard の "Assigned to me" に即座に表示されるようになる。
+
+**ファイルパス:** `.github/workflows/auto-assign-self.yml`
+
+```yaml
+name: Assign self when I create an issue
+
+on:
+  issues:
+    types: [opened, reopened]
+
+jobs:
+  assign:
+    if: github.actor == github.repository_owner || endsWith(github.actor, '[bot]')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: [context.repo.owner],
+            })
+```
+
+`github.repository_owner` を使うことでユーザー名のハードコードが不要。
+他者が Issue を作成した場合は `if` 条件が false になりスキップされる。
+
 ## Sponsors (FUNDING.yml)
 
 GitHub Sponsors の設定状態はリポジトリの種別（テンプレート / プロジェクト）によって異なる。
