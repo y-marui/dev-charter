@@ -44,6 +44,20 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 
 構成仕様は [AI_TOOL_SETUP.md](AI_TOOL_SETUP.md) を参照。
 
+## Quick Install
+
+プロジェクトのルートで実行してください：
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+```
+
+スクリプトが git subtree のセットアップを自動化し、Claude Code が利用可能であれば
+初回セットアップ（INSTALL_CHECKLIST）の起動まで案内します。
+
+> **Note:** インストール先やブランチを変更する場合は環境変数で指定できます：
+> `CHARTER_PREFIX=path/to/charter bash <(curl -fsSL .../install.sh)`
+
 ## Install (git subtree)
 
 ```
