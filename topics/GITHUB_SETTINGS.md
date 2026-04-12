@@ -2,6 +2,14 @@
 
 GitHub リポジトリ設定の確認ガイド。テンプレートからプロジェクトを作成したとき、または新規リポジトリをセットアップする際に使用する。
 
+## AI による設定適用
+
+各セクションには `gh` コマンドまたは設定ファイルを記載している。AI がセットアップ・更新作業を行う場合は以下の方針で適用する。
+
+- `gh` コマンドが使える場合（CLI 環境）：記載のコマンドを実行する
+- `gh` が使えない場合（GitHub Copilot・ブラウザ操作など）：「確認場所」の UI パスから手動で設定する
+- どちらの場合も、**設定を適用すること自体は必須**。コマンドが使えないことを理由にスキップしない
+
 ## Branch Protection (Ruleset)
 
 [topics/CI_POLICY.md](CI_POLICY.md) で定義した Ruleset が正しく設定されているか確認する。
@@ -47,6 +55,18 @@ gh api -X PATCH repos/{owner}/{repo} -f delete_branch_on_merge=true
 > 誤って削除した場合は、マージ直後に限り GitHub の "Restore branch" ボタンから復元できる。
 
 > **注意:** Classic branch protection（Settings → Branches）が残っている場合は削除すること。Classic BP はデフォルトでブランチ削除を禁止するため、自動削除が機能しない。Ruleset への移行手順は上記「[Branch Protection (Ruleset)](#branch-protection-ruleset)」セクションを参照。
+
+### Allow Auto-merge
+
+**設定値: ON（推奨）**
+
+PR がすべてのステータスチェックを通過したとき自動マージできる機能を有効にする。Dependabot PR などの bot が作成する PR を自動処理する際に有用。
+
+```bash
+gh api -X PATCH repos/{owner}/{repo} -F allow_auto_merge=true
+```
+
+> この設定を ON にしても各 PR が自動でマージされるわけではない。PR ごとに "Enable auto-merge" を選択した場合のみ自動マージが走る。
 
 ## Actions: Workflow permissions
 
@@ -138,6 +158,44 @@ jobs:
 
 `github.repository_owner` を使うことでユーザー名のハードコードが不要。
 他者が Issue を作成した場合は `if` 条件が false になりスキップされる。
+
+## Security & Analysis
+
+**確認場所:** GitHub リポジトリ → Settings → Security & analysis
+
+### Dependabot Alerts
+
+**設定値: ON**
+
+脆弱性のある依存パッケージを検出して通知する。パブリック・プライベートリポジトリ問わず無料。
+
+```bash
+gh api -X PUT repos/{owner}/{repo}/vulnerability-alerts
+```
+
+### Dependabot Security Updates
+
+**設定値: ON**
+
+Dependabot が脆弱性を検出したとき、修正 PR を自動作成する。
+
+```bash
+gh api -X PUT repos/{owner}/{repo}/automated-security-fixes
+```
+
+### Secret Scanning & Push Protection
+
+**設定値: ON**
+
+コミット・コードにシークレット（API キー等）が含まれていないか検出する。Push protection は push 時点でブロックする。
+
+```bash
+gh api -X PATCH repos/{owner}/{repo} \
+  -f 'security_and_analysis[secret_scanning][status]=enabled' \
+  -f 'security_and_analysis[secret_scanning_push_protection][status]=enabled'
+```
+
+> **注意:** プライベートリポジトリでの secret scanning は GitHub Advanced Security が必要（有料）。パブリックリポジトリは無料で使用できる。
 
 ## Sponsors (FUNDING.yml)
 
