@@ -44,6 +44,20 @@ and development rules used across projects.
 
 See [AI_TOOL_SETUP.md](AI_TOOL_SETUP.md) for the structure spec.
 
+## Quick Install
+
+Run from your project root:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+```
+
+The script automates the git subtree setup and, if Claude Code is available,
+guides you through the initial setup (INSTALL_CHECKLIST).
+
+> **Note:** To customize the install path or branch, use environment variables:
+> `CHARTER_PREFIX=path/to/charter bash <(curl -fsSL .../install.sh)`
+
 ## Install (git subtree)
 
 ```
