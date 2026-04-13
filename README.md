@@ -90,6 +90,7 @@ git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 > git fetch dev-charter
 > SPLIT=$(git rev-parse dev-charter/main)
 > git rm -rf docs/dev-charter/
+> mkdir -p docs/dev-charter/
 > git archive dev-charter/main | tar -x -C docs/dev-charter/
 > git add docs/dev-charter/
 > git commit -m "Squashed 'docs/dev-charter/' content from commit ${SPLIT}
