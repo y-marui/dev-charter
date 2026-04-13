@@ -89,7 +89,7 @@ git subtree pull --prefix=docs/dev-charter dev-charter main --squash
 > git remote add dev-charter https://github.com/y-marui/dev-charter || true
 > git fetch dev-charter
 > SPLIT=$(git rev-parse dev-charter/main)
-> git rm -rf docs/dev-charter/
+> rm -rf docs/dev-charter/
 > mkdir -p docs/dev-charter/
 > git archive dev-charter/main | tar -x -C docs/dev-charter/
 > git add docs/dev-charter/
