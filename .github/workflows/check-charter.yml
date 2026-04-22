@@ -11,10 +11,6 @@ on:
         description: "Path to the dev-charter subtree within the project"
         default: "docs/dev-charter"
         type: string
-      fail_if_outdated:
-        description: "Exit with code 1 when dev-charter needs an update (makes CI badge turn red)"
-        default: false
-        type: boolean
   workflow_dispatch:
     inputs:
       prefix:
@@ -142,8 +138,3 @@ jobs:
             --label "dev-charter" || \
             gh pr list --head update-charter --base main --json number --jq length | grep -q '^[1-9]'
 
-      - name: Fail if outdated
-        if: steps.versions.outputs.outdated == 'true' && inputs.fail_if_outdated
-        run: |
-          echo "::error::dev-charter is outdated. Merge the update PR to resolve."
-          exit 1

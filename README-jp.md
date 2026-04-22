@@ -132,8 +132,6 @@ jobs:
   check:
     name: Check
     uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
-    with:
-      fail_if_outdated: true
     permissions:
       contents: write
       pull-requests: write
@@ -149,7 +147,7 @@ jobs:
 
 ### Workflow Status Badge
 
-dev-charter が最新かどうかを表示します。バッジが機能するには上記ワークフローに `fail_if_outdated: true` が必要です。
+dev-charter が最新かどうかを表示します。
 
 ```markdown
 [![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml)
