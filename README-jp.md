@@ -21,7 +21,7 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 | [AI_COLLABORATION_RULES.md](AI_COLLABORATION_RULES.md) | AI 協働ルールと役割分担 |
 | [AI_CONTEXT_HIERARCHY.md](AI_CONTEXT_HIERARCHY.md) | AI コンテキスト優先階層 |
 | [AI_TOOL_SETUP.md](AI_TOOL_SETUP.md) | AI コンテキストファイルの構成仕様（AI_CONTEXT.md・各ツール設定ファイル） |
-| [DOCS_STRUCTURE.md](DOCS_STRUCTURE.md) | プロジェクトのドキュメント構成（root ファイル・docs/ 標準構成・AI_CONTEXT.md 参照順） |
+| [DOCS_STRUCTURE.md](DOCS_STRUCTURE.md) | プロジェクトのドキュメント構成（root ファイル・DEVELOPING.md/CONTRIBUTING.md の責務分離・docs/ 標準構成・AI_CONTEXT.md 参照順） |
 | [LANGUAGE_POLICY.md](LANGUAGE_POLICY.md) | 言語ポリシー（正本＝日本語） |
 | [LOCALIZATION_POLICY.md](LOCALIZATION_POLICY.md) | ローカライゼーションポリシー |
 | [PROJECT_LIFECYCLE.md](PROJECT_LIFECYCLE.md) | プロジェクトライフサイクルと体制 |
