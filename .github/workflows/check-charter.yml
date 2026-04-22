@@ -135,4 +135,3 @@ jobs:
             --head update-charter \
             --label "dev-charter" || \
             gh pr list --head update-charter --base main --json number --jq length | grep -q '^[1-9]'
-
