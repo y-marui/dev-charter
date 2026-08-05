@@ -24,6 +24,7 @@ project-root/
 ├── AI_CONTEXT.md                    # AI エントリーポイント
 ├── CLAUDE.md                        # @AI_CONTEXT.md + Claude Code 固有設定
 ├── GEMINI.md                        # @AI_CONTEXT.md + Gemini CLI 固有設定
+├── AGENTS.md                        # AI_CONTEXT.md 読み込み指示 + Codex 固有設定
 ├── .github/
 │   └── copilot-instructions.md      # AI_CONTEXT.md 参照 + Copilot 固有設定
 └── docs/
@@ -51,6 +52,7 @@ project-root/
 | `AI_CONTEXT.md` | AI エントリーポイント（後述） |
 | `CLAUDE.md` | `@AI_CONTEXT.md` + Claude Code 固有設定 |
 | `GEMINI.md` | `@AI_CONTEXT.md` + Gemini CLI 固有設定 |
+| `AGENTS.md` | `AI_CONTEXT.md` 読み込み指示 + Codex 固有設定 |
 | `.github/copilot-instructions.md` | `AI_CONTEXT.md` 参照 + Copilot 固有設定 |
 
 > 各ファイルの読者は包含関係にある。開発者は README も参照し、外部コントリビューターは README・DEVELOPING も参照し、AI はすべてを参照する。
