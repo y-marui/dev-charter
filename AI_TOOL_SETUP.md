@@ -62,19 +62,19 @@ AI ツールごとの設定ファイルは `AI_CONTEXT.md` への参照のみを
 **ツール固有の設定のみ**を追記する。`AI_CONTEXT.md` の内容は重複させない。
 ツール固有の設定がない場合は、以下の最小構成だけを記載する。
 
-### CLAUDE.md（Claude Code）
+### CLAUDE.md
 
 ```
 @AI_CONTEXT.md
 ```
 
-### GEMINI.md（Gemini CLI）
+### GEMINI.md
 
 ```
 @AI_CONTEXT.md
 ```
 
-### AGENTS.md（Codex）
+### AGENTS.md
 
 Codex は `@` によるファイルの自動展開を前提としないため、読み込み指示を明記する。
 
@@ -82,7 +82,7 @@ Codex は `@` によるファイルの自動展開を前提としないため、
 `AI_CONTEXT.md` を参照。
 ```
 
-### .github/copilot-instructions.md（GitHub Copilot）
+### .github/copilot-instructions.md
 
 ```
 `AI_CONTEXT.md` を参照。

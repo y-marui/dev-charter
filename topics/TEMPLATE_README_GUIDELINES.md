@@ -21,19 +21,9 @@
 
 これらを `README-jp.md` のメタ情報テーブルに記載することで、利用者がテンプレートの用途を一目で判断できるようにする。
 
-### 1.1 Project Type Reference
+### 1.1 Project Policy References
 
-典型的なプロジェクト種別と、それぞれの配布形態・ライセンス・マネタイズの傾向を示す。ライセンスとマネタイズの詳細は [LEGAL_POLICY.md](../LEGAL_POLICY.md) と [MONETIZATION_POLICY.md](../MONETIZATION_POLICY.md) を参照すること。
-
-| プロジェクト種別 | 配布形態 | 典型的なライセンス | マネタイズ |
-|---|---|---|---|
-| Mac app / iOS app | App Store・直接配布（バイナリ） | Closed または AGPL/GPL/LGPL | Sublime Text 方式 |
-| Chrome 拡張 | Chrome Web Store（バイナリ相当） | Closed または AGPL/GPL/LGPL | Buy Me a Coffee |
-| Alfred workflow | Alfred Gallery・GitHub（ソースコード） | Closed（配布しない）または MIT | 要検討 |
-| Web app / site | ブラウザアクセス（配布なし） | Closed | Buy Me a Coffee ＋ 可能なら広告 |
-| Python library / app | PyPI・GitHub（ソースコード） | Closed（配布しない）または MIT | 要検討 |
-
-> GitHub 上で公開する場合は上記に加えて GitHub Sponsors を追加（[MONETIZATION_POLICY.md](../MONETIZATION_POLICY.md) 参照）。ライセンス選択は case by case であり、この表は傾向の参考にとどめる。
+ライセンスは [LEGAL_POLICY.md](../LEGAL_POLICY.md)、マネタイズは [MONETIZATION_POLICY.md](../MONETIZATION_POLICY.md) を正本として選択する。選択した配布形態・ライセンス・マネタイズ方式は `README-jp.md` のメタ情報テーブルに記録し、この文書には対応表を重複して持たない。
 
 ---
 
@@ -125,9 +115,9 @@ AGPL/GPL/LGPL を採用する場合の準 CLA 設定（`CONTRIBUTING.md` + PR �
 | `.github/FUNDING.yml` | GitHub 公開プロジェクト | GitHub Sponsors・Buy Me a Coffee の設定（[MONETIZATION_POLICY.md](../MONETIZATION_POLICY.md) 参照） |
 | `CONTRIBUTING.md` | OSS で外部 PR を受け付ける場合 | Issues first ルール・コードスタイル・コミット形式・PR チェックリスト・準 CLA 条項（[GITHUB_CONTRIBUTING.md](GITHUB_CONTRIBUTING.md) 参照） |
 | `.github/ISSUE_TEMPLATE/` | OSS で外部 Issue を受け付ける場合 | バグ報告・機能要望テンプレート |
-| `.github/PULL_REQUEST_TEMPLATE.md` | OSS で外部 PR を受け付ける場合 | CONTRIBUTING.md のチェックリストと対応させる。AGPL/GPL/LGPL プロジェクトは CLA 同意チェックボックスを末尾に追加（§4.6 参照） |
+| `.github/PULL_REQUEST_TEMPLATE.md` | OSS で外部 PR を受け付ける場合 | AGPL/GPL/LGPL プロジェクトは [GITHUB_CONTRIBUTING.md](GITHUB_CONTRIBUTING.md) に従い CLA 同意チェックボックスを末尾に追加する |
 
-### 5.2 Required Sections: README.md（template repo の説明）
+### 5.2 Required Sections: README.md
 
 `README.md` / `README-jp.md` はこのテンプレートリポジトリ自体を説明するファイル。
 
@@ -143,65 +133,20 @@ AGPL/GPL/LGPL を採用する場合の準 CLA 設定（`CONTRIBUTING.md` + PR �
 10. **ドキュメント索引** — `docs/` 配下にドキュメントが存在する場合。ドキュメントのない規模のプロジェクトは省略可。
 11. **ライセンス** — ライセンス名と `LICENSE` ファイルへのリンク
 
-### 5.2a Required Sections: README_TEMPLATE.md（プロジェクト用 README 雛形）
+### 5.2a Required Sections: README_TEMPLATE.md
 
 `README_TEMPLATE.md` / `README_TEMPLATE-jp.md` はプロジェクト化後に `README.md` へリネームして使う雛形。
 構成は [PROJECT_README_GUIDELINES.md](PROJECT_README_GUIDELINES.md) §1 に従う。プレースホルダ（`{user}`・`{repo}` 等）を用いて未記入箇所を明示する。
 
 > プロジェクト化後の初期セットアップ（リネーム・プレースホルダ置換）の手順は `AI_CONTEXT.md` の初期セットアップセクションに記載すること。
 
-### 5.3 Badge Format: README.md（template repo の説明）
+### 5.3 Badge Format: README.md
 
-`README.md` のバッジは**言語宣言の直後**（§5.2 位置 3）に、**ライセンス → CI → dev-charter** の順で配置する。
-URL はこのテンプレートリポジトリ自身を指す実際の値に置き換える（プレースホルダのままにしない）。
+バッジの種類・書式・順序は [PROJECT_README_GUIDELINES.md](PROJECT_README_GUIDELINES.md) の「Badge Format」を正本とする。`README.md` では URL をこのテンプレートリポジトリ自身を指す実際の値に置き換え、プレースホルダを残さない。ワークフローファイルが複数ある場合はメインの CI ワークフローのみ掲載する。
 
-**ライセンスバッジ（§4 のライセンス選択に対応する行を使用）:**
+### 5.3a Badge Format: README_TEMPLATE.md
 
-| ライセンス | バッジ |
-|---|---|
-| MIT | `[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)` |
-| All Rights Reserved | `[![License: All Rights Reserved](https://img.shields.io/badge/License-All%20Rights%20Reserved-red.svg)](LICENSE)` |
-| AGPL v3 | `[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)` |
-| GPL v3 | `[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)` |
-| LGPL v3 | `[![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](LICENSE)` |
-| CC BY 4.0 | `[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)` |
-| CC BY-SA 4.0 | `[![License: CC BY-SA 4.0](https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg)](LICENSE)` |
-| CC BY-ND 4.0 | `[![License: CC BY-ND 4.0](https://img.shields.io/badge/License-CC%20BY--ND%204.0-lightgrey.svg)](LICENSE)` |
-| CC BY-NC-SA 4.0 | `[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](LICENSE)` |
-| CC BY-NC-ND 4.0 | `[![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg)](LICENSE)` |
-
-ライセンスバッジのリンク先は常にリポジトリルートの `LICENSE` ファイル。
-
-**CI バッジ:**
-
-```
-[![CI](https://github.com/{user}/{repo}/actions/workflows/{workflow}.yml/badge.svg)](https://github.com/{user}/{repo}/actions/workflows/{workflow}.yml)
-```
-
-`{user}` / `{repo}` / `{workflow}` をこのテンプレートリポジトリの値に置き換える。ワークフローファイルが複数ある場合はメインの CI ワークフローのみ掲載する。
-
-**dev-charter バッジ（dev-charter を導入済みの場合）:**
-
-```
-[![Charter Check](https://github.com/{user}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{user}/{repo}/actions/workflows/dev-charter-check.yml)
-```
-
-`{user}` / `{repo}` をこのテンプレートリポジトリのリポジトリ情報に置き換える。
-
-### 5.3a Badge Format: README_TEMPLATE.md（プロジェクト用 README 雛形）
-
-`README_TEMPLATE.md` のバッジは URL を**プレースホルダのまま残す**。プロジェクト化後に置換する。
-
-```
-[![CI](https://github.com/{user}/{repo}/actions/workflows/{workflow}.yml/badge.svg)](https://github.com/{user}/{repo}/actions/workflows/{workflow}.yml)
-[![Charter Check](https://github.com/{user}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{user}/{repo}/actions/workflows/dev-charter-check.yml)
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/[USERNAME]?style=social)](https://github.com/sponsors/[USERNAME])
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-donate-yellow.svg)](https://www.buymeacoffee.com/[BMC_USERNAME])
-```
-
-ライセンスバッジはプロジェクトが引き継ぐライセンスに合わせた行を埋め込む（URL に `{user}/{repo}` がないため置換不要）。
-
-サポートセクションは README に設けず、バッジで代替する。`[USERNAME]` / `[BMC_USERNAME]` はプロジェクト化後に置換するプレースホルダ（§5.5 参照）。
+バッジの書式は [PROJECT_README_GUIDELINES.md](PROJECT_README_GUIDELINES.md) の「Badge Format」を使用する。`README_TEMPLATE.md` では `{user}`・`{repo}`・`{workflow}`・`[USERNAME]`・`[BMC_USERNAME]` をプロジェクト化後に置換するプレースホルダとして残す。ライセンスバッジはテンプレートが引き継がせるライセンスに対応する実際の行を埋め込む。
 
 ### 5.4 Conditional Sections
 

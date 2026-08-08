@@ -48,7 +48,7 @@ dev-charter の本体。他プロジェクトが `git subtree` で取り込む�
 - **コミット前に `VERSION` を今日の日付（UTC、`YYYY-MM-DD`）に更新する**。1日に複数回リリースしない（日付がバージョン識別子のため）。pre-commit フックが自動検証する
   - ローカルの更新コマンド：`UPDATE=1 bash scripts/check-version-date.sh`（`VERSION` を UTC 日付で更新）
   - **クラウド/エージェント環境**：ローカルの pre-commit フックが動作しない。CI の自動更新ワークフロー（`.github/workflows/update-version.yml`）が `VERSION` を自動的に更新してコミットするため、漏れた場合は CI が補完する。エージェントは可能な限り手動で VERSION を更新するのが望ましい
-- **新規ドキュメントを追加するとき**は両言語の README のドキュメント一覧テーブルも更新する
+- **新規ドキュメントを追加するとき**は正本の索引である `CHARTER_INDEX.md` を更新する
 - **憲章に追加できる原則・ルール**は複数の異なるプロジェクトに適用できるものに限る（1プロジェクト固有のルールは不可）
 - **dev-charter 全ドキュメントのセクションヘッダ**：日本語ドキュメントでも英語で記載する
 
@@ -70,6 +70,8 @@ dev-charter の本体。他プロジェクトが `git subtree` で取り込む�
 
 - **設定済み**（グローバルフックが pre-commit を呼ぶ）：`pre-commit install` 不要。`pre-commit run --all-files` で動作確認
 - **未設定**：`pre-commit install` 後に `pre-commit run --all-files` で動作確認
+
+pre-commit は、シークレット・ローカル絶対パス・VERSION 日付・Markdown の H2〜H6 の見出し言語・シェルスクリプトを機械的に検証する。日英文書の意味的一致など判断を要する項目は、AI または人間がレビューする。
 
 確認コマンド：`git config core.hooksPath`
 
