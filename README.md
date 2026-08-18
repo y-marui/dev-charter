@@ -103,6 +103,7 @@ don't re-check on every single event).
 
 ```yaml
 name: Dev Charter
+
 on:
   pull_request:
   push:
