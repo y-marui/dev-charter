@@ -31,6 +31,12 @@ Run from your project root:
 bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
 ```
 
+On Windows PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.ps1 | iex
+```
+
 The script automates the git subtree setup and, if Claude Code is available,
 guides you through the initial setup (INSTALL_CHECKLIST).
 
