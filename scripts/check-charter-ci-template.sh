@@ -32,7 +32,7 @@ if [ -z "$TEMPLATE" ]; then
   exit 0
 fi
 
-if ! DIFF=$(diff -u <(printf '%s\n' "$TEMPLATE") "$WORKFLOW_FILE"); then
+if ! DIFF=$(diff -u <(printf '%s\n' "$TEMPLATE") <(sed 's/\r$//' "$WORKFLOW_FILE")); then
   echo "error: .github/workflows/dev-charter-check.yml が ${PREFIX}/README-jp.md の CI テンプレートと一致しません。" >&2
   echo "" >&2
   echo "$DIFF" >&2
