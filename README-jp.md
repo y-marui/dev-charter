@@ -31,6 +31,12 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
 ```
 
+Windows PowerShell の場合：
+
+```powershell
+irm https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.ps1 | iex
+```
+
 スクリプトが git subtree のセットアップを自動化し、Claude Code が利用可能であれば
 初回セットアップ（INSTALL_CHECKLIST）の起動まで案内します。
 
