@@ -102,6 +102,7 @@ PR作成や main への push をきっかけに最新バージョンを確認し
 
 ```yaml
 name: Dev Charter
+
 on:
   pull_request:
   push:

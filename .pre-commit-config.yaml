@@ -104,6 +104,20 @@ repos:
         always_run: true
 
   # ----------------------------------------------------------------
+  # Charter CI template check
+  # (blocks if .github/workflows/dev-charter-check.yml drifted from the
+  # template documented in the installed dev-charter's README-jp.md)
+  # ----------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: check-charter-ci-template
+        name: Check charter CI template
+        language: script
+        entry: scripts/check-charter-ci-template.sh
+        pass_filenames: false
+        always_run: true
+
+  # ----------------------------------------------------------------
   # Markdown section headings
   # ----------------------------------------------------------------
   - repo: local
