@@ -56,6 +56,8 @@ git config hooks.skip-policy-check true
 | コミットメッセージが Conventional Commits 形式でない | 層2（commit-msg ステージ。`core.hooksPath` 使用時は個人の dotfiles 側の追加対応が無い限り機能しない） | PROJECT_LIFECYCLE.md の遵守 |
 | 日英ペアドキュメントの冒頭宣言・末尾フッターの欠如 | 層2 | LANGUAGE_POLICY.md の遵守 |
 | `AI_CONTEXT.md` があるのに `CLAUDE.md`/`GEMINI.md`/`AGENTS.md`/`.github/copilot-instructions.md` がそれを参照していない | 層2 | AI_TOOL_SETUP.md の遵守 |
+| `pyproject.toml` があるのに `requirements.txt` が存在する、または `uv.lock` が無い | 層2 | topics/PYTHON_DEV_ENV.md の遵守 |
+| `LICENSE`/`.github/FUNDING.yml`/`README` にプレースホルダ（`[YEAR]` 等）が残っている | 層2（テンプレートリポジトリ自体は対象外） | topics/PROJECT_README_GUIDELINES.md の遵守 |
 
 `.env` の正しい扱い方：`.env` は絶対にコミットしない。ダミー値のみを含む `.env.example` をコミットする。
 
@@ -125,6 +127,10 @@ cp docs/dev-charter/scripts/check-language-pair-footer.sh scripts/
 chmod +x scripts/check-language-pair-footer.sh
 cp docs/dev-charter/scripts/check-ai-context-reference.sh scripts/
 chmod +x scripts/check-ai-context-reference.sh
+cp docs/dev-charter/scripts/check-python-package-management.sh scripts/
+chmod +x scripts/check-python-package-management.sh
+cp docs/dev-charter/scripts/check-readme-placeholders.sh scripts/
+chmod +x scripts/check-readme-placeholders.sh
 
 # 3. dev-charter 固有のフックを除いた設定を生成する
 awk '
@@ -180,6 +186,8 @@ CI での実行例（GitHub Actions）：
 | `scripts/check-conventional-commit.sh` | コミットメッセージが Conventional Commits 形式でなければブロック（commit-msg ステージ、merge/squash コミットは対象外） |
 | `scripts/check-language-pair-footer.sh` | 日英ペアドキュメントの冒頭宣言・末尾フッターの有無をキーワードベースで検証（ペアが両方存在する場合のみ） |
 | `scripts/check-ai-context-reference.sh` | `AI_CONTEXT.md` があるのに CLAUDE.md 等がそれを参照していなければブロック |
+| `scripts/check-python-package-management.sh` | `pyproject.toml` があるのに `requirements.txt` が存在する、または `uv.lock` が無ければブロック |
+| `scripts/check-readme-placeholders.sh` | `LICENSE`/`.github/FUNDING.yml`/`README` のプレースホルダ残留を検知（テンプレートリポジトリは対象外） |
 | `SECURITY_POLICY.md` | このドキュメント |
 
 ---
