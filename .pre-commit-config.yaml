@@ -171,6 +171,48 @@ repos:
         always_run: true
 
   # ----------------------------------------------------------------
+  # Language pair header/footer (LANGUAGE_POLICY.md)
+  # (checks canonical/reference declarations and edit-rule footers on
+  # <name>-jp.<ext> / <name>.<ext> pairs; keyword-based, not exact match)
+  # ----------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: check-language-pair-footer
+        name: Check language pair header/footer
+        language: script
+        entry: scripts/check-language-pair-footer.sh
+        pass_filenames: false
+        always_run: true
+
+  # ----------------------------------------------------------------
+  # AI_CONTEXT.md reference (AI_TOOL_SETUP.md)
+  # (CLAUDE.md/GEMINI.md/AGENTS.md/.github/copilot-instructions.md must
+  # reference AI_CONTEXT.md when it exists)
+  # ----------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: check-ai-context-reference
+        name: Check AI_CONTEXT.md reference
+        language: script
+        entry: scripts/check-ai-context-reference.sh
+        pass_filenames: false
+        always_run: true
+
+  # ----------------------------------------------------------------
+  # Conventional Commits message format (PROJECT_LIFECYCLE.md)
+  # (commit-msg stage: requires `pre-commit install --hook-type
+  # commit-msg` in addition to the default pre-commit stage install —
+  # see SECURITY_POLICY.md Setup Steps for the core.hooksPath caveat)
+  # ----------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: check-conventional-commit
+        name: Check conventional commit message
+        language: script
+        entry: scripts/check-conventional-commit.sh
+        stages: [commit-msg]
+
+  # ----------------------------------------------------------------
   # Markdown section headings
   # ----------------------------------------------------------------
   - repo: local

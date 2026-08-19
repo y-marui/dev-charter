@@ -53,6 +53,9 @@ git config hooks.skip-policy-check true
 | `<name>-jp.<ext>` / `<name>.<ext>` ペアの片側のみ更新 | 層2（ローカルのみ。理由は上記と同様） | LANGUAGE_POLICY.md の日英同時更新ルールの遵守 |
 | `LICENSE` ファイルの欠如 | 層2 | LEGAL_POLICY.md の遵守（ライセンスなし公開の防止） |
 | `.env.example`/`.env.sample`/`.env.template` があるのに `.gitignore` が `.env` を無視していない | 層2 | `.env` 誤コミットの一次防御 |
+| コミットメッセージが Conventional Commits 形式でない | 層2（commit-msg ステージ。`core.hooksPath` 使用時は個人の dotfiles 側の追加対応が無い限り機能しない） | PROJECT_LIFECYCLE.md の遵守 |
+| 日英ペアドキュメントの冒頭宣言・末尾フッターの欠如 | 層2 | LANGUAGE_POLICY.md の遵守 |
+| `AI_CONTEXT.md` があるのに `CLAUDE.md`/`GEMINI.md`/`AGENTS.md`/`.github/copilot-instructions.md` がそれを参照していない | 層2 | AI_TOOL_SETUP.md の遵守 |
 
 `.env` の正しい扱い方：`.env` は絶対にコミットしない。ダミー値のみを含む `.env.example` をコミットする。
 
@@ -116,6 +119,12 @@ cp docs/dev-charter/scripts/check-license-exists.sh scripts/
 chmod +x scripts/check-license-exists.sh
 cp docs/dev-charter/scripts/check-dotenv-gitignore.sh scripts/
 chmod +x scripts/check-dotenv-gitignore.sh
+cp docs/dev-charter/scripts/check-conventional-commit.sh scripts/
+chmod +x scripts/check-conventional-commit.sh
+cp docs/dev-charter/scripts/check-language-pair-footer.sh scripts/
+chmod +x scripts/check-language-pair-footer.sh
+cp docs/dev-charter/scripts/check-ai-context-reference.sh scripts/
+chmod +x scripts/check-ai-context-reference.sh
 
 # 3. dev-charter 固有のフックを除いた設定を生成する
 awk '
@@ -125,11 +134,20 @@ awk '
 ' docs/dev-charter/.pre-commit-config.yaml > .pre-commit-config.yaml
 
 # 4. pre-commit フックをインストール
-#    core.hooksPath を使用している場合（グローバルフックが pre-commit を呼ぶ場合）は
-#    pre-commit install は不要。手順 5 で pre-commit が正しく動作することを確認する。
+#    pre-commit ステージ（大半のフック）は core.hooksPath 使用時
+#    （グローバルフックが pre-commit を呼ぶ場合）は個別インストール不要。
+#    commit-msg ステージ（check-conventional-commit）は別途
+#    `pre-commit install --hook-type commit-msg` が要る。ただし
+#    core.hooksPath 設定時は pre-commit がこのインストールを拒否する
+#    （"Cowardly refusing to install hooks with core.hooksPath set"）。
+#    その場合、commit-msg ステージのフックはグローバルフック側
+#    （例: ~/.config/git/hooks/commit-msg）で
+#    `pre-commit run --hook-stage commit-msg --commit-msg-filename "$1"`
+#    を呼ぶよう個人の dotfiles 側に別途実装しない限り機能しない
+#    （本リポジトリのスコープ外）。
 git config core.hooksPath 2>/dev/null \
-  && echo "core.hooksPath が設定されています。手順 5 に進んでください。" \
-  || pre-commit install
+  && echo "core.hooksPath が設定されています。pre-commit ステージは手順 5 で確認します。commit-msg ステージは上記コメント参照。" \
+  || { pre-commit install; pre-commit install --hook-type commit-msg; }
 
 # 5. 動作確認（core.hooksPath の有無にかかわらず必須）
 pre-commit run --all-files
@@ -159,6 +177,9 @@ CI での実行例（GitHub Actions）：
 | `scripts/check-language-pair-sync.sh` | `<name>-jp.<ext>` / `<name>.<ext>` ペアが片側のみステージされていればブロック |
 | `scripts/check-license-exists.sh` | リポジトリルートに `LICENSE*` が無ければブロック |
 | `scripts/check-dotenv-gitignore.sh` | `.env.example` 等があるのに `.gitignore` が `.env` を無視していなければブロック |
+| `scripts/check-conventional-commit.sh` | コミットメッセージが Conventional Commits 形式でなければブロック（commit-msg ステージ、merge/squash コミットは対象外） |
+| `scripts/check-language-pair-footer.sh` | 日英ペアドキュメントの冒頭宣言・末尾フッターの有無をキーワードベースで検証（ペアが両方存在する場合のみ） |
+| `scripts/check-ai-context-reference.sh` | `AI_CONTEXT.md` があるのに CLAUDE.md 等がそれを参照していなければブロック |
 | `SECURITY_POLICY.md` | このドキュメント |
 
 ---
