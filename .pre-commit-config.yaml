@@ -104,6 +104,21 @@ repos:
         always_run: true
 
   # ----------------------------------------------------------------
+  # Block direct edits under the installed dev-charter subtree
+  # (only `git subtree add`/`pull --squash` may touch it; those bypass
+  # commit hooks entirely, so anything this hook sees staged under the
+  # prefix is a direct edit)
+  # ----------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: check-charter-subtree-edit
+        name: Block direct edits under dev-charter subtree
+        language: script
+        entry: scripts/check-charter-subtree-edit.sh
+        pass_filenames: false
+        always_run: true
+
+  # ----------------------------------------------------------------
   # Charter CI template check
   # (blocks if .github/workflows/dev-charter-check.yml drifted from the
   # template documented in the installed dev-charter's README-jp.md)
@@ -114,6 +129,44 @@ repos:
         name: Check charter CI template
         language: script
         entry: scripts/check-charter-ci-template.sh
+        pass_filenames: false
+        always_run: true
+
+  # ----------------------------------------------------------------
+  # Language pair sync (LANGUAGE_POLICY.md)
+  # (blocks if a <name>-jp.<ext> / <name>.<ext> pair is edited on only
+  # one side while the other side already exists in the repo)
+  # ----------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: check-language-pair-sync
+        name: Check language pair sync
+        language: script
+        entry: scripts/check-language-pair-sync.sh
+        pass_filenames: false
+        always_run: true
+
+  # ----------------------------------------------------------------
+  # LICENSE file exists (LEGAL_POLICY.md)
+  # ----------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: check-license-exists
+        name: Check LICENSE file exists
+        language: script
+        entry: scripts/check-license-exists.sh
+        pass_filenames: false
+        always_run: true
+
+  # ----------------------------------------------------------------
+  # .env.example / .gitignore consistency (SECURITY_POLICY.md)
+  # ----------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: check-dotenv-gitignore
+        name: Check .env.example / .gitignore consistency
+        language: script
+        entry: scripts/check-dotenv-gitignore.sh
         pass_filenames: false
         always_run: true
 

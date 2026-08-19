@@ -49,6 +49,10 @@ git config hooks.skip-policy-check true
 | Markdown の H2〜H6 に日本語を使用 | 層2 | セクションヘッダ言語の統一 |
 | ローカル `../dev-charter` チェックアウトより古い dev-charter のままコミット | 層2 | dev-charter 追従漏れの防止 |
 | `.github/workflows/dev-charter-check.yml` が README の CI テンプレートと不一致のままコミット | 層2 | 採用先 CI 設定の追従漏れの防止 |
+| `docs/dev-charter/` 配下の直接編集（`git subtree pull` 以外の変更） | 層2（ローカルのみ。CI の `pre-commit run --all-files` はステージ済み差分が空になるため未対応） | INSTALL_CHECKLIST.md の遵守 |
+| `<name>-jp.<ext>` / `<name>.<ext>` ペアの片側のみ更新 | 層2（ローカルのみ。理由は上記と同様） | LANGUAGE_POLICY.md の日英同時更新ルールの遵守 |
+| `LICENSE` ファイルの欠如 | 層2 | LEGAL_POLICY.md の遵守（ライセンスなし公開の防止） |
+| `.env.example`/`.env.sample`/`.env.template` があるのに `.gitignore` が `.env` を無視していない | 層2 | `.env` 誤コミットの一次防御 |
 
 `.env` の正しい扱い方：`.env` は絶対にコミットしない。ダミー値のみを含む `.env.example` をコミットする。
 
@@ -104,6 +108,14 @@ cp docs/dev-charter/scripts/check-local-charter-version.sh scripts/
 chmod +x scripts/check-local-charter-version.sh
 cp docs/dev-charter/scripts/check-charter-ci-template.sh scripts/
 chmod +x scripts/check-charter-ci-template.sh
+cp docs/dev-charter/scripts/check-charter-subtree-edit.sh scripts/
+chmod +x scripts/check-charter-subtree-edit.sh
+cp docs/dev-charter/scripts/check-language-pair-sync.sh scripts/
+chmod +x scripts/check-language-pair-sync.sh
+cp docs/dev-charter/scripts/check-license-exists.sh scripts/
+chmod +x scripts/check-license-exists.sh
+cp docs/dev-charter/scripts/check-dotenv-gitignore.sh scripts/
+chmod +x scripts/check-dotenv-gitignore.sh
 
 # 3. dev-charter 固有のフックを除いた設定を生成する
 awk '
@@ -143,6 +155,10 @@ CI での実行例（GitHub Actions）：
 | `scripts/check-markdown-heading-language.sh` | Markdown セクションヘッダの言語検証 |
 | `scripts/check-local-charter-version.sh` | ローカルの `../dev-charter` チェックアウトとの VERSION 差分をチェック（sibling が新しい場合はブロック、古い場合は警告） |
 | `scripts/check-charter-ci-template.sh` | `.github/workflows/dev-charter-check.yml` を README-jp.md の CI テンプレートと比較（不一致ならブロック） |
+| `scripts/check-charter-subtree-edit.sh` | `docs/dev-charter/` 配下がステージされていれば常にブロック（`git subtree add`/`pull --squash` はコミットフックを経由しないため誤検知しない） |
+| `scripts/check-language-pair-sync.sh` | `<name>-jp.<ext>` / `<name>.<ext>` ペアが片側のみステージされていればブロック |
+| `scripts/check-license-exists.sh` | リポジトリルートに `LICENSE*` が無ければブロック |
+| `scripts/check-dotenv-gitignore.sh` | `.env.example` 等があるのに `.gitignore` が `.env` を無視していなければブロック |
 | `SECURITY_POLICY.md` | このドキュメント |
 
 ---
