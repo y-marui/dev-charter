@@ -246,11 +246,14 @@ Rules:
 `needs` には含められない（`needs` は同一ワークフローファイル内でしか機能しない）ので、
 Ruleset には別エントリとして登録する。
 
-このチェックの失敗条件は「dev-charter が最新でない」ことではない（最新でなければ自動で
-更新 PR を作成して正常終了する）。実際に失敗するのは、リモート `VERSION` の取得失敗・
-ローカル `VERSION` の欠落・push や PR 作成時のエラー・GitHub Actions の課金ブロックなど、
-本当に何かが壊れているケースのみ。そのため必須チェックにしても「charter が遅れているだけ」
-で無関係な PR がブロックされることはない。
+このチェックは「dev-charter が最新でない」場合も **意図的に失敗する**（`update-charter` の
+draft PR を自動作成した上で `exit 1`）。schedule トリガーが無くなり `pull_request`/`push`
+イベント駆動のみになったため、成功で終わらせてしまうと更新 PR が誰にも気づかれないまま
+放置され、無関係な PR がどんどんマージされてしまう。失敗させることで「今動いている PR/push」
+の場で必ず対応を迫る。
+
+それ以外の失敗条件（リモート `VERSION` の取得失敗・ローカル `VERSION` の欠落・push や
+PR 作成時のエラー・GitHub Actions の課金ブロックなど）ももちろん失敗する。
 
 ### Bypass for Billing-Blocked CI (Private Repos, Provisional)
 
