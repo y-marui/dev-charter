@@ -16,38 +16,44 @@
 | `security` | `Security scan (pre-commit)` | pre-commit によるシークレット検知・静的解析 |
 | `lint` | `Lint` | コードスタイル・フォーマット検査 |
 | `test` | `Test` / `Test (pytest)` など | ユニットテスト・インテグレーションテスト |
-| `build_artifact`（任意） | `Build Artifact` | ビルド成果物の生成、またはインストール可能性の検証 |
-| `build` | `Build` | 全 job の集約ゲート（後述） |
+| `build`（任意） | `Build` | ビルド成果物の生成、またはインストール可能性の検証 |
+| `gate` | `Required Checks` | 全 job の集約ゲート（後述）。必ず存在する |
 
-`build` は全 job の集約点として必ず最後に配置し、Branch Protection（Ruleset）の必須ステータスチェックに登録する。
+`gate` は全 job の集約点として必ず最後に配置し、Branch Protection（Ruleset）の必須ステータス
+チェックには常に `Required Checks` を登録する（`Build` ではない）。job 名に `build` を
+使うのは、実際にビルド成果物を作る job（任意・実体のあるビルドがない場合は省略）だけ。
 
 ## Job Design
 
 **CIのjob構成とRuleset設定を分離し、Ruleset管理を最小化する。**
 
-- 複数jobの場合：最後に集約ゲート `build` jobを配置し、`needs` で全依存を定義する
-- 単一jobの場合：そのjobを `build` と命名する
-- Ruleset設定：`build` のみ指定（全リポジトリ共通）
+- 集約ゲート `gate` job を必ず最後に配置し、`needs` で全依存を定義する
+- 実体のあるビルド作業がある場合は `build` job を用意し、`gate` の `needs` に含める
+- 単一job（lint/test 相当すら分けない極小プロジェクト）でも `gate` は省略しない。
+  ビルド・検証の実処理をそのまま `gate` の中で行ってよい
+- Ruleset設定：`Required Checks`（`gate` job の `name`）のみ指定（全リポジトリ共通）
 
-この方針により、jobを追加してもRulesetの変更が不要になる。
+この方針により、job を増減しても Ruleset の変更が不要になる（`gate` という役割・名前が
+常に固定されているため）。
 
-### `build` Is a Gate, Not Just a `needs` Aggregation
+### `gate` Is a Gate, Not Just a `needs` Aggregation
 
-> **注意（過去の誤り）:** 以前このドキュメントは「いずれかの job が失敗すると `build` が
-> skip され、マージ不可になる」と説明していたが、これは誤り。GitHub の Ruleset /
-> Branch Protection の `required_status_checks` は、必須チェックが **`skipped` で完了した
-> 場合はブロックしない**（`failure` の場合のみブロックする）。`build` が `needs: [security,
-> lint, test]` のみで暗黙の `if: success()` に依存していると、依存 job が失敗したときに
-> `build` 自体は `skipped` として完了し、Ruleset 上は「必須チェックを満たした」と扱われて
-> **失敗したままマージできてしまう**。2026-08 に実際の運用で発覚した。
+> **注意（過去の誤り）:** 以前このドキュメントは、集約 job（当時は `build` という名前
+> だった）について「いずれかの job が失敗すると skip され、マージ不可になる」と説明して
+> いたが、これは誤り。GitHub の Ruleset / Branch Protection の `required_status_checks` は、
+> 必須チェックが **`skipped` で完了した場合はブロックしない**（`failure` の場合のみ
+> ブロックする）。集約 job が `needs: [security, lint, test]` のみで暗黙の `if: success()`
+> に依存していると、依存 job が失敗したときに集約 job 自体は `skipped` として完了し、
+> Ruleset 上は「必須チェックを満たした」と扱われて **失敗したままマージできてしまう**。
+> 2026-08 に実際の運用で発覚した。
 
-正しい実装は、`build` を **常に実行するゲート job**（`if: always()`）にし、`needs.*.result`
+正しい実装は、`gate` を **常に実行するゲート job**（`if: always()`）にし、`needs.*.result`
 を明示的に検査して `failure`/`cancelled` があれば自身を `failure` として終了させる。
 
 ```yaml
-build:
-  name: Build
-  needs: [security, lint, test]   # build_artifact 等があれば追加
+gate:
+  name: Required Checks
+  needs: [security, lint, test]   # build 等があれば追加
   if: always()
   runs-on: ubuntu-latest   # ゲートは判定のみなので常に最安ランナーでよい
   steps:
@@ -62,14 +68,13 @@ build:
 ```
 
 ビルド成果物の生成やインストール可能性の検証など、実体のあるビルド作業がある場合は、
-それを `build` とは別の job（`build_artifact` など、job ID・`name` は自由）に切り出し、
-`build` の `needs` に追加する。`build` 自体は判定専用に保ち、実作業ジョブと同じ高コストな
-ランナー（`macos-latest` 等）で起動させない（[Cost Optimization](#cost-optimization-path-filtering)
-参照）。
+それを `build` job に書き、`gate` の `needs` に追加する。`gate` 自体は判定専用に保ち、
+`build`・`lint`・`test` と同じ高コストなランナー（`macos-latest` 等）で起動させない
+（[Cost Optimization](#cost-optimization-path-filtering) 参照）。
 
 ```yaml
-build_artifact:
-  name: Build Artifact
+build:
+  name: Build
   needs: [security, lint, test]
   runs-on: macos-latest
   steps:
@@ -77,15 +82,15 @@ build_artifact:
     - run: pip install -e .
     - run: python -c "import mypackage"
 
-build:
-  name: Build
-  needs: [security, lint, test, build_artifact]
+gate:
+  name: Required Checks
+  needs: [security, lint, test, build]
   if: always()
   runs-on: ubuntu-latest
   steps:
     - name: Verify required jobs succeeded
       run: |
-        for result in "${{ needs.security.result }}" "${{ needs.lint.result }}" "${{ needs.test.result }}" "${{ needs.build_artifact.result }}"; do
+        for result in "${{ needs.security.result }}" "${{ needs.lint.result }}" "${{ needs.test.result }}" "${{ needs.build.result }}"; do
           if [ "$result" != "success" ]; then
             echo "::error::a required job did not succeed (got: $result)"
             exit 1
@@ -93,20 +98,23 @@ build:
         done
 ```
 
-**単一job：** そのjobを `build` と命名する（この場合はゲートを分離する必要はない）。
+**単一job（極小プロジェクト）：** ビルド・検証の実処理を `gate`（`name: Required Checks`）の
+中に直接書く。job を分ける必要がないだけで、Ruleset に登録する名前は常に `Required Checks`
+のまま変わらない。
 
 ### Cost Optimization (Path Filtering)
 
 `docs/**` や `*.md` のみの変更（例：`git subtree pull` による dev-charter 更新、README
-の修正）では、`lint`/`test`/`build_artifact` のような高コストな job（特に `macos-latest`
+の修正）では、`lint`/`test`/`build` のような高コストな job（特に `macos-latest`
 等の高額ランナー）を実行する必要がない。
 
 **ワークフロー単位の `paths-ignore` は使わない。** ワークフロー自体がトリガーされないと
 必須ステータスチェックが一切報告されず、PR が `Expected — Waiting for status to be
-reported` のまま永久にブロックされる（`build` が Ruleset の必須チェックである場合）。
+reported` のまま永久にブロックされる（`gate`＝`Required Checks` が Ruleset の必須チェック
+である場合）。
 
 代わりに [dorny/paths-filter](https://github.com/dorny/paths-filter) で変更内容を判定し、
-**job-level の `if:`** で `lint`/`test`/`build_artifact` をスキップする。`security`
+**job-level の `if:`** で `lint`/`test`/`build` をスキップする。`security`
 （pre-commit）は ubuntu-latest で安価な上、pre-commit 自身の `files:`/`types:` で
 変更ファイルに応じて各フックが自動的にスキップされるため、job 単位でのフィルタは不要。
 
@@ -157,15 +165,15 @@ jobs:
     if: needs.changes.outputs.code == 'true'
     # ...
 
-  build_artifact:
-    name: Build Artifact
+  build:
+    name: Build
     needs: [changes, security, lint, test]
     if: needs.changes.outputs.code == 'true'
     # ...
 
-  build:
-    name: Build
-    needs: [changes, security, lint, test, build_artifact]
+  gate:
+    name: Required Checks
+    needs: [changes, security, lint, test, build]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -179,7 +187,7 @@ jobs:
             echo "docs/config-only change; nothing further to verify"
             exit 0
           fi
-          for result in "${{ needs.lint.result }}" "${{ needs.test.result }}" "${{ needs.build_artifact.result }}"; do
+          for result in "${{ needs.lint.result }}" "${{ needs.test.result }}" "${{ needs.build.result }}"; do
             if [ "$result" != "success" ]; then
               echo "::error::a required job did not succeed (got: $result)"
               exit 1
@@ -220,7 +228,7 @@ Rules:
 ☑ Require a pull request before merging
   └ Required approvals: 0（個人開発）/ 1以上（複数人）
 ☑ Require status checks to pass before merging
-  └ Status checks: Build (GitHub Actions)
+  └ Status checks: Required Checks (GitHub Actions)
 ☑ Require conversation resolution before merging
 ☑ Block force pushes
 ☑ Restrict deletions
@@ -259,16 +267,16 @@ bypass（PR 経由のみ）** を追加してよい（Ruleset の `bypass_actors
 Rulesetの「Require status checks to pass before merging」でチェックを追加する際は、**名前とソースの両方を正しく指定**する。
 
 **チェック名：**
-GitHub Actions のステータスチェック名は、job の **`name` フィールドの値**（`Build`）で決まる。
-job ID（`build`）ではないため注意。
+GitHub Actions のステータスチェック名は、job の **`name` フィールドの値**（`Required Checks`）
+で決まる。job ID（`gate`）ではないため注意。
 
 ```yaml
 jobs:
-  build:
-    name: Build   # ← Rulesetに登録する名前はこの値
+  gate:
+    name: Required Checks   # ← Rulesetに登録する名前はこの値
 ```
 
-job `name` を省略した場合は job ID がチェック名になる（例：`build`）。
+job `name` を省略した場合は job ID がチェック名になる（例：`gate`）。
 
 **ソース（Source）：**
 チェック名を入力後、**ソースを `GitHub Actions` に指定する**（"Any source" のままにしない）。
@@ -277,8 +285,8 @@ job `name` を省略した場合は job ID がチェック名になる（例：`
 Rulesetの設定画面では以下のように表示される：
 
 ```
-Check name:  Build
+Check name:  Required Checks
 Source:      GitHub Actions
 ```
 
-集約 job の `name` は説明を追加せず、常に `Build` とする。個別 job の表示名は必要に応じて説明を追加してよい。
+集約ゲート job の `name` は説明を追加せず、常に `Required Checks` とする。個別 job の表示名は必要に応じて説明を追加してよい。
