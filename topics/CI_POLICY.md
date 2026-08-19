@@ -125,15 +125,22 @@ reported` のまま永久にブロックされる（`gate`＝`Required Checks` �
 変更ファイルに応じて各フックが自動的にスキップされるため、job 単位でのフィルタは不要。
 
 ```yaml
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
 jobs:
   changes:
     name: Detect changes
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     outputs:
       code: ${{ steps.filter.outputs.code }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@v4
         id: filter
         with:
           predicate-quantifier: 'some-with-excludes'
@@ -155,8 +162,9 @@ jobs:
 
   security:
     name: Security scan (pre-commit)
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
-    # フィルタなし。pre-commit 自身が変更ファイルに応じて自動スキップする
+    # パスでのフィルタなし。pre-commit 自身が変更ファイルに応じて自動スキップする
     # ...
 
   lint:
@@ -180,7 +188,10 @@ jobs:
   gate:
     name: Required Checks
     needs: [changes, security, lint, test, build]
-    if: always()
+    # draft は always() でも実行しない: draft はそもそもマージ不可なので、
+    # チェックが未報告のままでも「詰まる」リスクがない（docs-only スキップとは
+    # 違い、gate 自体を丸ごとスキップしてよい）
+    if: always() && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     steps:
       - name: Verify required jobs succeeded
@@ -200,6 +211,22 @@ jobs:
             fi
           done
 ```
+
+### Draft PRs
+
+`ready_for_review` を `on.pull_request.types` に加えた上で、`changes`・`security`・`gate`
+に draft スキップの `if:` を付ける（`lint`/`test`/`build` は `changes` 経由で連鎖的に
+スキップされる）。デフォルトの `pull_request` トリガーは `opened`/`synchronize`/`reopened`
+のみで `ready_for_review` を含まないため、これを忘れると draft 解除時に再実行されず、
+古い（未評価の）ステータスのまま残ってしまう。
+
+`gate` を `if: always()` のままにせず draft でスキップしてよい理由：docs-only スキップは
+「コードが変わっていないので中身の検証は不要だが、必須チェックとしての合否報告は必要」
+（`gate` 自体は動いて `exit 0` する）。draft は「そもそも GitHub がマージを許可しない」ため、
+必須チェックが一切報告されなくてもブロック待ちにならない。よって `gate` ごとスキップできる。
+
+`.github/workflows/dev-charter-check.yml` も同様に draft をスキップする（[Version Check
+(CI)](../README.md#version-check-ci) 参照）。
 
 **依存ロックファイル（`uv.lock` / `package-lock.json` / `Package.resolved` 等）は
 skip 対象に含めない。** ロックファイルの更新は依存パッケージのバージョン変更そのものであり、
