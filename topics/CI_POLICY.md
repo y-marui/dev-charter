@@ -1,5 +1,11 @@
 # CI Policy
 
+> **TODO（暫定メモ、2026-08-19）:** `swift-closed-template` の `ci.yml` の `on:` に
+> `develop` ブランチへの参照が残っているが、`develop` ブランチ運用は既にやめており
+> （現存せず、`DEVELOPING.md` 等にも記載なし）、設定だけが取り残されている。
+> `swift-closed-template` とそこから派生した各 swift-* リポジトリの `ci.yml` から
+> 削除する。この CI ポリシー更新とは別作業として扱う。
+
 ## Naming Convention
 
 | 対象 | 規則 | 例 |
@@ -229,10 +235,22 @@ Rules:
   └ Required approvals: 0（個人開発）/ 1以上（複数人）
 ☑ Require status checks to pass before merging
   └ Status checks: Required Checks (GitHub Actions)
+  └ Status checks: Check / check (GitHub Actions)
 ☑ Require conversation resolution before merging
 ☑ Block force pushes
 ☑ Restrict deletions
 ```
+
+`Check / check` は `.github/workflows/dev-charter-check.yml` が呼び出す再利用ワークフロー
+（`check-charter.yml`）のチェック名。`ci.yml` とは別ワークフローファイルのため `gate` の
+`needs` には含められない（`needs` は同一ワークフローファイル内でしか機能しない）ので、
+Ruleset には別エントリとして登録する。
+
+このチェックの失敗条件は「dev-charter が最新でない」ことではない（最新でなければ自動で
+更新 PR を作成して正常終了する）。実際に失敗するのは、リモート `VERSION` の取得失敗・
+ローカル `VERSION` の欠落・push や PR 作成時のエラー・GitHub Actions の課金ブロックなど、
+本当に何かが壊れているケースのみ。そのため必須チェックにしても「charter が遅れているだけ」
+で無関係な PR がブロックされることはない。
 
 ### Bypass for Billing-Blocked CI (Private Repos, Provisional)
 
