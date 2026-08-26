@@ -93,6 +93,14 @@ API_KEY=your-api-key-here
 
 ## Setup Steps
 
+> **lite 版を導入している場合**：以下の手順が取り込む `.gitleaks.toml` /
+> `scripts/*.sh` / `.pre-commit-config.yaml` は `lite` ブランチには含まれない
+> （[scripts/lite-manifest.txt](scripts/lite-manifest.txt) の `[exclude]` 参照）。
+> Layer 2 の自動化（pre-commit フックによるチーム強制）が必要な場合は `main`
+> （full 版）を導入すること。lite のみを導入している場合は、本セクションの
+> 手順は実行できないため、Layer 1 の個人フックと「Manual Compliance Policy」
+> 節の手動遵守で代替する。
+
 新規リポジトリに本憲章を適用し、`.pre-commit-config.yaml` がまだ存在しない場合：
 
 ```bash
