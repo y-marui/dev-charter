@@ -188,7 +188,7 @@ jobs:
       actions: read
 
   gate:
-    name: Dev Charter / Required Checks
+    name: Dev Charter
     needs: [check]
     if: always()
     runs-on: ubuntu-latest
@@ -204,9 +204,9 @@ jobs:
 ```
 
 > **Note:** dependabot が作成した PR や draft PR では `check` 自体がスキップされます
-> （後述）。`gate` はその場合も `skipped` を正常として扱い、必ず `Dev Charter / Required
-> Checks` を報告します。Branch Protection（Ruleset）に必須ステータスチェックとして登録
-> するのは `Check / check` ではなく `Dev Charter / Required Checks` です（[CI_POLICY.md
+> （後述）。`gate` はその場合も `skipped` を正常として扱い、必ず `Dev Charter`（ワークフロー
+> 自身の `name:` と同じ値）を報告します。Branch Protection（Ruleset）に必須ステータス
+> チェックとして登録するのは `Check / check` ではなく `Dev Charter` です（[CI_POLICY.md
 > の Ruleset 節](topics/CI_POLICY.md#branch-protection-ruleset)参照）。
 > `check` job だけを直接必須チェックに登録すると、skip 時に `Check / check` という
 > コンテキスト自体が一切報告されず、PR が `Expected — Waiting for status to be reported`

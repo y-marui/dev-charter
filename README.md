@@ -191,7 +191,7 @@ jobs:
       actions: read
 
   gate:
-    name: Dev Charter / Required Checks
+    name: Dev Charter
     needs: [check]
     if: always()
     runs-on: ubuntu-latest
@@ -207,8 +207,8 @@ jobs:
 ```
 
 > **Note:** `check` is skipped for Dependabot PRs and draft PRs (see below). `gate`
-> treats a `skipped` result as fine in both cases and always reports a `Dev Charter /
-> Required Checks` status. Register `Dev Charter / Required Checks` — not `Check /
+> treats a `skipped` result as fine in both cases and always reports a `Dev Charter`
+> status (matching this workflow's own `name:`). Register `Dev Charter` — not `Check /
 > check` — as the required status check in Branch Protection (Ruleset); see
 > [CI_POLICY.md's Ruleset section](topics/CI_POLICY.md#branch-protection-ruleset).
 > Registering the `check` job itself is unsafe: when it's skipped, the `Check / check`
