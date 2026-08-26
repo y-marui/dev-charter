@@ -269,22 +269,41 @@ Rules:
   └ Required approvals: 0（個人開発）/ 1以上（複数人）
 ☑ Require status checks to pass before merging
   └ Status checks: Required Checks (GitHub Actions)
-  └ Status checks: Check / check (GitHub Actions)
+  └ Status checks: Dev Charter / Required Checks (GitHub Actions)
 ☑ Require conversation resolution before merging
 ☑ Block force pushes
 ☑ Restrict deletions
 ```
 
-`Check / check` は `.github/workflows/dev-charter-check.yml` が呼び出す再利用ワークフロー
-（`check-charter.yml`）のチェック名。`ci.yml` とは別ワークフローファイルのため `gate` の
-`needs` には含められない（`needs` は同一ワークフローファイル内でしか機能しない）ので、
-Ruleset には別エントリとして登録する。
+`Dev Charter / Required Checks` は `.github/workflows/dev-charter-check.yml`（[Version Check
+(CI)](../README.md#version-check-ci) 参照）の `gate` job の `name`。同ワークフローの
+`check` job は `.github/workflows/dev-charter-check.yml` が呼び出す再利用ワークフロー
+（`check-charter.yml`）で、Dependabot PR・draft PR では job-level の `if:` でスキップ
+される。`ci.yml` とは別ワークフローファイルのため `gate` の `needs` には含められない
+（`needs` は同一ワークフローファイル内でしか機能しない）ので、Ruleset には別エントリと
+して登録する。
 
-このチェックは「dev-charter が最新でない」場合も **意図的に失敗する**（`update-charter` の
-draft PR を自動作成した上で `exit 1`）。schedule トリガーが無くなり `pull_request`/`push`
-イベント駆動のみになったため、成功で終わらせてしまうと更新 PR が誰にも気づかれないまま
-放置され、無関係な PR がどんどんマージされてしまう。失敗させることで「今動いている PR/push」
-の場で必ず対応を迫る。
+**`Check / check` を直接 Ruleset に登録してはいけない。** `check` は `uses:` で再利用
+ワークフローを呼ぶ job のため、GitHub は再利用ワークフロー側の job が実際に開始されて
+初めて `Check / check` という複合チェック名を生成する。job-level の `if:` が false（全
+Dependabot PR）になると再利用ワークフローが一度も呼ばれず、`Check / check` というコンテ
+キスト自体が `skipped` としてすら報告されない。Ruleset は `Check / check` が報告される
+のを待ち続け、該当 PR は `Expected — Waiting for status to be reported` のまま永久に
+ブロックされる（`gate` の `needs` を欠いた集約 job が `skipped` を `success` 扱いされる
+[§ `gate` Is a Gate, Not Just a `needs` Aggregation](#gate-is-a-gate-not-just-a-needs-aggregation)
+とは逆に、こちらは「単独 job をそのまま Ruleset に登録すると `skipped` が一切報告されない」
+という別種の罠）。`gate` job（普通の job のため `check` の実行有無に関わらず必ず自身の
+チェック名を報告する）を挟み、`needs.check.result` を検査して `skipped` は成功扱い、
+`failure`/`cancelled` のみ失敗させることで回避する（実装は [Version Check
+(CI)](../README.md#version-check-ci) のテンプレート参照。2026-08 に実際に発覚・修正、
+詳細は [Issue #81](https://github.com/y-marui/dev-charter/issues/81)）。
+
+`check` job（`check-charter.yml`）自体は「dev-charter が最新でない」場合も **意図的に
+失敗する**（`update-charter` の draft PR を自動作成した上で `exit 1`）。schedule トリガー
+が無くなり `pull_request`/`push` イベント駆動のみになったため、成功で終わらせてしまうと
+更新 PR が誰にも気づかれないまま放置され、無関係な PR がどんどんマージされてしまう。失敗
+させることで「今動いている PR/push」の場で必ず対応を迫る。`gate` はこの `failure` を
+そのまま自身の失敗として伝播するため、Ruleset 上のブロック効果は維持される。
 
 それ以外の失敗条件（リモート `VERSION` の取得失敗・ローカル `VERSION` の欠落・push や
 PR 作成時のエラー・GitHub Actions の課金ブロックなど）ももちろん失敗する。
