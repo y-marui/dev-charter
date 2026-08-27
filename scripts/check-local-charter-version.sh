@@ -1,24 +1,32 @@
 #!/usr/bin/env bash
 # Compare this repo's installed dev-charter VERSION against a sibling
-# ../dev-charter checkout's main branch.
+# ../dev-charter checkout's main or lite branch (whichever was installed).
 #
 # Expected layout:
 #   <parent>/dev-charter/     a local clone of dev-charter
 #   <parent>/<this-repo>/     this repository
 #
-# - sibling main newer than installed  -> block (a confirmed, actionable gap: run git subtree pull)
-# - sibling main older than installed  -> warn only (sibling itself may just be un-pulled)
+# - sibling ref newer than installed  -> block (a confirmed, actionable gap: run git subtree pull)
+# - sibling ref older than installed  -> warn only (sibling itself may just be un-pulled)
 # - equal, or either VERSION unavailable -> silent
 #
-# Reads VERSION from the sibling's local `main` ref (not its working tree), so
+# Reads VERSION from the sibling's local ref (not its working tree), so
 # the result doesn't depend on whatever branch happens to be checked out there.
+# The default ref is auto-detected from the installed CHARTER_INDEX.md's `(lite)`
+# marker, the same way the README's Makefile helper and check-charter.yml do, so
+# main-based and lite-based installs are each compared against the right branch.
 # Override with CHARTER_PREFIX / CHARTER_LOCAL_PATH / CHARTER_LOCAL_REF env vars if needed.
 set -euo pipefail
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
 PREFIX="${CHARTER_PREFIX:-docs/dev-charter}"
 LOCAL_CHARTER="${CHARTER_LOCAL_PATH:-$(dirname "$REPO_ROOT")/dev-charter}"
-LOCAL_REF="${CHARTER_LOCAL_REF:-main}"
+
+DEFAULT_REF="main"
+if [ -f "${REPO_ROOT}/${PREFIX}/CHARTER_INDEX.md" ] && grep -q '(lite)' "${REPO_ROOT}/${PREFIX}/CHARTER_INDEX.md"; then
+  DEFAULT_REF="lite"
+fi
+LOCAL_REF="${CHARTER_LOCAL_REF:-$DEFAULT_REF}"
 
 INSTALLED_VERSION_FILE="${REPO_ROOT}/${PREFIX}/VERSION"
 

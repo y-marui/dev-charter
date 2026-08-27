@@ -46,6 +46,24 @@ done <<< "$include_files"
   echo "普遍的に価値がある部分だけを収録している。full 版の全体像は"
   echo "https://github.com/y-marui/dev-charter を参照。"
   echo
+  echo "## Updating"
+  echo
+  echo "\`docs/dev-charter/\` は git subtree で導入されている。更新するには："
+  echo
+  echo '```'
+  echo "git remote add dev-charter https://github.com/y-marui/dev-charter  # 未追加の場合のみ"
+  echo "git subtree pull --prefix=docs/dev-charter dev-charter lite --squash"
+  echo '```'
+  echo
+  echo "\`main\`/\`lite\` の取り違えを防ぐには、このファイルの \`(lite)\` マーカーで"
+  echo "導入済みブランチを自動判定する Makefile ヘルパーを使う（full 版 README の"
+  echo "\"Makefile helper\" セクション参照）。"
+  echo
+  echo "更新後は \`git diff HEAD~1 HEAD --name-only -- docs/dev-charter/\` で"
+  echo "変更ファイルを確認し、プロジェクトへの影響を反映する（lite にはローカルの"
+  echo "UPDATE_CHECKLIST.md がないため、必要なら full 版を参照："
+  echo "https://github.com/y-marui/dev-charter/blob/main/UPDATE_CHECKLIST.md ）。"
+  echo
   echo "## Index"
   echo
   echo "| トピック / キーワード | ファイル |"
