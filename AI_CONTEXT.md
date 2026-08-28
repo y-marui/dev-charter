@@ -95,6 +95,27 @@ pre-commit は、シークレット・ローカル絶対パス・VERSION 日付�
 - **標準担当の正本**：`AI_COLLABORATION_RULES.md` の「AI Tool Responsibilities」と「Rules for Multi-AI Usage」
 - **このリポジトリ固有の上書き**：なし
 
+### Migration to Direct MCP Integration
+
+`AI_COLLABORATION_RULES.md` は人間が CLI を個別に叩いてハンドオフする運用を前提に
+書かれているが、CLI の対話待ち（stdin blocking）を避けるため、Claude Code から MCP
+経由で Codex・GitHub 操作を直結する方向に移行中（本文はまだ更新されていない）。
+
+- Codex: `codex mcp-server`（stdio）で MCP サーバ化できる
+- GitHub 操作: 公式ホスト型 GitHub MCP Server（`https://api.githubcopilot.com/mcp/`）を使う。
+  OAuth 動的クライアント登録に非対応のため、`gh auth token` の Bearer ヘッダーで認証する
+  （`gh auth login` でトークンが失効・再発行されたら MCP サーバーの再登録が必要）
+- Gemini CLI・GitHub Copilot CLI はどちらも「MCP サーバとして公開する」モードを持たない
+  （`mcp` サブコマンドは外部サーバに繋ぐクライアント管理のみ）。ヘッドレス CLI 呼び出し
+  （`gemini -p ...`、`copilot -p ... --allow-all-tools`）で運用する
+- GitHub Copilot coding agent（非同期・クラウド実行）は GitHub MCP Server の
+  `assign_copilot_to_issue` ツール、または `gh issue edit --add-assignee copilot-swe-agent`
+  で起動する。投げた後は非同期で PR が立つのを待つ形で、Codex MCP のような同期応答ではない
+- ローカル LLM（Ollama）は MCP 化不要。別 PC で動かし続け、`OLLAMA_HOST` をそのマシンに
+  向ける運用のままでよい
+- 「Codex による独立レビュー」「最終承認は人間」という原則は MCP 直結にしても維持できる
+  （Codex には生の差分を渡し、生のレビュー結果をユーザーに見せる運用にすればよい）
+
 ## Prohibited Actions
 
 - シークレット・認証情報のコミット
