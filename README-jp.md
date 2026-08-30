@@ -64,7 +64,16 @@ docs/dev-charter/INSTALL_CHECKLIST.md を実行して
 
 ## Update
 
-`dev-charter` リモートが未設定の場合（プロジェクトを clone した直後など）は先に追加する：
+Quick Install のワンライナーを再実行するだけでも更新できる。既存の導入と
+そのブランチ（full/lite）を検知して `git subtree pull` を自動実行する
+（未コミットの変更があれば自動で stash/復元し、テンプレートリポジトリの
+場合は完全な再同期にフォールバックする）：
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+```
+
+手動で更新する場合：`dev-charter` リモートが未設定の場合（プロジェクトを clone した直後など）は先に追加する：
 
 ```
 git remote add dev-charter https://github.com/y-marui/dev-charter

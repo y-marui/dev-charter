@@ -65,7 +65,16 @@ Run docs/dev-charter/INSTALL_CHECKLIST.md
 
 ## Update
 
-If the `dev-charter` remote is not set up (e.g., after cloning the project), add it first:
+Re-running the Quick Install one-liner also works for updates — it detects
+the existing install and its branch (full/lite), then runs `git subtree
+pull` for you (stashing/restoring uncommitted changes as needed, and falling
+back to a full re-sync for template-repo checkouts):
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+```
+
+To update manually instead: if the `dev-charter` remote is not set up (e.g., after cloning the project), add it first:
 
 ```
 git remote add dev-charter https://github.com/y-marui/dev-charter
