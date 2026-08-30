@@ -13,13 +13,7 @@ and development rules used across projects.
 
 ## Documents
 
-See the canonical [src/CHARTER_INDEX.md](src/CHARTER_INDEX.md) for the complete document list and topic-to-file lookup table.
-
-> **Note:** This repository's own root (`AI_CONTEXT.md`, `CLAUDE.md`, `GEMINI.md`,
-> `AGENTS.md`, this README) is for AI tools editing *dev-charter itself*. The
-> charter content distributed to adopting projects lives under
-> [`src/`](src/) and is published as the `full` and `lite` branches — see
-> below.
+See the canonical [CHARTER_INDEX.md](CHARTER_INDEX.md) for the complete document list and topic-to-file lookup table.
 
 ## How to Use
 
@@ -27,7 +21,7 @@ See the canonical [src/CHARTER_INDEX.md](src/CHARTER_INDEX.md) for the complete 
 2. Have the AI read the charter and generate `AI_CONTEXT.md` and agent config files at the project root
 3. After charter updates, run `git subtree pull` and have the AI sync the context files
 
-See [src/AI_TOOL_SETUP.md](src/AI_TOOL_SETUP.md) for the structure spec.
+See [AI_TOOL_SETUP.md](AI_TOOL_SETUP.md) for the structure spec.
 
 ## Quick Install
 
@@ -103,15 +97,14 @@ Run docs/dev-charter/UPDATE_CHECKLIST.md
 
 ## Lite Version
 
-The `full` branch (built from [`src/`](src/)) includes a lot of
-software-project-specific content — Python dev environment, UI design,
-monetization policy, and so on. For documentation-only repositories (dotfiles
-collections, note archives, etc.) where installing the full charter is
-overkill, the `lite` branch carries only the parts that are universally
-valuable regardless of project type (AI context maintenance, task management
-via GitHub Issues/Projects, secrets management, etc.). See
-[scripts/charter-manifest.txt](scripts/charter-manifest.txt) for how files
-are classified.
+This `full` branch includes a lot of software-project-specific content —
+Python dev environment, UI design, monetization policy, and so on. For
+documentation-only repositories (dotfiles collections, note archives, etc.)
+where installing the full charter is overkill, the `lite` branch carries only
+the parts that are universally valuable regardless of project type (AI context
+maintenance, task management via GitHub Issues/Projects, secrets management,
+etc.). See [dev-charter's own scripts/charter-manifest.txt](https://github.com/y-marui/dev-charter/blob/main/scripts/charter-manifest.txt)
+for how files are classified.
 
 Quick Install (set `CHARTER_BRANCH=lite`):
 
@@ -140,10 +133,10 @@ the included files' content actually changes (so unrelated full-side changes
 don't trigger update PRs for lite adopters).
 
 A lite-only checkout doesn't include this README, `INSTALL_CHECKLIST.md`, or
-`UPDATE_CHECKLIST.md`. Instead, `scripts/publish-branch.sh` renames
-[`src/README-lite.md`](src/README-lite.md) to `README.md` when it builds the
-`lite` branch, so lite adopters get self-contained update instructions
-without needing to install full.
+`UPDATE_CHECKLIST.md`. Instead, dev-charter's `scripts/publish-branch.sh`
+renames its own `src/README-lite.md` to `README.md` when it builds the `lite`
+branch, so lite adopters get self-contained update instructions without
+needing to install full.
 
 ## Makefile helper
 
