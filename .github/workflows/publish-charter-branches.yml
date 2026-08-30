@@ -13,6 +13,8 @@ on:
     paths:
       - "src/**"
       - "LICENSE"
+      - ".gitleaks.toml"
+      - ".pre-commit-config.yaml"
       - "scripts/charter-manifest.txt"
       - "scripts/publish-branch.sh"
   workflow_dispatch:

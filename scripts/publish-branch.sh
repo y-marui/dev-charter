@@ -58,7 +58,8 @@ include_files=$(echo "$include_files" | grep -v '^CHARTER_INDEX\.md$' || true)
 
 INDEX_FILE=$(mktemp -u)
 GEN_CHARTER_INDEX=$(mktemp)
-trap 'rm -f "$INDEX_FILE" "$GEN_CHARTER_INDEX"' EXIT
+PRE_COMMIT_CONFIG=$(mktemp)
+trap 'rm -f "$INDEX_FILE" "$GEN_CHARTER_INDEX" "$PRE_COMMIT_CONFIG"' EXIT
 export GIT_INDEX_FILE="$INDEX_FILE"
 git read-tree --empty
 
@@ -79,12 +80,24 @@ if [ "$BRANCH" = "full" ]; then
     git update-index --add --cacheinfo "${mode:-100644}","$blob","$rel"
   done < <(find src/scripts -type f -print0)
 
-  for f in LICENSE .gitleaks.toml .pre-commit-config.yaml; do
+  for f in LICENSE .gitleaks.toml; do
     [ -f "$f" ] || continue
     blob=$(git hash-object -w "$f")
     mode=$(mode_of "$f")
     git update-index --add --cacheinfo "${mode:-100644}","$blob","$f"
   done
+
+  # .pre-commit-config.yaml はこのリポジトリ自身の src/scripts/ レイアウト
+  # 前提の entry: パスを持つ。full 配布先では scripts/*（src/ プレフィックス
+  # 無し）に平坦化されるため、同梱前にパスを書き換える。
+  if [ -f .pre-commit-config.yaml ]; then
+    sed -e 's#entry: src/scripts/#entry: scripts/#' \
+        -e 's#-File src/scripts/#-File scripts/#' \
+        .pre-commit-config.yaml > "$PRE_COMMIT_CONFIG"
+    blob=$(git hash-object -w "$PRE_COMMIT_CONFIG")
+    mode=$(mode_of .pre-commit-config.yaml)
+    git update-index --add --cacheinfo "${mode:-100644}","$blob",.pre-commit-config.yaml
+  fi
 fi
 
 # ブランチ専用 README（あれば README.md / README-jp.md にリネームして同梱）

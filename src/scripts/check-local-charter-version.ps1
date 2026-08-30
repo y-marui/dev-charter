@@ -37,7 +37,14 @@ if (-not (Test-Path $installedVersionFile)) { exit 0 }
 if (-not (Test-Path $localCharter)) { exit 0 }
 
 $installed = Get-Content -Path $installedVersionFile -TotalCount 1
-$local = (git -C $localCharter show "${localRef}:VERSION" 2>$null | Select-Object -First 1)
+
+# A plain `git clone` normally has no local full/lite branch, only a
+# `<remote>/<ref>` remote-tracking branch, so fall back to that.
+$local = $null
+foreach ($candidate in @($localRef, "origin/$localRef")) {
+    $value = (git -C $localCharter show "${candidate}:VERSION" 2>$null | Select-Object -First 1)
+    if (-not [string]::IsNullOrEmpty($value)) { $local = $value; break }
+}
 if ([string]::IsNullOrEmpty($local)) { exit 0 }
 
 if ($local -eq $installed) {

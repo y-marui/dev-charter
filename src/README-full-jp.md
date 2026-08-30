@@ -132,10 +132,9 @@ lite の `VERSION` は full とは独立して管理され、収録ファイル�
 変わったときだけ更新される（無関係な full 側の変更で更新PRが飛ばないようにするため）。
 
 lite のみを導入した場合、この README・`INSTALL_CHECKLIST.md`・
-`UPDATE_CHECKLIST.md` は含まれない。代わりに dev-charter 本体の
-`scripts/publish-branch.sh` が `lite` ブランチを構築する際、自身の
-`src/README-lite-jp.md` を `README-jp.md` にリネームして同梱するため、
-full を導入していない採用先でも自己完結した更新手順を参照できる。
+`UPDATE_CHECKLIST.md` は含まれない。代わりに `lite` 自身が生成する
+`README-jp.md` に自己完結した更新手順が含まれるため、full を導入していない
+採用先でも参照できる。
 
 ## Makefile Helper
 

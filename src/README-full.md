@@ -133,10 +133,9 @@ the included files' content actually changes (so unrelated full-side changes
 don't trigger update PRs for lite adopters).
 
 A lite-only checkout doesn't include this README, `INSTALL_CHECKLIST.md`, or
-`UPDATE_CHECKLIST.md`. Instead, dev-charter's `scripts/publish-branch.sh`
-renames its own `src/README-lite.md` to `README.md` when it builds the `lite`
-branch, so lite adopters get self-contained update instructions without
-needing to install full.
+`UPDATE_CHECKLIST.md`. Instead, `lite`'s own generated `README.md` carries
+self-contained update instructions, so lite adopters don't need to install
+full.
 
 ## Makefile helper
 

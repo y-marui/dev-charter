@@ -40,7 +40,18 @@ INSTALLED_VERSION_FILE="${REPO_ROOT}/${PREFIX}/VERSION"
 [ -d "$LOCAL_CHARTER" ] || exit 0
 
 INSTALLED=$(head -1 "$INSTALLED_VERSION_FILE")
-LOCAL=$(git -C "$LOCAL_CHARTER" show "${LOCAL_REF}:VERSION" 2>/dev/null | head -1) || exit 0
+
+# 素の `git clone` 直後は full/lite 等のローカルブランチが存在せず
+# `<remote>/<ref>` のリモート追跡ブランチしか無いことが多いため、ローカル ref
+# で見つからなければリモート追跡ブランチにもフォールバックする。
+LOCAL=""
+for candidate in "${LOCAL_REF}" "origin/${LOCAL_REF}"; do
+  v=$(git -C "$LOCAL_CHARTER" show "${candidate}:VERSION" 2>/dev/null | head -1) || true
+  if [ -n "$v" ]; then
+    LOCAL="$v"
+    break
+  fi
+done
 [ -n "$LOCAL" ] || exit 0
 
 if [ "$LOCAL" = "$INSTALLED" ]; then
