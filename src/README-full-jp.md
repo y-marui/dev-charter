@@ -13,12 +13,7 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 
 ## Documents
 
-憲章ドキュメントの一覧とトピック別の参照先は、正本である [src/CHARTER_INDEX.md](src/CHARTER_INDEX.md) を参照してください。
-
-> **Note:** このリポジトリ自身のルート（`AI_CONTEXT.md`・`CLAUDE.md`・
-> `GEMINI.md`・`AGENTS.md`・この README）は、*dev-charter 自体を編集する* AI
-> ツール向けです。採用先プロジェクトへ配布される憲章コンテンツは
-> [`src/`](src/) 配下にあり、`full`/`lite` ブランチとして公開されます（後述）。
+憲章ドキュメントの一覧とトピック別の参照先は、正本である [CHARTER_INDEX.md](CHARTER_INDEX.md) を参照してください。
 
 ## How to Use
 
@@ -26,7 +21,7 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 2. AI に dev-charter を読ませ、プロジェクトルートに `AI_CONTEXT.md` と AI ツール設定ファイルを生成させる
 3. 憲章が更新されたら `git subtree pull` 後、AI にコンテキストファイルを追従させる
 
-構成仕様は [src/AI_TOOL_SETUP.md](src/AI_TOOL_SETUP.md) を参照。
+構成仕様は [AI_TOOL_SETUP.md](AI_TOOL_SETUP.md) を参照。
 
 ## Quick Install
 
@@ -102,13 +97,14 @@ docs/dev-charter/UPDATE_CHECKLIST.md を実行して
 
 ## Lite Version
 
-`full` ブランチ（[`src/`](src/) から構築）は、Python 開発環境・UI デザイン・
-収益化方針などソフトウェアプロジェクト固有の内容を多く含む。ドキュメントのみ
-のリポジトリ（設定ファイル集、ノートアーカイブ等）ではそのまま導入すると過剰
-になる場合、`lite` ブランチを使うと、プロジェクト種別を問わず普遍的に価値が
-ある部分（AI コンテキストの整備、GitHub Issues/Projects でのタスク管理、
-シークレット管理等）だけを取り込める。収録ファイルの分類は
-[scripts/charter-manifest.txt](scripts/charter-manifest.txt) を参照。
+この `full` ブランチは、Python 開発環境・UI デザイン・収益化方針など
+ソフトウェアプロジェクト固有の内容を多く含む。ドキュメントのみのリポジトリ
+（設定ファイル集、ノートアーカイブ等）ではそのまま導入すると過剰になる場合、
+`lite` ブランチを使うと、プロジェクト種別を問わず普遍的に価値がある部分
+（AI コンテキストの整備、GitHub Issues/Projects でのタスク管理、シークレット
+管理等）だけを取り込める。収録ファイルの分類は
+[dev-charter 本体の scripts/charter-manifest.txt](https://github.com/y-marui/dev-charter/blob/main/scripts/charter-manifest.txt)
+を参照。
 
 Quick Install（`CHARTER_BRANCH=lite` を指定）：
 
@@ -136,10 +132,9 @@ lite の `VERSION` は full とは独立して管理され、収録ファイル�
 変わったときだけ更新される（無関係な full 側の変更で更新PRが飛ばないようにするため）。
 
 lite のみを導入した場合、この README・`INSTALL_CHECKLIST.md`・
-`UPDATE_CHECKLIST.md` は含まれない。代わりに `scripts/publish-branch.sh` が
-`lite` ブランチを構築する際、[`src/README-lite-jp.md`](src/README-lite-jp.md)
-を `README-jp.md` にリネームして同梱するため、full を導入していない採用先
-でも自己完結した更新手順を参照できる。
+`UPDATE_CHECKLIST.md` は含まれない。代わりに `lite` 自身が生成する
+`README-jp.md` に自己完結した更新手順が含まれるため、full を導入していない
+採用先でも参照できる。
 
 ## Makefile Helper
 

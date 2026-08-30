@@ -8,14 +8,14 @@
 #   CHARTER_REMOTE   git remote name          (default: dev-charter)
 #   CHARTER_URL      repository URL           (default: https://github.com/y-marui/dev-charter)
 #   CHARTER_PREFIX   install directory        (default: docs/dev-charter)
-#   CHARTER_BRANCH   branch to install from   (default: main)
+#   CHARTER_BRANCH   branch to install from   (default: full)
 
 set -euo pipefail
 
 REMOTE_NAME="${CHARTER_REMOTE:-dev-charter}"
 REMOTE_URL="${CHARTER_URL:-https://github.com/y-marui/dev-charter}"
 PREFIX="${CHARTER_PREFIX:-docs/dev-charter}"
-BRANCH="${CHARTER_BRANCH:-main}"
+BRANCH="${CHARTER_BRANCH:-full}"
 
 # 1. Verify we are inside a git repository
 if ! git rev-parse --git-dir > /dev/null 2>&1; then
@@ -25,13 +25,15 @@ fi
 
 # 2. Skip if already installed
 if [ -d "$PREFIX" ]; then
-    # Detect the already-installed variant from CHARTER_INDEX.md instead of
-    # trusting CHARTER_BRANCH (defaults to "main"), so re-running this script
-    # against an existing lite install without re-passing CHARTER_BRANCH=lite
-    # doesn't print instructions that would silently switch it to full.
-    INSTALLED_BRANCH="main"
-    if [ -f "$PREFIX/CHARTER_INDEX.md" ] && grep -q '(lite)' "$PREFIX/CHARTER_INDEX.md"; then
-        INSTALLED_BRANCH="lite"
+    # Detect the already-installed variant from CHARTER_INDEX.md's
+    # "# Charter Index (<branch>)" marker instead of trusting CHARTER_BRANCH
+    # (defaults to "full"), so re-running this script against an existing
+    # lite install without re-passing CHARTER_BRANCH=lite doesn't print
+    # instructions that would silently switch it to another variant.
+    INSTALLED_BRANCH="full"
+    if [ -f "$PREFIX/CHARTER_INDEX.md" ]; then
+        MARKER=$(head -1 "$PREFIX/CHARTER_INDEX.md" | grep -oE '\([a-z0-9_-]+\)$' | tr -d '()') || true
+        [ -n "$MARKER" ] && INSTALLED_BRANCH="$MARKER"
     fi
     if [ -n "${CHARTER_BRANCH:-}" ] && [ "$CHARTER_BRANCH" != "$INSTALLED_BRANCH" ]; then
         echo "Warning: $PREFIX looks like the '$INSTALLED_BRANCH' variant, but CHARTER_BRANCH=$CHARTER_BRANCH was given." >&2
@@ -64,8 +66,8 @@ git subtree add --prefix="$PREFIX" "$REMOTE_NAME" "$BRANCH" --squash
 
 # 6. Success message + prompt examples
 # lite には INSTALL_CHECKLIST.md がない（full 専用ファイルのため
-# scripts/lite-manifest.txt で除外）ので、branch ごとにプロンプトを変える。
-if [ "$BRANCH" = "main" ]; then
+# scripts/charter-manifest.txt で除外）ので、branch ごとにプロンプトを変える。
+if [ "$BRANCH" = "full" ]; then
     NEXT_PROMPT="${PREFIX}/INSTALL_CHECKLIST.md を実行して"
     NEXT_PROMPT_EN="Run ${PREFIX}/INSTALL_CHECKLIST.md"
 else

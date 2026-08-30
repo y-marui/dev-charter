@@ -8,7 +8,7 @@
 #   CHARTER_REMOTE   git remote name          (default: dev-charter)
 #   CHARTER_URL      repository URL           (default: https://github.com/y-marui/dev-charter)
 #   CHARTER_PREFIX   install directory        (default: docs/dev-charter)
-#   CHARTER_BRANCH   branch to install from   (default: main)
+#   CHARTER_BRANCH   branch to install from   (default: full)
 
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -16,7 +16,7 @@ $ErrorActionPreference = 'Stop'
 $remoteName = if ($env:CHARTER_REMOTE) { $env:CHARTER_REMOTE } else { 'dev-charter' }
 $remoteUrl = if ($env:CHARTER_URL) { $env:CHARTER_URL } else { 'https://github.com/y-marui/dev-charter' }
 $prefix = if ($env:CHARTER_PREFIX) { $env:CHARTER_PREFIX } else { 'docs/dev-charter' }
-$branch = if ($env:CHARTER_BRANCH) { $env:CHARTER_BRANCH } else { 'main' }
+$branch = if ($env:CHARTER_BRANCH) { $env:CHARTER_BRANCH } else { 'full' }
 
 # 1. Verify we are inside a git repository
 git rev-parse --git-dir *> $null
@@ -27,10 +27,18 @@ if ($LASTEXITCODE -ne 0) {
 
 # 2. Skip if already installed
 if (Test-Path $prefix) {
-    Write-Host "dev-charter is already installed at $prefix."
+    # Detect the already-installed variant from CHARTER_INDEX.md's
+    # "# Charter Index (<branch>)" marker instead of trusting CHARTER_BRANCH.
+    $installedBranch = 'full'
+    $installedIndex = Join-Path $prefix 'CHARTER_INDEX.md'
+    if (Test-Path $installedIndex) {
+        $firstLine = Get-Content -Path $installedIndex -TotalCount 1
+        if ($firstLine -match '\(([a-z0-9_-]+)\)$') { $installedBranch = $Matches[1] }
+    }
+    Write-Host "dev-charter is already installed at $prefix ($installedBranch)."
     Write-Host 'To update, run:'
     Write-Host "  if (-not (git remote get-url $remoteName 2>`$null)) { git remote add $remoteName $remoteUrl }"
-    Write-Host "  git subtree pull --prefix=$prefix $remoteName $branch --squash"
+    Write-Host "  git subtree pull --prefix=$prefix $remoteName $installedBranch --squash"
     exit 0
 }
 
@@ -51,8 +59,8 @@ git subtree add --prefix=$prefix $remoteName $branch --squash
 
 # 6. Success message + prompt examples
 # lite には INSTALL_CHECKLIST.md がない（full 専用ファイルのため
-# scripts/lite-manifest.txt で除外）ので、branch ごとにプロンプトを変える。
-if ($branch -eq 'main') {
+# scripts/charter-manifest.txt で除外）ので、branch ごとにプロンプトを変える。
+if ($branch -eq 'full') {
     $nextPrompt = "$prefix/INSTALL_CHECKLIST.md を実行して"
     $nextPromptEn = "Run $prefix/INSTALL_CHECKLIST.md"
 } else {
