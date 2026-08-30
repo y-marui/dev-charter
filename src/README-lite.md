@@ -11,6 +11,26 @@ UI design, monetization policy, and so on) is not included. See
 [CHARTER_INDEX.md](CHARTER_INDEX.md) for what's included. If you need that
 content, consider the `full` branch instead.
 
+## Install (git subtree)
+
+```
+git remote add dev-charter https://github.com/y-marui/dev-charter
+git fetch dev-charter
+git subtree add --prefix=docs/dev-charter dev-charter lite --squash
+```
+
+After installing, paste the following prompt into your AI tool:
+
+```
+Read docs/dev-charter/CHARTER_INDEX.md and set up AI_CONTEXT.md etc. for this project
+```
+
+The Quick Install one-liner does the same thing:
+
+```bash
+CHARTER_BRANCH=lite bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+```
+
 ## Update
 
 Re-running the Quick Install one-liner also works for updates — it detects

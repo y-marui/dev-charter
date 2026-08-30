@@ -10,6 +10,26 @@ GitHub Issues/Projects でのタスク管理、シークレット管理等）だ
 固有の内容は含まれない。収録内容は [CHARTER_INDEX.md](CHARTER_INDEX.md) を
 参照。それらが必要な場合は `full` ブランチを検討すること。
 
+## Install (git subtree)
+
+```
+git remote add dev-charter https://github.com/y-marui/dev-charter
+git fetch dev-charter
+git subtree add --prefix=docs/dev-charter dev-charter lite --squash
+```
+
+インストール後、以下のプロンプトを AI ツールに貼り付けてください：
+
+```
+docs/dev-charter/CHARTER_INDEX.md を読み、このプロジェクトに合わせて AI_CONTEXT.md 等を構成して
+```
+
+Quick Install のワンライナーでも同じことができる：
+
+```bash
+CHARTER_BRANCH=lite bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+```
+
 ## Update
 
 Quick Install のワンライナーを再実行するだけでも更新できる。既存の導入と

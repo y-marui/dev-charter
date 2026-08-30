@@ -10,6 +10,26 @@ environment, UI design, monetization policy, and so on. See
 lighter variant for documentation-only repositories, consider the `lite`
 branch instead.
 
+## Install (git subtree)
+
+```
+git remote add dev-charter https://github.com/y-marui/dev-charter
+git fetch dev-charter
+git subtree add --prefix=docs/dev-charter dev-charter full --squash
+```
+
+After installing, paste the following prompt into your AI tool:
+
+```
+Run docs/dev-charter/INSTALL_CHECKLIST.md
+```
+
+The Quick Install one-liner does the same thing:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+```
+
 ## Update
 
 Re-running the Quick Install one-liner also works for updates — it detects

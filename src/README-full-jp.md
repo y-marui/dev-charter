@@ -9,6 +9,26 @@ Python 開発環境・UI デザイン・収益化方針などソフトウェア�
 参照。ドキュメントのみのリポジトリ向けの軽量版が必要な場合は `lite` ブランチ
 を検討すること。
 
+## Install (git subtree)
+
+```
+git remote add dev-charter https://github.com/y-marui/dev-charter
+git fetch dev-charter
+git subtree add --prefix=docs/dev-charter dev-charter full --squash
+```
+
+インストール後、以下のプロンプトを AI ツールに貼り付けてください：
+
+```
+docs/dev-charter/INSTALL_CHECKLIST.md を実行して
+```
+
+Quick Install のワンライナーでも同じことができる：
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+```
+
 ## Update
 
 Quick Install のワンライナーを再実行するだけでも更新できる。既存の導入と

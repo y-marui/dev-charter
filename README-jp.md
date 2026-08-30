@@ -18,7 +18,24 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 > **Note:** このリポジトリ自身のルート（`AI_CONTEXT.md`・`CLAUDE.md`・
 > `GEMINI.md`・`AGENTS.md`・この README）は、*dev-charter 自体を編集する* AI
 > ツール向けです。採用先プロジェクトへ配布される憲章コンテンツは
-> [`src/`](src/) 配下にあり、`full`/`lite` ブランチとして公開されます（後述）。
+> [`src/`](src/) 配下にあり、`full`/`lite` ブランチとして公開されます。
+
+## Full and Lite Version
+
+dev-charter は 2 種類のブランチとして配布されます：
+
+- **full**（既定）：Python 開発環境・UI デザイン・収益化方針などソフトウェア
+  プロジェクト固有の内容を含む、憲章の全体
+- **lite**：ドキュメントのみのリポジトリ（設定ファイル集、ノートアーカイブ等）
+  向けに、プロジェクト種別を問わず普遍的に価値がある部分（AI コンテキストの
+  整備、GitHub Issues/Projects でのタスク管理、シークレット管理等）だけに
+  絞ったもの
+
+収録ファイルの分類は [scripts/charter-manifest.txt](scripts/charter-manifest.txt) を参照。
+`git subtree` を使った手動導入・更新手順など各バリアントの詳細は
+[src/README-full-jp.md](src/README-full-jp.md)（full）・
+[src/README-lite-jp.md](src/README-lite-jp.md)（lite）を参照してください
+（採用先にはそれぞれ `docs/dev-charter/README-jp.md` として同梱されます）。
 
 ## How to Use
 
@@ -42,143 +59,41 @@ Windows PowerShell の場合：
 irm https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.ps1 | iex
 ```
 
-スクリプトが git subtree のセットアップを自動化し、Claude Code が利用可能であれば
-初回セットアップ（INSTALL_CHECKLIST）の起動まで案内します。
-
-> **Note:** インストール先やブランチを変更する場合は環境変数で指定できます：
-> `CHARTER_PREFIX=path/to/charter bash <(curl -fsSL .../install.sh)`
-
-## Install (git subtree)
-
-```
-git remote add dev-charter https://github.com/y-marui/dev-charter
-git fetch dev-charter
-git subtree add --prefix=docs/dev-charter dev-charter full --squash
-```
-
-インストール後、以下のプロンプトを AI ツールに貼り付けてください：
-
-```
-docs/dev-charter/INSTALL_CHECKLIST.md を実行して
-```
-
-## Update
-
-Quick Install のワンライナーを再実行するだけでも更新できる。既存の導入と
-そのブランチ（full/lite）を検知して `git subtree pull` を自動実行する
-（未コミットの変更があれば自動で stash/復元し、テンプレートリポジトリの
-場合は完全な再同期にフォールバックする）：
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
-```
-
-手動で更新する場合：`dev-charter` リモートが未設定の場合（プロジェクトを clone した直後など）は先に追加する：
-
-```
-git remote add dev-charter https://github.com/y-marui/dev-charter
-git subtree pull --prefix=docs/dev-charter dev-charter full --squash
-```
-
-> **Note（[lite](#lite-version) を導入している場合）:** 上記の `full` を `lite` に
-> 置き換えること。取り違えると full/lite が入れ替わってしまう（[Makefile
-> Helper](#makefile-helper) は導入済みのブランチを自動判定するため、この
-> 取り違えが起きない）。
-
-> **Note（テンプレートリポジトリから作成したプロジェクト）:**
-> GitHub テンプレートはファイルのみコピーし git 履歴を引き継がないため、`git subtree pull` は失敗します。
-> `check-charter.yml` ワークフローがこのケースを自動検出して対処します。
-> 手動で更新する場合は `git subtree pull` の代わりに以下を実行してください：
-> ```bash
-> git remote add dev-charter https://github.com/y-marui/dev-charter || true
-> git fetch dev-charter
-> SPLIT=$(git rev-parse dev-charter/full)
-> rm -rf docs/dev-charter/
-> mkdir -p docs/dev-charter/
-> git archive dev-charter/full | tar -x -C docs/dev-charter/
-> git add docs/dev-charter/
-> git commit -m "Squashed 'docs/dev-charter/' content from commit ${SPLIT}
->
-> git-subtree-dir: docs/dev-charter
-> git-subtree-split: ${SPLIT}"
-> ```
-
-更新後、以下のプロンプトを AI ツールに貼り付けてください：
-
-```
-docs/dev-charter/UPDATE_CHECKLIST.md を実行して
-```
-
-## Lite Version
-
-`full` ブランチ（[`src/`](src/) から構築）は、Python 開発環境・UI デザイン・
-収益化方針などソフトウェアプロジェクト固有の内容を多く含む。ドキュメントのみ
-のリポジトリ（設定ファイル集、ノートアーカイブ等）ではそのまま導入すると過剰
-になる場合、`lite` ブランチを使うと、プロジェクト種別を問わず普遍的に価値が
-ある部分（AI コンテキストの整備、GitHub Issues/Projects でのタスク管理、
-シークレット管理等）だけを取り込める。収録ファイルの分類は
-[scripts/charter-manifest.txt](scripts/charter-manifest.txt) を参照。
-
-Quick Install（`CHARTER_BRANCH=lite` を指定）：
+lite 版を導入する場合は `CHARTER_BRANCH=lite`（PowerShell では
+`$env:CHARTER_BRANCH = 'lite'`）を付けてください：
 
 ```bash
 CHARTER_BRANCH=lite bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
 ```
 
-git subtree で直接導入する場合：
+スクリプトが git subtree のセットアップを自動化し、Claude Code が利用可能であれば
+初回セットアップ（INSTALL_CHECKLIST）の起動まで案内します。**同じワンライナーを
+再実行すると更新にもなります**（導入済みのブランチを自動判定するため、
+`git subtree pull` を手で打つ必要はありません）。
+
+> **Note:** インストール先を変更する場合は環境変数で指定できます：
+> `CHARTER_PREFIX=path/to/charter bash <(curl -fsSL .../install.sh)`
+
+インストール後、以下のプロンプトを AI ツールに貼り付けてください（full の場合）：
 
 ```
-git remote add dev-charter https://github.com/y-marui/dev-charter
-git fetch dev-charter
-git subtree add --prefix=docs/dev-charter dev-charter lite --squash
+docs/dev-charter/INSTALL_CHECKLIST.md を実行して
 ```
 
-Version Check (CI) を使う場合は `branch: lite` を指定する：
-
-```yaml
-    uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
-    with:
-      branch: lite
-```
-
-lite の `VERSION` は full とは独立して管理され、収録ファイルの内容が実際に
-変わったときだけ更新される（無関係な full 側の変更で更新PRが飛ばないようにするため）。
-
-lite のみを導入した場合、この README・`INSTALL_CHECKLIST.md`・
-`UPDATE_CHECKLIST.md` は含まれない。代わりに `scripts/publish-branch.sh` が
-`lite` ブランチを構築する際、[`src/README-lite-jp.md`](src/README-lite-jp.md)
-を `README-jp.md` にリネームして同梱するため、full を導入していない採用先
-でも自己完結した更新手順を参照できる。
+lite の場合はスクリプトが別のプロンプトを表示します。`git subtree` を使った
+手動導入・更新手順やテンプレートリポジトリでの対応は
+[src/README-full-jp.md](src/README-full-jp.md)（full）・
+[src/README-lite-jp.md](src/README-lite-jp.md)（lite）を参照してください。
 
 ## Makefile Helper
 
-`git subtree pull` は作業ツリーに未コミットの変更があると失敗するため、
-実行前に自動で `git stash` し、完了後に `git stash pop` で戻す。
-
-導入時に `full` と `lite`（将来追加されるブランチも含む）のどちらを選んだかを
-このターゲットが覚えている必要はない。既存の `docs/dev-charter/CHARTER_INDEX.md`
-の `# Charter Index (<branch>)` マーカー（`scripts/publish-branch.sh` が生成。
-マーカーが無ければ `full` 扱い）から毎回導入済みブランチを自動判定するため、
-取り違えて更新してしまう事故（full 導入なのに lite で上書き、またはその逆）
-を防げる。
+更新は Quick Install のワンライナー（`scripts/install.sh`）が stash/復元・
+ブランチ自動判定まで面倒を見るため、Makefile からはこれを呼ぶだけで十分です：
 
 ```
 .PHONY: update-charter
 update-charter:
-	git remote | grep -q '^dev-charter$$' || \
-	  git remote add dev-charter https://github.com/y-marui/dev-charter
-	git fetch dev-charter
-	@BRANCH=full; \
-	MARKER=$$(head -1 docs/dev-charter/CHARTER_INDEX.md 2>/dev/null | grep -oE '\([a-z0-9_-]+\)$$' | tr -d '()'); \
-	[ -n "$$MARKER" ] && BRANCH=$$MARKER; \
-	echo "dev-charter branch: $$BRANCH"; \
-	STASHED=0; \
-	if ! git diff --quiet || ! git diff --cached --quiet || [ -n "$$(git ls-files --others --exclude-standard)" ]; then \
-		git stash push -u -m "update-charter"; \
-		STASHED=1; \
-	fi; \
-	git subtree pull --prefix=docs/dev-charter dev-charter $$BRANCH --squash; \
-	if [ "$$STASHED" = "1" ]; then git stash pop; fi
+	bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
 ```
 
 ## Version Check (CI)
