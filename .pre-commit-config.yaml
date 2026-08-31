@@ -117,6 +117,19 @@ repos:
         entry: scripts/check-charter-manifest.sh
         pass_filenames: false
         always_run: true
+
+  # ----------------------------------------------------------------
+  # lite (等) 配布ブランチからの相対リンク切れチェック
+  # (lite タグ付きファイルが full 限定ファイルへ相対リンクしていないか)
+  # ----------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: check-lite-cross-references
+        name: Check lite cross-references
+        language: script
+        entry: scripts/check-lite-cross-references.sh
+        pass_filenames: false
+        always_run: true
   # END DEV-CHARTER ONLY
 
   # ----------------------------------------------------------------
