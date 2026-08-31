@@ -2,7 +2,8 @@
 
 プロジェクト種別（ソフトウェア・ドキュメント・研究ノート等）を問わず、変更を
 加えるときに共通して適用する原則。ソフトウェア・製品設計に固有の原則は
-[topics/SOFTWARE_DESIGN_PRINCIPLES.md](topics/SOFTWARE_DESIGN_PRINCIPLES.md)
+`full` 版の
+[topics/SOFTWARE_DESIGN_PRINCIPLES.md](https://github.com/y-marui/dev-charter/blob/full/topics/SOFTWARE_DESIGN_PRINCIPLES.md)
 を参照。
 
 ## Change Design Principles
