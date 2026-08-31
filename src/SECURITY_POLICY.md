@@ -58,6 +58,7 @@ git config hooks.skip-policy-check true
 | `AI_CONTEXT.md` があるのに `CLAUDE.md`/`GEMINI.md`/`AGENTS.md`/`.github/copilot-instructions.md` がそれを参照していない | 層2 | AI_TOOL_SETUP.md の遵守 |
 | `pyproject.toml` があるのに `requirements.txt` が存在する、または `uv.lock` が無い | 層2 | topics/PYTHON_DEV_ENV.md の遵守 |
 | `LICENSE`/`.github/FUNDING.yml`/`README` にプレースホルダ（`[YEAR]` 等）が残っている | 層2（テンプレートリポジトリ自体は対象外） | topics/PROJECT_README_GUIDELINES.md の遵守 |
+| デフォルトブランチ（`main`/`master`）へ直接コミット | 層2（CI 上ではスキップ。detached HEAD/PR ref でブランチ名を持たないため） | サーバ側 Ruleset は push のみ止めるため、コミット時点で検知する（topics/CI_POLICY.md「Branch Protection (Ruleset)」参照） |
 
 `.env` の正しい扱い方：`.env` は絶対にコミットしない。ダミー値のみを含む `.env.example` をコミットする。
 
@@ -139,6 +140,8 @@ cp docs/dev-charter/scripts/check-python-package-management.sh scripts/
 chmod +x scripts/check-python-package-management.sh
 cp docs/dev-charter/scripts/check-readme-placeholders.sh scripts/
 chmod +x scripts/check-readme-placeholders.sh
+cp docs/dev-charter/scripts/check-not-on-default-branch.sh scripts/
+chmod +x scripts/check-not-on-default-branch.sh
 
 # 3. dev-charter 固有のフックを除いた設定を生成する
 awk '
@@ -208,6 +211,7 @@ CI での実行例（GitHub Actions）：
 | `scripts/check-ai-context-reference.sh` | `AI_CONTEXT.md` があるのに CLAUDE.md 等がそれを参照していなければブロック |
 | `scripts/check-python-package-management.sh` | `pyproject.toml` があるのに `requirements.txt` が存在する、または `uv.lock` が無ければブロック |
 | `scripts/check-readme-placeholders.sh` | `LICENSE`/`.github/FUNDING.yml`/`README` のプレースホルダ残留を検知（テンプレートリポジトリは対象外） |
+| `scripts/check-not-on-default-branch.sh` | デフォルトブランチ（`main`/`master`、または `origin/HEAD` が指す既定ブランチ）への直接コミットをブロック（CI ではスキップ） |
 | `SECURITY_POLICY.md` | このドキュメント |
 
 ---

@@ -76,6 +76,21 @@ repos:
             \.pre-commit-config\.yaml$
           )
 
+  # ----------------------------------------------------------------
+  # Block commits on the default branch
+  # (server-side Ruleset only stops direct pushes; this catches local
+  # commits onto main/master before that point — see CI_POLICY.md
+  # Branch Protection (Ruleset))
+  # ----------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: check-not-on-default-branch
+        name: Block commits on the default branch
+        language: script
+        entry: src/scripts/check-not-on-default-branch.sh
+        pass_filenames: false
+        always_run: true
+
   # BEGIN DEV-CHARTER ONLY
   # ----------------------------------------------------------------
   # VERSION date check
