@@ -3,17 +3,46 @@
 > **This is the reference (English) version.**
 > For the canonical (Japanese) version, see [README-jp.md](README-jp.md).
 
-This is the **lite** variant of [dev-charter](https://github.com/y-marui/dev-charter):
+The **lite** variant of [dev-charter](https://github.com/y-marui/dev-charter):
 only the parts that are universally valuable regardless of project type (AI
 context maintenance, task management via GitHub Issues/Projects, secrets
 management, etc.). Software-project-specific content (Python dev environment,
-UI design, monetization policy, and so on) is not included — install the
-`full` branch instead if you need those. See
-[CHARTER_INDEX.md](CHARTER_INDEX.md) for what's included.
+UI design, monetization policy, and so on) is not included. See
+[CHARTER_INDEX.md](CHARTER_INDEX.md) for what's included. If you need that
+content, consider the `full` branch instead.
+
+## Install (git subtree)
+
+```
+git remote add dev-charter https://github.com/y-marui/dev-charter
+git fetch dev-charter
+git subtree add --prefix=docs/dev-charter dev-charter lite --squash
+```
+
+After installing, paste the following prompt into your AI tool:
+
+```
+Read docs/dev-charter/CHARTER_INDEX.md and set up AI_CONTEXT.md etc. for this project
+```
+
+The Quick Install one-liner does the same thing:
+
+```bash
+CHARTER_BRANCH=lite bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+```
 
 ## Update
 
-If the `dev-charter` remote is not set up (e.g., after cloning the project), add it first:
+Re-running the Quick Install one-liner also works for updates — it detects
+the existing install and its branch (here, lite), then runs `git subtree
+pull` for you (stashing/restoring uncommitted changes as needed, and falling
+back to a full re-sync for template-repo checkouts):
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+```
+
+To update manually instead: if the `dev-charter` remote is not set up (e.g., after cloning the project), add it first:
 
 ```
 git remote add dev-charter https://github.com/y-marui/dev-charter
@@ -38,46 +67,17 @@ git subtree pull --prefix=docs/dev-charter dev-charter lite --squash
 > git-subtree-split: ${SPLIT}"
 > ```
 
-After updating, read the changed files listed by
-`git diff HEAD~1 HEAD --name-only -- docs/dev-charter/` and have your AI tool
-apply the changes to this project (there is no separate `UPDATE_CHECKLIST.md`
-in lite — see [dev-charter's own README-jp.md](https://github.com/y-marui/dev-charter/blob/main/README-jp.md#update)
-if you want the full-version checklist for reference).
-
-## Makefile helper
-
-`git subtree pull` fails if the working tree has uncommitted changes, so this
-target automatically stashes before running and pops afterward.
-
-This target doesn't need to remember whether you installed `full` or `lite`.
-It auto-detects the installed branch every time from this file's
-`# Charter Index (<branch>)` marker, which prevents the accident of updating
-a full install with lite or vice versa.
-
-```
-.PHONY: update-charter
-update-charter:
-	git remote | grep -q '^dev-charter$$' || \
-	  git remote add dev-charter https://github.com/y-marui/dev-charter
-	git fetch dev-charter
-	@BRANCH=full; \
-	MARKER=$$(head -1 docs/dev-charter/CHARTER_INDEX.md 2>/dev/null | grep -oE '\([a-z0-9_-]+\)$$' | tr -d '()'); \
-	[ -n "$$MARKER" ] && BRANCH=$$MARKER; \
-	echo "dev-charter branch: $$BRANCH"; \
-	STASHED=0; \
-	if ! git diff --quiet || ! git diff --cached --quiet || [ -n "$$(git ls-files --others --exclude-standard)" ]; then \
-		git stash push -u -m "update-charter"; \
-		STASHED=1; \
-	fi; \
-	git subtree pull --prefix=docs/dev-charter dev-charter $$BRANCH --squash; \
-	if [ "$$STASHED" = "1" ]; then git stash pop; fi
-```
+After updating, run `git diff HEAD~1 HEAD --name-only -- docs/dev-charter/`
+to see what changed and have your AI tool apply it to the project (lite
+doesn't have its own `UPDATE_CHECKLIST.md`).
 
 ## Version Check (CI)
 
 Add `.github/workflows/dev-charter-check.yml` to your project to check for
-updates when a PR is opened or a commit is pushed to main, and open an update
-PR if outdated. Pass `branch: lite` so the check tracks this variant:
+updates when a PR is opened or a commit is pushed to main, and open an
+update PR if outdated (the check is skipped if one already succeeded
+within the last 7 days, so busy repos don't re-check on every single
+event). **Tracking lite requires setting `branch: lite` explicitly**:
 
 ```yaml
 name: Dev Charter
@@ -117,8 +117,57 @@ jobs:
           echo "check result: $result (skipped is fine — draft or dependabot)"
 ```
 
-See [dev-charter's own README-jp.md](https://github.com/y-marui/dev-charter/blob/main/README-jp.md#version-check-ci)
-for the notes on Dependabot/draft-PR skip behavior and Branch Protection setup.
+> **Note:** Omitting `with: branch: lite` makes it track `full`'s default
+> instead, so it'll keep flagging this project as outdated (or up to date
+> when it isn't) because full's and lite's VERSION values diverge.
+> `check-charter.yml` itself also detects a mismatch between the installed
+> `docs/dev-charter/CHARTER_INDEX.md` variant and the `branch` input and
+> errors out.
+
+> **Note:** `check` is skipped for Dependabot PRs and draft PRs (see below). `gate`
+> treats a `skipped` result as fine in both cases and always reports a `Dev Charter`
+> status (matching this workflow's own `name:`). Register `Dev Charter` — not `Check /
+> check` — as the required status check in Branch Protection (Ruleset); see
+> [CI_POLICY.md's Ruleset section](topics/CI_POLICY.md#branch-protection-ruleset).
+> Registering the `check` job itself is unsafe: when it's skipped, the `Check / check`
+> context is never reported at all, so the PR sits at "Expected — Waiting for status to
+> be reported" forever.
+
+> **Note:** Dependabot PRs are skipped — dependency-only activity doesn't warrant a
+> charter check. If your repository goes fully quiet, no check will run. If you want a
+> guaranteed periodic check regardless of activity, add a low-frequency `schedule`
+> (e.g. monthly) alongside this.
+
+> **Note:** Draft PRs are skipped (a draft can't be merged anyway, so there's no risk
+> in leaving the check unreported). `ready_for_review` in `on.pull_request.types` makes
+> sure taking a PR out of draft re-triggers a real run.
+
+> **Note:** If your repository has Branch Protection rules that prevent direct pushes,
+> add a bypass rule for the GitHub Actions bot
+> (Settings > Rules > Rulesets > Bypass list > GitHub Actions).
+
+## Makefile helper
+
+`git subtree pull` fails if the working tree has uncommitted changes, so this
+target automatically stashes before running and pops afterward.
+
+This target doesn't need to remember whether you installed `full` or `lite`
+(or another distribution branch added later). It auto-detects the installed
+branch every time from the existing `docs/dev-charter/CHARTER_INDEX.md`'s
+`# Charter Index (<branch>)` marker (generated by `scripts/publish-branch.sh`;
+absence of a marker means `full`), which prevents the accident of updating a
+full install with lite or vice versa.
+
+```
+.PHONY: update-charter
+update-charter:
+	CHARTER_UPDATE_ONLY=1 bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+```
+
+`CHARTER_UPDATE_ONLY=1` means that if this target is ever run before
+anything is installed, it won't silently install `full` — it asks which
+branch you want instead (or errors out with guidance in a non-interactive
+environment).
 
 ## Badge for Adopting Projects
 
@@ -129,6 +178,12 @@ Place this badge in your project README to show dev-charter update health.
 ```
 
 Replace `{owner}` and `{repo}` with your GitHub organization and repository name.
+
+| State | Status Badge |
+|---|---|
+| Not installed / CI not set up | red (VERSION not found) |
+| Installed, up to date | green |
+| Installed, outdated | red |
 
 ---
 
