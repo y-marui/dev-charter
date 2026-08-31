@@ -88,18 +88,11 @@ install/update steps and the template-repository fallback, see
 
 ## Makefile helper
 
-Updating is handled by the Quick Install one-liner (`scripts/install.sh`)
-itself — it stashes/restores changes and auto-detects the installed branch —
-so a Makefile target just needs to call it. Adding `CHARTER_UPDATE_ONLY=1`
-means that if this target is ever run before anything is installed, it
-won't silently install `full` — it asks which branch you want instead
-(or errors out with guidance in a non-interactive environment):
-
-```
-.PHONY: update-charter
-update-charter:
-	CHARTER_UPDATE_ONLY=1 bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
-```
+If you want `make update-charter` as part of your workflow, a thin target
+that just calls the Quick Install one-liner is enough (same for both full
+and lite). See the exact target definition in
+[src/README-full.md](src/README-full.md) (full) /
+[src/README-lite.md](src/README-lite.md) (lite).
 
 ## Version Check (CI)
 
@@ -114,23 +107,11 @@ setup, etc.), see
 
 ## Badge for Adopting Projects
 
-Place this badge in your project README to show dev-charter update health.
-
-### Workflow Status Badge
-
-Shows whether dev-charter is up to date.
-
-```markdown
-[![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml)
-```
-
-Replace `{owner}` and `{repo}` with your GitHub organization and repository name.
-
-| State | Status Badge |
-|---|---|
-| Not installed / CI not set up | red (VERSION not found) |
-| Installed, up to date | green |
-| Installed, outdated | red |
+You can add a badge to your project README showing the Version Check (CI)
+status (same for both full and lite). See the badge Markdown and status
+table in
+[src/README-full.md](src/README-full.md) (full) /
+[src/README-lite.md](src/README-lite.md) (lite).
 
 ---
 

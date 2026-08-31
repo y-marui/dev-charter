@@ -137,10 +137,43 @@ full はこのワークフローの `branch` 入力の既定値なので、`with
 > GitHub Actions bot の bypass rule を追加してください
 > （Settings > Rules > Rulesets > Bypass list > GitHub Actions）。
 
-## More
+## Makefile Helper
 
-Makefile Helper・Badge の設定については
-[dev-charter 本体の README-jp.md](https://github.com/y-marui/dev-charter/blob/main/README-jp.md) を参照。
+`git subtree pull` は作業ツリーに未コミットの変更があると失敗するため、
+実行前に自動で `git stash` し、完了後に `git stash pop` で戻す。
+
+導入時に `full` と `lite`（将来追加されるブランチも含む）のどちらを選んだかを
+このターゲットが覚えている必要はない。既存の `docs/dev-charter/CHARTER_INDEX.md`
+の `# Charter Index (<branch>)` マーカー（`scripts/publish-branch.sh` が生成。
+マーカーが無ければ `full` 扱い）から毎回導入済みブランチを自動判定するため、
+取り違えて更新してしまう事故（full 導入なのに lite で上書き、またはその逆）
+を防げる。
+
+```
+.PHONY: update-charter
+update-charter:
+	CHARTER_UPDATE_ONLY=1 bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+```
+
+`CHARTER_UPDATE_ONLY=1` により、万一まだ何も導入していない状態でこの
+ターゲットを実行してしまっても、`full` を勝手に新規インストールせず、
+full/lite どちらを入れるか確認（非対話環境ではエラーで案内）する。
+
+## Badge for Adopting Projects
+
+プロジェクトの README にこのバッジを追加すると、dev-charter の更新状態を可視化できます。
+
+```markdown
+[![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml)
+```
+
+`{owner}` と `{repo}` を自分のリポジトリのオーナー名・リポジトリ名に置き換えてください。
+
+| 状態 | Status Badge |
+|---|---|
+| 未導入 / CI 未設定 | 赤（VERSION not found） |
+| 導入済み・最新 | 緑 |
+| 導入済み・更新必要 | 赤 |
 
 ---
 

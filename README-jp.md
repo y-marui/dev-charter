@@ -87,17 +87,11 @@ lite の場合はスクリプトが別のプロンプトを表示します。`gi
 
 ## Makefile Helper
 
-更新は Quick Install のワンライナー（`scripts/install.sh`）が stash/復元・
-ブランチ自動判定まで面倒を見るため、Makefile からはこれを呼ぶだけで十分です。
-`CHARTER_UPDATE_ONLY=1` を付けると、万一まだ何も導入していない状態でこの
-ターゲットを実行してしまっても、`full` を勝手に新規インストールせず、
-full/lite どちらを入れるか確認（非対話環境ではエラーで案内）します：
-
-```
-.PHONY: update-charter
-update-charter:
-	CHARTER_UPDATE_ONLY=1 bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
-```
+`make update-charter` のような形で更新を Makefile に組み込みたい場合は、
+Quick Install のワンライナーを呼ぶだけの薄いターゲットで足ります（full/lite
+共通）。具体的なターゲット定義は
+[src/README-full-jp.md](src/README-full-jp.md)（full）・
+[src/README-lite-jp.md](src/README-lite-jp.md)（lite）を参照してください。
 
 ## Version Check (CI)
 
@@ -111,23 +105,10 @@ Dependabot/draft PR のスキップ挙動・Branch Protection 設定などの詳
 
 ## Badge for Adopting Projects
 
-プロジェクトの README にこのバッジを追加すると、dev-charter の更新状態を可視化できます。
-
-### Workflow Status Badge
-
-dev-charter が最新かどうかを表示します。
-
-```markdown
-[![Charter Check](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml/badge.svg)](https://github.com/{owner}/{repo}/actions/workflows/dev-charter-check.yml)
-```
-
-`{owner}` と `{repo}` を自分のリポジトリのオーナー名・リポジトリ名に置き換えてください。
-
-| 状態 | Status Badge |
-|---|---|
-| 未導入 / CI 未設定 | 赤（VERSION not found） |
-| 導入済み・最新 | 緑 |
-| 導入済み・更新必要 | 赤 |
+プロジェクトの README に、Version Check (CI) の状態を示すバッジを追加できます
+（full/lite 共通）。バッジの Markdown と状態一覧は
+[src/README-full-jp.md](src/README-full-jp.md)（full）・
+[src/README-lite-jp.md](src/README-lite-jp.md)（lite）を参照してください。
 
 ---
 
