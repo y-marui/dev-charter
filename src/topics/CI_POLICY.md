@@ -269,6 +269,11 @@ skip 対象に含めない。** ロックファイルの更新は依存パッケ
 
 ## Branch Protection (Ruleset)
 
+この Ruleset はサーバ側で **push** のみを止める。デフォルトブランチにローカルで
+コミットを重ねてしまうこと自体は防げないため、`full` 版では
+`check-not-on-default-branch` フック（`SECURITY_POLICY.md` 参照）がコミット
+時点で同じ制約を機械的に強制する。両者は代替ではなく補完関係にある。
+
 `main` ブランチに以下のRulesetを適用する（全リポジトリ共通）：
 
 ```
