@@ -23,6 +23,7 @@ jobs:
   publish:
     name: Publish
     strategy:
+      fail-fast: false
       matrix:
         branch: [full, lite]
     runs-on: ubuntu-latest
