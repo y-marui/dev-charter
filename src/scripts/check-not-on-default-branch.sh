@@ -10,8 +10,14 @@ set -euo pipefail
 
 [ -z "${CI:-}" ] || exit 0
 
-BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null) || exit 0
-[ "$BRANCH" != "HEAD" ] || exit 0
+
+# rev-parse --abbrev-ref HEAD は unborn HEAD（初回コミット前）で解決に失敗する
+# （HEAD がまだどのコミットも指していないため）。symbolic-ref は HEAD が指す
+# ブランチ名をコミットの有無に関係なく返すため、新規リポジトリのセットアップ
+# 手順（初回コミット前に pre-commit run --all-files を実行する）でも正しく
+# 検知できる。detached HEAD の場合は symbolic-ref 自体が失敗するので、
+# その場合も安全にスキップされる。
+BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null) || exit 0
 
 DEFAULT_BRANCH=""
 if git remote get-url origin >/dev/null 2>&1; then

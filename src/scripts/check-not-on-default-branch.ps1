@@ -5,8 +5,13 @@ $ErrorActionPreference = 'Stop'
 
 if ($env:CI) { exit 0 }
 
-$branch = (git rev-parse --abbrev-ref HEAD 2>$null)
-if (-not $branch -or $branch -eq 'HEAD') { exit 0 }
+# rev-parse --abbrev-ref HEAD fails on an unborn HEAD (before the first
+# commit). symbolic-ref returns the branch HEAD points to regardless of
+# whether it has a commit yet, so this also catches the initial commit
+# during new-repo setup. A detached HEAD makes symbolic-ref itself fail,
+# which is safely skipped below.
+$branch = (git symbolic-ref --short HEAD 2>$null)
+if (-not $branch) { exit 0 }
 
 $defaultBranch = $null
 git remote get-url origin *> $null
