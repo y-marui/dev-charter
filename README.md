@@ -90,19 +90,16 @@ install/update steps and the template-repository fallback, see
 
 Updating is handled by the Quick Install one-liner (`scripts/install.sh`)
 itself — it stashes/restores changes and auto-detects the installed branch —
-so a Makefile target just needs to call it:
+so a Makefile target just needs to call it. Adding `CHARTER_UPDATE_ONLY=1`
+means that if this target is ever run before anything is installed, it
+won't silently install `full` — it asks which branch you want instead
+(or errors out with guidance in a non-interactive environment):
 
 ```
 .PHONY: update-charter
 update-charter:
-	bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+	CHARTER_UPDATE_ONLY=1 bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
 ```
-
-> **Note:** This works the same way for both full and lite, but it only
-> auto-detects the branch of an **already-installed** copy to update it. If
-> you run this target before installing anything, it's treated as a fresh
-> install and defaults to `full`. To install lite for the first time, run
-> the Quick Install one-liner above with `CHARTER_BRANCH=lite` first.
 
 ## Version Check (CI)
 

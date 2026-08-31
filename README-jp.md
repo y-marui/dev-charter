@@ -88,19 +88,16 @@ lite の場合はスクリプトが別のプロンプトを表示します。`gi
 ## Makefile Helper
 
 更新は Quick Install のワンライナー（`scripts/install.sh`）が stash/復元・
-ブランチ自動判定まで面倒を見るため、Makefile からはこれを呼ぶだけで十分です：
+ブランチ自動判定まで面倒を見るため、Makefile からはこれを呼ぶだけで十分です。
+`CHARTER_UPDATE_ONLY=1` を付けると、万一まだ何も導入していない状態でこの
+ターゲットを実行してしまっても、`full` を勝手に新規インストールせず、
+full/lite どちらを入れるか確認（非対話環境ではエラーで案内）します：
 
 ```
 .PHONY: update-charter
 update-charter:
-	bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+	CHARTER_UPDATE_ONLY=1 bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
 ```
-
-> **Note:** これは full/lite どちらの導入にも共通で使えますが、あくまで
-> **導入済み**のブランチを自動判定して更新するためのものです。まだ何も
-> 導入していない状態でこのターゲットを最初に実行すると、新規インストール
-> 扱いになり既定の `full` が入ります。lite を新規インストールしたい場合は
-> 先に上記の Quick Install（`CHARTER_BRANCH=lite`）を実行してください。
 
 ## Version Check (CI)
 

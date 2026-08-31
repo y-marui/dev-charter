@@ -5,10 +5,16 @@
 #   irm https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.ps1 | iex
 #
 # Environment variables (all optional):
-#   CHARTER_REMOTE   git remote name          (default: dev-charter)
-#   CHARTER_URL      repository URL           (default: https://github.com/y-marui/dev-charter)
-#   CHARTER_PREFIX   install directory        (default: docs/dev-charter)
-#   CHARTER_BRANCH   branch to install from   (default: full)
+#   CHARTER_REMOTE       git remote name          (default: dev-charter)
+#   CHARTER_URL          repository URL           (default: https://github.com/y-marui/dev-charter)
+#   CHARTER_PREFIX       install directory        (default: docs/dev-charter)
+#   CHARTER_BRANCH       branch to install from   (default: full)
+#   CHARTER_UPDATE_ONLY  refuse to fresh-install; only update an existing
+#                        install (set to 1). Useful for a Makefile target
+#                        that shouldn't silently install `full` the first
+#                        time it's run. If nothing is installed yet, prompts
+#                        (interactively) or errors out (non-interactively)
+#                        instead of picking a branch for you.
 
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -122,6 +128,24 @@ if (Test-Path $prefix) {
 
     Invoke-ClaudeLaunchOffer -Prompt $nextPrompt
     exit 0
+}
+
+# 2.5. Nothing is installed yet. If this was invoked in update-only mode
+# (e.g. from a Makefile target), don't silently fall through and install
+# the default `full` - that would surprise someone who wanted lite. Ask
+# interactively, or print guidance and stop if there's no terminal to ask.
+if ($env:CHARTER_UPDATE_ONLY -eq '1') {
+    Write-Host "dev-charter is not installed at $prefix yet - nothing to update."
+    if (-not [Console]::IsInputRedirected) {
+        $answer = Read-Host 'Install full or lite now? [F/l]'
+        if ($answer -match '^[Ll]') { $branch = 'lite' } else { $branch = 'full' }
+        Write-Host "Installing $branch..."
+    } else {
+        Write-Host 'Run one of these to install it (this only updates an existing install):' -ForegroundColor Red
+        Write-Host '  irm https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.ps1 | iex' -ForegroundColor Red
+        Write-Host "  `$env:CHARTER_BRANCH = 'lite'; irm https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.ps1 | iex" -ForegroundColor Red
+        exit 1
+    }
 }
 
 # 3. Add remote if not present
