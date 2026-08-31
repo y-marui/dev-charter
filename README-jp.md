@@ -96,6 +96,12 @@ update-charter:
 	bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
 ```
 
+> **Note:** これは full/lite どちらの導入にも共通で使えますが、あくまで
+> **導入済み**のブランチを自動判定して更新するためのものです。まだ何も
+> 導入していない状態でこのターゲットを最初に実行すると、新規インストール
+> 扱いになり既定の `full` が入ります。lite を新規インストールしたい場合は
+> 先に上記の Quick Install（`CHARTER_BRANCH=lite`）を実行してください。
+
 ## Version Check (CI)
 
 `.github/workflows/dev-charter-check.yml` をプロジェクトに追加すると、

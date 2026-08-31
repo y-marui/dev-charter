@@ -98,6 +98,12 @@ update-charter:
 	bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
 ```
 
+> **Note:** This works the same way for both full and lite, but it only
+> auto-detects the branch of an **already-installed** copy to update it. If
+> you run this target before installing anything, it's treated as a fresh
+> install and defaults to `full`. To install lite for the first time, run
+> the Quick Install one-liner above with `CHARTER_BRANCH=lite` first.
+
 ## Version Check (CI)
 
 Add `.github/workflows/dev-charter-check.yml` to your project to check for updates
