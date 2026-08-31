@@ -242,6 +242,11 @@ jobs:
 `.github/workflows/dev-charter-check.yml` も同様に draft をスキップする（[Version Check
 (CI)](../README.md#version-check-ci) 参照）。
 
+`check-charter.yml` が作成する `update-charter` PR も Draft で始まるため、この
+`ready_for_review` は更新 PR にも必須である。`gh pr ready` で Draft を解除した時点で
+CI と Dev Charter チェックが再実行され、更新内容を含む状態で Ruleset の判定を受ける。
+テンプレートからこのイベントを除外してはいけない。
+
 **依存ロックファイル（`uv.lock` / `package-lock.json` / `Package.resolved` 等）は
 skip 対象に含めない。** ロックファイルの更新は依存パッケージのバージョン変更そのものであり、
 実際に lint/test/build を回して初めて壊れていないか確認できる。Dependabot の PR を含め、

@@ -1,5 +1,5 @@
 # リポジトリのブランチ運用方針。
-# main + develop はローカル・リモート双方に置き、lite は公開用のリモート専用とする。
+# main + develop はローカル・リモート双方に置き、full/lite は公開用のリモート専用とする。
 * repo-main-branch=develop
 * repo-protected-branches=main,develop
-* repo-remote-only-branches=lite
+* repo-remote-only-branches=full,lite
