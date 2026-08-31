@@ -81,8 +81,12 @@ dev-charter の本体。他プロジェクトが `git subtree` で取り込む�
   Ruleset（`main-protection`）は `main`・`develop` の両方を対象に含めており、
   develop も直接 push 禁止・PR 必須で保護されている
 - **`check-not-on-default-branch.sh` フック**（`src/scripts/`）は `origin/HEAD` から
-  動的にデフォルトブランチを判定するため、上記の設定変更により `develop` への
-  直接コミットも自動的にブロック対象になる（`main` 固定のブロックではない）
+  動的にデフォルトブランチを判定する（`main` 固定のブロックではない）。ただし
+  `refs/remotes/origin/HEAD` はリモート側の設定変更だけでは自動更新されない。
+  **今回の変更前から存在する既存の clone では、`git remote set-head origin -a`
+  を一度実行して `origin/HEAD` を `develop` に更新するまで、フックは旧デフォルト
+  （`main`）のまま判定し続け `develop` への直接コミットを許してしまう。**
+  変更後に新規 clone した場合は最初から `develop` を指すため対応不要
 - **`develop` という名前は2ブランチ恒久運用の統合ブランチ専用の予約語**。単発の
   作業ブランチには `work/`・`feat/` 等の既存プレフィックスを使う
 
