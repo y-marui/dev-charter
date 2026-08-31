@@ -71,9 +71,84 @@ After updating, run `git diff HEAD~1 HEAD --name-only -- docs/dev-charter/`
 to see what changed and have your AI tool apply it to the project (lite
 doesn't have its own `UPDATE_CHECKLIST.md`).
 
+## Version Check (CI)
+
+Add `.github/workflows/dev-charter-check.yml` to your project to check for
+updates when a PR is opened or a commit is pushed to main, and open an
+update PR if outdated (the check is skipped if one already succeeded
+within the last 7 days, so busy repos don't re-check on every single
+event). **Tracking lite requires setting `branch: lite` explicitly**:
+
+```yaml
+name: Dev Charter
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Check
+    if: github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
+    uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
+    with:
+      branch: lite
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+
+  gate:
+    name: Dev Charter
+    needs: [check]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify dev-charter check did not fail
+        run: |
+          result="${{ needs.check.result }}"
+          if [ "$result" = "failure" ] || [ "$result" = "cancelled" ]; then
+            echo "::error::dev-charter check did not succeed (got: $result)"
+            exit 1
+          fi
+          echo "check result: $result (skipped is fine — draft or dependabot)"
+```
+
+> **Note:** Omitting `with: branch: lite` makes it track `full`'s default
+> instead, so it'll keep flagging this project as outdated (or up to date
+> when it isn't) because full's and lite's VERSION values diverge.
+> `check-charter.yml` itself also detects a mismatch between the installed
+> `docs/dev-charter/CHARTER_INDEX.md` variant and the `branch` input and
+> errors out.
+
+> **Note:** `check` is skipped for Dependabot PRs and draft PRs (see below). `gate`
+> treats a `skipped` result as fine in both cases and always reports a `Dev Charter`
+> status (matching this workflow's own `name:`). Register `Dev Charter` — not `Check /
+> check` — as the required status check in Branch Protection (Ruleset); see
+> [CI_POLICY.md's Ruleset section](topics/CI_POLICY.md#branch-protection-ruleset).
+> Registering the `check` job itself is unsafe: when it's skipped, the `Check / check`
+> context is never reported at all, so the PR sits at "Expected — Waiting for status to
+> be reported" forever.
+
+> **Note:** Dependabot PRs are skipped — dependency-only activity doesn't warrant a
+> charter check. If your repository goes fully quiet, no check will run. If you want a
+> guaranteed periodic check regardless of activity, add a low-frequency `schedule`
+> (e.g. monthly) alongside this.
+
+> **Note:** Draft PRs are skipped (a draft can't be merged anyway, so there's no risk
+> in leaving the check unreported). `ready_for_review` in `on.pull_request.types` makes
+> sure taking a PR out of draft re-triggers a real run.
+
+> **Note:** If your repository has Branch Protection rules that prevent direct pushes,
+> add a bypass rule for the GitHub Actions bot
+> (Settings > Rules > Rulesets > Bypass list > GitHub Actions).
+
 ## More
 
-For the Makefile helper, Version Check (CI), and badge setup, see
+For the Makefile helper and badge setup, see
 [dev-charter's own README.md](https://github.com/y-marui/dev-charter/blob/main/README.md).
 
 ---

@@ -70,9 +70,82 @@ git subtree pull --prefix=docs/dev-charter dev-charter lite --squash
 を確認し、AI ツールにプロジェクトへの反映を依頼すること（lite には独立した
 `UPDATE_CHECKLIST.md` が無い）。
 
+## Version Check (CI)
+
+`.github/workflows/dev-charter-check.yml` をプロジェクトに追加すると、
+PR作成や main への push をきっかけに最新バージョンを確認し、古い場合は
+update PR を作成します（直近7日以内に成功したチェックがあればスキップする
+ため、活発な repo でも毎回チェックが走ることはありません）。**lite を
+追跡するには `branch: lite` を明示的に指定する必要があります**：
+
+```yaml
+name: Dev Charter
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Check
+    if: github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
+    uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
+    with:
+      branch: lite
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+
+  gate:
+    name: Dev Charter
+    needs: [check]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify dev-charter check did not fail
+        run: |
+          result="${{ needs.check.result }}"
+          if [ "$result" = "failure" ] || [ "$result" = "cancelled" ]; then
+            echo "::error::dev-charter check did not succeed (got: $result)"
+            exit 1
+          fi
+          echo "check result: $result (skipped is fine — draft or dependabot)"
+```
+
+> **Note:** `with: branch: lite` を書き忘れると、既定値の `full` を追跡してしまい、
+> full の VERSION と lite の VERSION の違いにより、実際には最新でも
+> 「outdated」と誤判定され続けます（あるいはその逆）。`check-charter.yml`
+> 自身も、導入済みの `docs/dev-charter/CHARTER_INDEX.md` の variant と
+> `branch` 入力が食い違っていれば検出してエラーにします。
+
+> **Note:** dependabot が作成した PR や draft PR では `check` 自体がスキップされます
+> （後述）。`gate` はその場合も `skipped` を正常として扱い、必ず `Dev Charter`（ワークフロー
+> 自身の `name:` と同じ値）を報告します。Branch Protection（Ruleset）に必須ステータス
+> チェックとして登録するのは `Check / check` ではなく `Dev Charter` です（[CI_POLICY.md
+> の Ruleset 節](topics/CI_POLICY.md#branch-protection-ruleset)参照）。
+> `check` job だけを直接必須チェックに登録すると、skip 時に `Check / check` という
+> コンテキスト自体が一切報告されず、PR が `Expected — Waiting for status to be reported`
+> のまま永久にブロックされます。
+
+> **Note:** dependabot が作成した PR ではスキップされます（依存関係更新だけが動いている間はチェック不要という判断）。
+> repo が完全に静止している間はチェックが走らないため、活動に関わらず定期的に確認したい場合は
+> 上記に加えて低頻度の `schedule`（例：月1回）を併用してください。
+
+> **Note:** Draft PR ではスキップされます（draft はそもそもマージできないため、チェックが
+> 未報告のままでもリスクがない）。`on.pull_request.types` の `ready_for_review` により、
+> draft を解除した際は改めて実行されます。
+
+> **Note:** Branch Protection で direct push が禁止されている場合は、
+> GitHub Actions bot の bypass rule を追加してください
+> （Settings > Rules > Rulesets > Bypass list > GitHub Actions）。
+
 ## More
 
-Makefile Helper・Version Check (CI)・Badge の設定については
+Makefile Helper・Badge の設定については
 [dev-charter 本体の README-jp.md](https://github.com/y-marui/dev-charter/blob/main/README-jp.md) を参照。
 
 ---

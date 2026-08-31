@@ -103,68 +103,14 @@ update-charter:
 
 ## Version Check (CI)
 
-Add `.github/workflows/dev-charter-check.yml` to your project to check for updates
-when a PR is opened or a commit is pushed to main, and open an update PR if outdated
-(the check is skipped if one already succeeded within the last 7 days, so busy repos
-don't re-check on every single event).
-
-```yaml
-name: Dev Charter
-
-on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-  push:
-    branches: [main]
-  workflow_dispatch:
-
-jobs:
-  check:
-    name: Check
-    if: github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
-    uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
-    permissions:
-      contents: write
-      pull-requests: write
-      actions: read
-
-  gate:
-    name: Dev Charter
-    needs: [check]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Verify dev-charter check did not fail
-        run: |
-          result="${{ needs.check.result }}"
-          if [ "$result" = "failure" ] || [ "$result" = "cancelled" ]; then
-            echo "::error::dev-charter check did not succeed (got: $result)"
-            exit 1
-          fi
-          echo "check result: $result (skipped is fine — draft or dependabot)"
-```
-
-> **Note:** `check` is skipped for Dependabot PRs and draft PRs (see below). `gate`
-> treats a `skipped` result as fine in both cases and always reports a `Dev Charter`
-> status (matching this workflow's own `name:`). Register `Dev Charter` — not `Check /
-> check` — as the required status check in Branch Protection (Ruleset); see
-> [CI_POLICY.md's Ruleset section](topics/CI_POLICY.md#branch-protection-ruleset).
-> Registering the `check` job itself is unsafe: when it's skipped, the `Check / check`
-> context is never reported at all, so the PR sits at "Expected — Waiting for status to
-> be reported" forever.
-
-> **Note:** Dependabot PRs are skipped — dependency-only activity doesn't warrant a
-> charter check. If your repository goes fully quiet, no check will run. If you want a
-> guaranteed periodic check regardless of activity, add a low-frequency `schedule`
-> (e.g. monthly) alongside this.
-
-> **Note:** Draft PRs are skipped (a draft can't be merged anyway, so there's no risk
-> in leaving the check unreported). `ready_for_review` in `on.pull_request.types` makes
-> sure taking a PR out of draft re-triggers a real run.
-
-> **Note:** If your repository has Branch Protection rules that prevent direct pushes,
-> add a bypass rule for the GitHub Actions bot
-> (Settings > Rules > Rulesets > Bypass list > GitHub Actions).
+Add `.github/workflows/dev-charter-check.yml` to your project to check for
+updates when a PR is opened or a commit is pushed to main, and open an
+update PR if outdated. **The workflow differs slightly between full and
+lite** (lite needs `branch: lite` set explicitly). For the exact template
+and setup notes (Dependabot/draft-PR skip behavior, Branch Protection
+setup, etc.), see
+[src/README-full.md](src/README-full.md) (full) /
+[src/README-lite.md](src/README-lite.md) (lite).
 
 ## Badge for Adopting Projects
 
