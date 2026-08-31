@@ -17,6 +17,7 @@
 - **作業の隔離**：プロジェクト固有の理由で `main` への直接pushを許可する場合でも、作業自体は短命な作業ブランチで行う。直接pushの許可は「PRを経由せずローカルで `main` へmerge&pushしてよい」という統合方法の簡略化であり、作業を `main` から隔離すること自体は省略しない
 - **PRのタイミング**：実装が未完成の間はPRを作成しない（Draftとして新規に作成することも禁止）。ローカルまたは作業ブランチで完結させてからPRを出す
   - 例外：一度Ready状態で作成したPRに、後からバグや仕様との乖離が見つかった場合は、そのPRをDraftへ戻して開発を継続してよい（新規PRを作り直す必要はない）。CIを導入している場合、Draft中はCIをスキップする（`full` 版の [topics/CI_POLICY.md](https://github.com/y-marui/dev-charter/blob/full/topics/CI_POLICY.md) の Draft PRs 参照）
+- **Issueとの紐付け**：関連issueがある場合、PR本文に `Fixes #123`/`Closes #123`（マージ時に自動クローズしたい場合）または `Refs #123`（クローズせず関連付けのみの場合）等のキーワードでリンクする
 
 ## Branch Strategy
 
