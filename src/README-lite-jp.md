@@ -4,11 +4,13 @@
 > 英語版（参照）は [README.md](README.md) を参照してください。
 
 [dev-charter](https://github.com/y-marui/dev-charter) の **lite** 版。
-プロジェクト種別を問わず普遍的に価値がある部分（AI コンテキストの整備、
-GitHub Issues/Projects でのタスク管理、シークレット管理等）だけを収録して
-いる。Python 開発環境・UI デザイン・収益化方針などソフトウェアプロジェクト
-固有の内容は含まれない。収録内容は [CHARTER_INDEX.md](CHARTER_INDEX.md) を
-参照。それらが必要な場合は `full` ブランチを検討すること。
+プロジェクト種別を問わず普遍的に価値がある部分（変更設計の原則、AI コンテキ
+ストの整備、GitHub Issues/Projects でのタスク管理、Git ワークフロー・
+ブランチ戦略、言語・ライセンス方針、シークレット管理等）だけを収録している。
+Python 開発環境・UI デザイン・
+収益化方針などソフトウェアプロジェクト固有の内容は含まれない。収録内容は
+[CHARTER_INDEX.md](CHARTER_INDEX.md) を参照。それらが必要な場合は `full`
+ブランチを検討すること。
 
 ## Install (git subtree)
 

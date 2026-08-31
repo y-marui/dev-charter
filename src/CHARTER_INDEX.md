@@ -12,7 +12,7 @@ dev-charter の各ドキュメントへのインデックス。
 
 | トピック / キーワード | ファイル |
 |---|---|
-| 設計哲学、YAGNI、DRY、依存最小化、スモールツール、ローカルファースト、オフライン | `PRINCIPLES.md` |
+| 変更設計の原則、YAGNI、DRY、既存パターンの踏襲、TODO管理 | `PRINCIPLES.md` |
 | コードコメントの書き方、スタイルガイド | `CODE_STYLE.md` |
 | AI の作業前チェック、エラー対処、AI 役割分担、複数 AI 連携、ローカル LLM、Ollama | `AI_COLLABORATION_RULES.md` |
 | AI コンテキストの優先順位（タスク > プロジェクト > 憲章 > グローバル） | `AI_CONTEXT_HIERARCHY.md` |
@@ -35,3 +35,4 @@ dev-charter の各ドキュメントへのインデックス。
 | README の構成（テンプレートリポジトリ自体の設計） | `topics/TEMPLATE_README_GUIDELINES.md` |
 | Python 開発環境、pyenv、uv、ruff、mypy、pytest、py.typed、PEP 561 | `topics/PYTHON_DEV_ENV.md` |
 | Python CLI、typer、pydantic-settings、XDG 設定ファイル | `topics/PYTHON_CLI.md` |
+| 設計哲学、依存最小化、スモールツール、ローカルファースト、オフライン、UI | `topics/SOFTWARE_DESIGN_PRINCIPLES.md` |

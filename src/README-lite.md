@@ -4,10 +4,12 @@
 > For the canonical (Japanese) version, see [README-jp.md](README-jp.md).
 
 The **lite** variant of [dev-charter](https://github.com/y-marui/dev-charter):
-only the parts that are universally valuable regardless of project type (AI
-context maintenance, task management via GitHub Issues/Projects, secrets
-management, etc.). Software-project-specific content (Python dev environment,
-UI design, monetization policy, and so on) is not included. See
+only the parts that are universally valuable regardless of project type
+(change design principles, AI context maintenance, task management via
+GitHub Issues/Projects, Git workflow and branch strategy, language and
+license policy, secrets management, etc.). Software-project-specific
+content (Python dev environment, UI design,
+monetization policy, and so on) is not included. See
 [CHARTER_INDEX.md](CHARTER_INDEX.md) for what's included. If you need that
 content, consider the `full` branch instead.
 
