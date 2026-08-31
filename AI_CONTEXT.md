@@ -70,10 +70,19 @@ dev-charter の本体。他プロジェクトが `git subtree` で取り込む�
 - **ブランチ運用は main + develop の2ブランチモデル**：通常の変更は `develop` 向け
   PR として作成する。ある程度まとまったタイミングで `develop` → `main` の PR を
   作成しマージする（main の更新頻度を抑え、採用先の `check-charter.yml` による
-  割り込みを減らすため。`full`/`lite` 等の配布ブランチは `main` への push を
-  トリガに `scripts/publish-branch.sh` が再生成し、採用先はそのブランチ自身の
-  VERSION を参照するため、develop 運用は採用先には一切見えない）。デフォルト
-  ブランチは `main` のまま
+  割り込みを減らすため。`full`/`lite` 等の配布ブランチは `main` への push（`branches:
+  [main]` 固定のトリガ。GitHub 上の「デフォルトブランチ」設定とは独立）で
+  `scripts/publish-branch.sh` が再生成し、採用先はそのブランチ自身の VERSION を
+  参照するため、develop 運用は採用先には一切見えない）
+- **GitHub 上のデフォルトブランチは `develop`**（`main` ではない）。理由：GitHub は
+  Issue を閉じるキーワード（`Closes #N` 等）を、コミット・PR がデフォルトブランチへ
+  到達したときにしか自動クローズに反映しない。通常の変更は develop へ直接 PR
+  するため、develop をデフォルトにしないと日常的な PR で自動クローズが機能しない。
+  Ruleset（`main-protection`）は `main`・`develop` の両方を対象に含めており、
+  develop も直接 push 禁止・PR 必須で保護されている
+- **`check-not-on-default-branch.sh` フック**（`src/scripts/`）は `origin/HEAD` から
+  動的にデフォルトブランチを判定するため、上記の設定変更により `develop` への
+  直接コミットも自動的にブロック対象になる（`main` 固定のブロックではない）
 - **`develop` という名前は2ブランチ恒久運用の統合ブランチ専用の予約語**。単発の
   作業ブランチには `work/`・`feat/` 等の既存プレフィックスを使う
 
