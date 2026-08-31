@@ -52,9 +52,12 @@ git subtree pull --prefix=docs/dev-charter dev-charter lite --squash
 > GitHub テンプレートはファイルのみコピーし git 履歴を引き継がないため、`git subtree pull` は失敗します。
 > `check-charter.yml` ワークフローがこのケースを自動検出して対処します。
 > 手動で更新する場合は `git subtree pull` の代わりに以下を実行してください：
+> 作業ツリーが clean であることを確認してから実行してください（`git reset --hard HEAD` は未コミット変更を破棄します）。
 > ```bash
 > git remote add dev-charter https://github.com/y-marui/dev-charter || true
 > git fetch dev-charter
+> git reset --hard HEAD
+> git clean -fd docs/dev-charter/
 > SPLIT=$(git rev-parse dev-charter/lite)
 > rm -rf docs/dev-charter/
 > mkdir -p docs/dev-charter/

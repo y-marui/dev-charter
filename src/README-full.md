@@ -52,9 +52,12 @@ git subtree pull --prefix=docs/dev-charter dev-charter full --squash
 > GitHub templates copy files only — git history is not carried over — so `git subtree pull` will fail.
 > The `check-charter.yml` workflow detects this automatically and handles it.
 > For manual updates, use the following instead of `git subtree pull`:
+> Make sure the working tree is clean first (`git reset --hard HEAD` discards uncommitted changes).
 > ```bash
 > git remote add dev-charter https://github.com/y-marui/dev-charter || true
 > git fetch dev-charter
+> git reset --hard HEAD
+> git clean -fd docs/dev-charter/
 > SPLIT=$(git rev-parse dev-charter/full)
 > rm -rf docs/dev-charter/
 > mkdir -p docs/dev-charter/

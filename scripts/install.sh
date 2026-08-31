@@ -104,8 +104,10 @@ if [ -d "$PREFIX" ]; then
         mkdir -p "$PREFIX"
         git archive "${REMOTE_NAME}/${BRANCH}" | tar -x -C "$PREFIX/"
         git add "$PREFIX/"
-        git commit -m "$(printf 'Squashed '\''%s/'\'' content from commit %s\n\ngit-subtree-dir: %s\ngit-subtree-split: %s' \
-            "$PREFIX" "$SPLIT" "$PREFIX" "$SPLIT")"
+        if ! git diff --cached --quiet; then
+            git commit -m "$(printf 'Squashed '\''%s/'\'' content from commit %s\n\ngit-subtree-dir: %s\ngit-subtree-split: %s' \
+                "$PREFIX" "$SPLIT" "$PREFIX" "$SPLIT")"
+        fi
     fi
 
     if [ "$STASHED" = "1" ]; then
