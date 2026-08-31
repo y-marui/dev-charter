@@ -90,16 +90,16 @@ repos:
         always_run: true
 
   # ----------------------------------------------------------------
-  # lite manifest check
-  # (every file listed in CHARTER_INDEX.md must be classified as
-  # include/exclude in scripts/lite-manifest.txt for the lite branch)
+  # charter manifest check
+  # (every file listed in src/CHARTER_INDEX.md must be tagged in
+  # scripts/charter-manifest.txt for the distribution branches)
   # ----------------------------------------------------------------
   - repo: local
     hooks:
-      - id: check-lite-manifest
-        name: Check lite manifest
+      - id: check-charter-manifest
+        name: Check charter manifest
         language: script
-        entry: scripts/check-lite-manifest.sh
+        entry: scripts/check-charter-manifest.sh
         pass_filenames: false
         always_run: true
   # END DEV-CHARTER ONLY
@@ -113,7 +113,7 @@ repos:
       - id: check-local-charter-version
         name: Check local dev-charter version
         language: script
-        entry: scripts/check-local-charter-version.sh
+        entry: src/scripts/check-local-charter-version.sh
         pass_filenames: false
         always_run: true
 
@@ -128,7 +128,7 @@ repos:
       - id: check-charter-subtree-edit
         name: Block direct edits under dev-charter subtree
         language: script
-        entry: scripts/check-charter-subtree-edit.sh
+        entry: src/scripts/check-charter-subtree-edit.sh
         pass_filenames: false
         always_run: true
 
@@ -142,7 +142,7 @@ repos:
       - id: check-charter-ci-template
         name: Check charter CI template
         language: script
-        entry: scripts/check-charter-ci-template.sh
+        entry: src/scripts/check-charter-ci-template.sh
         pass_filenames: false
         always_run: true
 
@@ -156,7 +156,7 @@ repos:
       - id: check-language-pair-sync
         name: Check language pair sync
         language: script
-        entry: scripts/check-language-pair-sync.sh
+        entry: src/scripts/check-language-pair-sync.sh
         pass_filenames: false
         always_run: true
 
@@ -168,7 +168,7 @@ repos:
       - id: check-license-exists
         name: Check LICENSE file exists
         language: script
-        entry: scripts/check-license-exists.sh
+        entry: src/scripts/check-license-exists.sh
         pass_filenames: false
         always_run: true
 
@@ -180,7 +180,7 @@ repos:
       - id: check-dotenv-gitignore
         name: Check .env.example / .gitignore consistency
         language: script
-        entry: scripts/check-dotenv-gitignore.sh
+        entry: src/scripts/check-dotenv-gitignore.sh
         pass_filenames: false
         always_run: true
 
@@ -194,7 +194,7 @@ repos:
       - id: check-language-pair-footer
         name: Check language pair header/footer
         language: script
-        entry: scripts/check-language-pair-footer.sh
+        entry: src/scripts/check-language-pair-footer.sh
         pass_filenames: false
         always_run: true
 
@@ -208,7 +208,7 @@ repos:
       - id: check-ai-context-reference
         name: Check AI_CONTEXT.md reference
         language: script
-        entry: scripts/check-ai-context-reference.sh
+        entry: src/scripts/check-ai-context-reference.sh
         pass_filenames: false
         always_run: true
 
@@ -221,7 +221,7 @@ repos:
       - id: check-python-package-management
         name: Check Python package management
         language: script
-        entry: scripts/check-python-package-management.sh
+        entry: src/scripts/check-python-package-management.sh
         pass_filenames: false
         always_run: true
 
@@ -234,7 +234,7 @@ repos:
       - id: check-readme-placeholders
         name: Check README/LICENSE/FUNDING placeholders
         language: script
-        entry: scripts/check-readme-placeholders.sh
+        entry: src/scripts/check-readme-placeholders.sh
         pass_filenames: false
         always_run: true
 
@@ -249,7 +249,7 @@ repos:
       - id: check-conventional-commit
         name: Check conventional commit message
         language: script
-        entry: scripts/check-conventional-commit.sh
+        entry: src/scripts/check-conventional-commit.sh
         stages: [commit-msg]
 
   # ----------------------------------------------------------------
@@ -260,7 +260,7 @@ repos:
       - id: check-markdown-heading-language
         name: Check Markdown section heading language
         language: script
-        entry: scripts/check-markdown-heading-language.sh
+        entry: src/scripts/check-markdown-heading-language.sh
         files: '\.md$'
 
   # ----------------------------------------------------------------
@@ -305,7 +305,7 @@ repos:
           echo "warning: pwsh not found; skipping PowerShell lint" >&2;
           exit 0;
           fi;
-          pwsh -NoProfile -NonInteractive -File scripts/check-powershell-lint.ps1 "$@"
+          pwsh -NoProfile -NonInteractive -File src/scripts/check-powershell-lint.ps1 "$@"
           ' --
         files: '\.ps1$'
         # Adopting projects install this subtree read-only (see

@@ -1,0 +1,41 @@
+# main への push で配布ブランチ（full・lite、将来追加されるもの）を
+# scripts/charter-manifest.txt のタグに基づいて src/ から再構築する。
+# scripts/publish-branch.sh 参照。
+#
+# 新しい配布ブランチを追加する場合、下の `branch:` matrix に1行足すだけでよい
+# （scripts/publish-branch.sh 自体の変更は不要）。
+
+name: Publish Charter Branches
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "LICENSE"
+      - ".gitleaks.toml"
+      - ".pre-commit-config.yaml"
+      - "scripts/charter-manifest.txt"
+      - "scripts/publish-branch.sh"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Publish
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: [full, lite]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Publish ${{ matrix.branch }} branch
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          bash scripts/publish-branch.sh "${{ matrix.branch }}"

@@ -1,0 +1,48 @@
+# src/ 配下の各憲章ドキュメントについて、full 以外にどの配布ブランチへ含めるかを
+# タグで指定する。
+#
+# - full ブランチは既定で [tags] に列挙された全ファイルを含み、[full-exclude] に
+#   列挙したものだけを除外する（現時点では除外対象なし）。
+# - full 以外の各ブランチ（lite・将来追加されるもの）は、そのブランチ名がタグと
+#   して付いているファイルだけを含む（include 方式）。
+# - src/scripts/ 配下のフックスクリプトは full にのみ自動的に含まれる（このファ
+#   イルでの分類対象外）。
+#
+# 新しい配布ブランチ（例: python）を追加する場合：
+#   1. 対象ファイルの行にタグを追記する
+#   2. src/README-<branch>.md・src/README-<branch>-jp.md を作成する（任意）
+#   3. .github/workflows/publish-charter-branches.yml の branch 一覧に追記する
+# scripts/publish-branch.sh 自体の変更は不要。
+#
+# CHARTER_INDEX.md に列挙された全ファイルは、このファイルの [tags] に必ず1行
+# 登録する（タグが無い行 = full 専用、で構わない）。未登録・削除漏れは
+# scripts/check-charter-manifest.sh が pre-commit で検出する。
+#
+# format: <src/ からの相対パス><空白区切りのタグ（省略可）>
+
+[full-exclude]
+
+[tags]
+AI_COLLABORATION_RULES.md lite
+AI_CONTEXT_HIERARCHY.md lite
+AI_TOOL_SETUP.md lite
+CODE_STYLE.md
+DOCS_STRUCTURE.md lite
+INSTALL_CHECKLIST.md
+LANGUAGE_POLICY.md
+LEGAL_POLICY.md
+LOCALIZATION_POLICY.md
+MONETIZATION_POLICY.md
+PRINCIPLES.md
+PROJECT_LIFECYCLE.md
+SECURITY_POLICY.md lite
+UI_GUIDELINES.md
+UPDATE_CHECKLIST.md
+topics/CI_POLICY.md
+topics/GITHUB_CONTRIBUTING.md
+topics/GITHUB_PROJECT_MANAGEMENT.md lite
+topics/GITHUB_SETTINGS.md
+topics/PROJECT_README_GUIDELINES.md
+topics/PYTHON_CLI.md
+topics/PYTHON_DEV_ENV.md
+topics/TEMPLATE_README_GUIDELINES.md
