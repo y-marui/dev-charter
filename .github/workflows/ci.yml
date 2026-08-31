@@ -22,10 +22,18 @@ jobs:
           # .pre-commit-config.yaml); it isn't required to gate merges.
           SKIP: powershell-lint
 
-  build:
-    name: Build
+  gate:
+    name: CI
     needs: [security]
+    if: always()
     runs-on: ubuntu-latest
     permissions: {}
     steps:
-      - run: echo "All checks passed"
+      - name: Verify required jobs succeeded
+        run: |
+          for result in "${{ needs.security.result }}"; do
+            if [ "$result" != "success" ]; then
+              echo "::error::a required job did not succeed (got: $result)"
+              exit 1
+            fi
+          done
