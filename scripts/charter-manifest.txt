@@ -2,7 +2,7 @@
 # タグで指定する。
 #
 # - full ブランチは既定で [tags] に列挙された全ファイルを含み、[full-exclude] に
-#   列挙したものだけを除外する（現時点では除外対象なし）。
+#   列挙したものだけを除外する。
 # - full 以外の各ブランチ（lite・将来追加されるもの）は、そのブランチ名がタグと
 #   して付いているファイルだけを含む（include 方式）。
 # - src/scripts/ 配下のフックスクリプトは full にのみ自動的に含まれる（このファ
@@ -18,9 +18,21 @@
 # 登録する（タグが無い行 = full 専用、で構わない）。未登録・削除漏れは
 # scripts/check-charter-manifest.sh が pre-commit で検出する。
 #
+# full/lite 等で同じトピックの内容だけが異なる場合（例: branch protection の
+# 必須項目の値がfull/liteで違う）は、別トピックの新規ファイルを作るのではなく
+# <name>-<branch>.md という名前のファイルを追加する。publish-branch.sh が配布時
+# にブランチサフィックスを除いた正規名（<name>.md）にリネームするため、各ブラ
+# ンチには同じファイル名で内容だけ異なるものが配布される（README専用の
+# src/README-<branch>.md リネーム処理を汎用化したもの）。CHARTER_INDEX.md 側は
+# この生ファイル名（サフィックス付き）で行を登録する。full は既定で全ファイル
+# を含むため、<name>-lite.md のような full 向けでない variant は必ず
+# [full-exclude] にも追記すること（さもないと生ファイル名のまま full にも
+# 混入する）。
+#
 # format: <src/ からの相対パス><空白区切りのタグ（省略可）>
 
 [full-exclude]
+topics/GITHUB_SETTINGS-lite.md
 
 [tags]
 AI_COLLABORATION_RULES.md lite
@@ -42,6 +54,7 @@ topics/CI_POLICY.md
 topics/GITHUB_CONTRIBUTING.md
 topics/GITHUB_PROJECT_MANAGEMENT.md lite
 topics/GITHUB_SETTINGS.md
+topics/GITHUB_SETTINGS-lite.md lite
 topics/PROJECT_README_GUIDELINES.md
 topics/PYTHON_CLI.md
 topics/PYTHON_DEV_ENV.md
