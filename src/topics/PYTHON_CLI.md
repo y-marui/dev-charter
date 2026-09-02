@@ -147,6 +147,22 @@ appname init --yes
 appname login --token "$API_TOKEN"
 ```
 
+## Shell Completion
+
+`--help` / `--version` および shell completion の一般方針は
+[SOFTWARE_DESIGN_PRINCIPLES.md](SOFTWARE_DESIGN_PRINCIPLES.md) の CLI Usability を参照。
+
+`typer`（Click基盤）は標準で `--install-completion` / `--show-completion` オプションを提供する。追加の実装なしに、この2つをそのまま使う。
+
+```bash
+appname --install-completion   # 現在のシェル用のcompletionを検出・有効化する
+appname --show-completion      # completionスクリプトの内容を表示する（手動配置用）
+```
+
+**`pip install` / `pipx install` どちらでも同じ方法で有効化できる。** completionファイルをwheelの`data_files`等でパッケージング時に配置する方式は、venv/user install/OSごとに配置先が変わり壊れやすいため避ける。`--install-completion` はインストール方法によらず実行時にユーザーのシェル設定へ書き込むため、この問題を回避できる。
+
+README・`--help` に `appname --install-completion` の実行手順を案内する。
+
 ## Key Points
 
 - 設定ファイル形式は `.env` に統一する（global/local で同じ書き方）
