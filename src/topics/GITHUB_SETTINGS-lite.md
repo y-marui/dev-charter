@@ -18,7 +18,11 @@ lite の運用では、変更の大部分は `main` への直接pushで完結さ
 
 Classic branch protection（Settings → Branches）ではなく **Ruleset** を使う。既存に Classic branch protection が設定されている場合は削除し、下記の Ruleset を新規作成する（Classic と Ruleset の使い分けの詳細は full 版の [GITHUB_SETTINGS.md](https://github.com/y-marui/dev-charter/blob/full/topics/GITHUB_SETTINGS.md) の「Existing Ruleset Check」を参照）。
 
+> **注意:** 「Require a pull request before merging」を OFF にしたまま「Require status checks to pass before merging」を ON にする構成は使えない。新規にpushするcommitはpush時点でまだそのSHAに対する成功ステータスが存在しないため、直接pushそのものがブロックされてしまう（`push` トリガーのCIも、ステータスが記録されるのはpush受理後になるため間に合わない）。「direct push許容」と「必須ステータスチェック」は、下記のようにbypass actorを使わない限り両立しない。
+
 ### Content
+
+full 版と同じ内容の Ruleset を作成した上で、リポジトリオーナー（実質1名の個人開発を想定）だけを bypass actor として登録する。これにより、通常は full と同じ「PR必須・CI必須・会話解決必須」が適用されるが、オーナーは直接pushを含めて随時バイパスできる。
 
 ```
 Name: main-protection
@@ -26,22 +30,37 @@ Target: main
 Enforcement: Active
 
 Rules:
-☐ Require a pull request before merging   （OFFのまま。直接pushを許可する）
+☑ Require a pull request before merging
+  └ Required approvals: 0
 ☑ Require status checks to pass before merging
   └ Status checks: CI (GitHub Actions)
+  └ Status checks: Dev Charter (GitHub Actions)   ← dev-charter-check.yml を導入している場合
 ☑ Require conversation resolution before merging
 ☑ Block force pushes
 ☑ Restrict deletions
+
+Bypass list:
+  Repository admin — Bypass mode: Always
 ```
 
-`Require a pull request before merging` を **OFF** にする点が full 版との唯一の差分。それ以外の項目（ステータスチェック・会話解決・force push禁止・削除禁止）は full と同じ内容で問題ない。
+full 版との差分は **bypass actor（Repository admin, mode: Always）を追加する点のみ**。それ以外のルール項目は full と同じ内容で問題ない。
 
-### Why This Works for Both Direct Push and PRs
+```json
+{
+  "actor_id": 5,
+  "actor_type": "RepositoryRole",
+  "bypass_mode": "always"
+}
+```
 
-GitHubのRulesetは「Require a pull request before merging」がOFFでも、「Require status checks to pass before merging」は直接pushにも適用される（push しようとしているcommitに成功ステータスが記録されていなければpushをブロックする）。一方「Require conversation resolution before merging」はPRのmerge時にのみ効くルールのため、直接pushでは実質no-opになるが、開発者がPRを経由して変更を出した場合には会話解決を強制できる。
+`actor_id: 5` は Repository admin ロール（個人リポジトリでは実質オーナー本人）。`bypass_mode: "always"` は「PRを経由しない直接pushを含め、この Ruleset のあらゆる制約を常にバイパスできる」ことを意味する（full 版の [CI_POLICY.md](https://github.com/y-marui/dev-charter/blob/full/topics/CI_POLICY.md) にある `bypass_mode: "pull_request"`（PR経由のマージ時のみ必須チェックをバイパスできるが直接pushは引き続き禁止）とは異なる点に注意）。
 
-この組み合わせにより、1つの Ruleset で「直接pushは許容しつつ、PRを使う場合はCI通過・会話解決を必須にする」という中間的な運用を実現できる。
+### Why a Bypass Actor Is Necessary
+
+Ruleset自体には「直接pushは許可しつつ、PRを使う場合だけCI/会話解決を必須にする」という中間モードは存在しない。「Require a pull request before merging」はON/OFFの二択で、OFFにすると他のルールごと直接pushへの制約も一緒に緩んでしまうわけではなく（`Require status checks` は直接pushにも適用され続ける）、むしろ「新規commitに事前の成功ステータスが無い」ことでpush自体が拒否される（上記の注意参照）。
+
+そのため、ルール自体は full と同じ「PR必須・CI必須・会話解決必須」のまま維持し、**オーナーだけをbypass actorにする**ことで「オーナーは直接pushも自由にできるが、それ以外（将来の共同作業者・Dependabot・`update-charter` 自動PR等）には full と同じ制約が適用される」という状態を作る。オーナー自身がPRを経由する場合も、bypass権限により会話解決・CI未通過のままマージすることは技術的には可能だが、通常は上表の判断基準に従い、大きな変更ではCIグリーンを確認してからマージする運用とする。
 
 ### Migration for Existing Adopters
 
-Classic branch protection（`enforce_admins`・`required_conversation_resolution` 等）を既に設定している採用先は、上記 Ruleset への移行が別途必要になる。移行自体は本ドキュメントの適用範囲外とし、各採用先で個別に対応する。
+Classic branch protection（`enforce_admins`・`required_conversation_resolution` 等）を既に設定している採用先は、上記 Ruleset（PR必須 + オーナーのbypass actor登録）への移行が別途必要になる。移行自体は本ドキュメントの適用範囲外とし、各採用先で個別に対応する。
