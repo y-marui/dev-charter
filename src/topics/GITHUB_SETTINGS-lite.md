@@ -30,7 +30,7 @@ gh api -X PATCH repos/{owner}/{repo} -F has_wiki=true
 gh api -X PATCH repos/{owner}/{repo} -F has_projects=true
 ```
 
-> Issues・Sponsorships・Discussions は本ドキュメントで統一値を定めない（プロジェクトごとに要否が異なるため）。
+> Issues・Discussions は本ドキュメントで統一値を定めない（プロジェクトごとに要否が異なるため）。Sponsorships は full 版の [Sponsors (FUNDING.yml)](https://github.com/y-marui/dev-charter/blob/full/topics/GITHUB_SETTINGS.md#sponsors-fundingyml) で統一値を定めている（テンプレートリポジトリのみ OFF、それ以外は public/private を問わず ON）。
 
 ## Direct Push vs. Pull Request
 
