@@ -22,16 +22,30 @@ jobs:
           # .pre-commit-config.yaml); it isn't required to gate merges.
           SKIP: powershell-lint
 
+  lint:
+    name: Lint (ruff format)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.0.1
+      # Charter docs embed fenced Python examples; ruff format checks
+      # those too. Consuming repos pull src/ in via git subtree and
+      # can't fix formatting there themselves, so it has to be clean
+      # at the source.
+      - run: uvx ruff format --check src/
+
   gate:
     name: CI
-    needs: [security]
+    needs: [security, lint]
     if: always()
     runs-on: ubuntu-latest
     permissions: {}
     steps:
       - name: Verify required jobs succeeded
         run: |
-          for result in "${{ needs.security.result }}"; do
+          for result in "${{ needs.security.result }}" "${{ needs.lint.result }}"; do
             if [ "$result" != "success" ]; then
               echo "::error::a required job did not succeed (got: $result)"
               exit 1
