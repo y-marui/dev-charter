@@ -65,8 +65,16 @@ git read-tree --empty
 
 while IFS= read -r f; do
   [ -n "$f" ] || continue
+  # <name>-<branch>.md 形式のファイルは、配布時にブランチサフィックスを
+  # 除いた正規名（<name>.md）で書き込む。full/lite で値だけ異なる設定
+  # （例: topics/GITHUB_SETTINGS.md の Branch Protection）を同名ファイル
+  # として配布するための規約（README専用のリネーム処理とは別枠）。
+  dest="$f"
+  case "$f" in
+    *"-${BRANCH}.md") dest="${f%-${BRANCH}.md}.md" ;;
+  esac
   blob=$(git hash-object -w "src/${f}")
-  git update-index --add --cacheinfo 100644,"$blob","$f"
+  git update-index --add --cacheinfo 100644,"$blob","$dest"
 done <<< "$include_files"
 
 # full にのみ、フックスクリプト一式とセキュリティ設定ファイルをそのまま含める
@@ -119,7 +127,13 @@ done
   echo "| トピック / キーワード | ファイル |"
   echo "|---|---|"
   while IFS= read -r f; do
-    grep -F "\`${f}\`" src/CHARTER_INDEX.md || true
+    dest="$f"
+    case "$f" in
+      *"-${BRANCH}.md") dest="${f%-${BRANCH}.md}.md" ;;
+    esac
+    line=$(grep -F "\`${f}\`" src/CHARTER_INDEX.md || true)
+    [ -n "$line" ] || continue
+    echo "${line//\`${f}\`/\`${dest}\`}"
   done <<< "$include_files"
 } > "$GEN_CHARTER_INDEX"
 blob=$(git hash-object -w "$GEN_CHARTER_INDEX")

@@ -1,6 +1,6 @@
-# GitHub Repository Settings
+# GitHub Repository Settings (lite)
 
-GitHub リポジトリ設定の確認ガイド。テンプレートからプロジェクトを作成したとき、または新規リポジトリをセットアップする際に使用する。
+個人開発〜小規模で、`main` への直接pushを許可するプロジェクト向けの GitHub リポジトリ設定ガイド。Sponsors・CODEOWNERSなど、外部コントリビューターの受け入れやOSS運用を前提とした項目は full 版の [GITHUB_SETTINGS.md（full）](https://github.com/y-marui/dev-charter/blob/full/topics/GITHUB_SETTINGS.md)を参照する。
 
 ## AI-Driven Configuration
 
@@ -10,15 +10,49 @@ GitHub リポジトリ設定の確認ガイド。テンプレートからプロ�
 - `gh` が使えない場合（GitHub Copilot・ブラウザ操作など）：「確認場所」の UI パスから手動で設定する
 - どちらの場合も、**設定を適用すること自体は必須**。コマンドが使えないことを理由にスキップしない
 
+## Repository Features
+
+**確認場所:** GitHub リポジトリ → Settings → General → Features
+
+### Wikis
+
+**設定値: ON（必ず有効にする）**
+
+```bash
+gh api -X PATCH repos/{owner}/{repo} -F has_wiki=true
+```
+
+### Projects
+
+**設定値: ON（必ず有効にする）**
+
+```bash
+gh api -X PATCH repos/{owner}/{repo} -F has_projects=true
+```
+
+> Issues・Discussions は本ドキュメントで統一値を定めない（プロジェクトごとに要否が異なるため）。Sponsorships は full 版の [Sponsors (FUNDING.yml)](https://github.com/y-marui/dev-charter/blob/full/topics/GITHUB_SETTINGS.md#sponsors-fundingyml) で統一値を定めている（テンプレートリポジトリのみ OFF、それ以外は public/private を問わず ON）。
+
+## Direct Push vs. Pull Request
+
+lite の運用では、変更の大部分は `main` への直接pushで完結させ、一部の大きな変更だけPRを経由する。判断に迷う場合はPRを経由する側に倒す。
+
+| 直接pushでよい | PR経由にする |
+|---|---|
+| 依存関係定義ファイル・設定ファイルの追従的な更新（Brewfile、lockファイルの通常更新等） | 新規スクリプトの追加、既存スクリプトの大規模な見直し・書き換え |
+| ノート・メモ・コンテキストファイルの蓄積、既存ドキュメントの軽微な修正 | 新規 Agent Skill の追加、既存 Skill の大規模改修 |
+| 既存 Skill・ドキュメントの軽微なブラッシュアップ、typo修正 | プロジェクト全体構造（ディレクトリ構成、AIコンテキスト階層等）に関わる refactoring |
+
 ## Branch Protection (Ruleset)
 
-[topics/CI_POLICY.md](CI_POLICY.md) で定義した Ruleset が正しく設定されているか確認する。
+[CI_POLICY.md（lite）](https://github.com/y-marui/dev-charter/blob/lite/topics/CI_POLICY.md)
+の「Branch Protection (Ruleset)」で定義した Ruleset が正しく設定されているか確認する。
 
 **確認場所:** GitHub リポジトリ → Settings → Rules → Rulesets
 
 ### Existing Ruleset Check
 
-既存の設定状態に応じて対応が異なる：
+既存の設定状態に応じて対応が異なる（full 版と同じ判断基準。詳細は full 版の
+[GITHUB_SETTINGS.md（full）の Existing Ruleset Check](https://github.com/y-marui/dev-charter/blob/full/topics/GITHUB_SETTINGS.md#existing-ruleset-check)参照）：
 
 | 状態 | 対応 |
 |---|---|
@@ -27,16 +61,17 @@ GitHub リポジトリ設定の確認ガイド。テンプレートからプロ�
 | Classic branch protection が設定されている | 削除して `main-protection` Ruleset を新規作成する（Classic は機能が限定的） |
 | 何も設定されていない | `main-protection` Ruleset を新規作成する |
 
-> **Classic branch protection について:** GitHub の旧来の "Branch protection rules"（Settings → Branches）は機能が限定的で、Ruleset への移行が推奨される。Classic と Ruleset が両方設定されている場合は Classic を削除して Ruleset に一本化する。
-
 ### Content Checklist
 
-設定値・ルール一覧は [CI_POLICY.md](CI_POLICY.md) の「Branch Protection Ruleset」セクションを参照。
+設定値・ルール一覧は
+[CI_POLICY.md（lite）の Branch Protection (Ruleset)](https://github.com/y-marui/dev-charter/blob/lite/topics/CI_POLICY.md#branch-protection-ruleset)
+を参照。
 
 確認ポイント：
 
 - `Enforcement` が `Active` になっているか（`Evaluate` / `Disabled` は機能しない）
 - Status check のソースが `GitHub Actions` に設定されているか（`Any source` にしない）
+- Bypass list に Repository admin（mode: Always）が登録されているか
 
 ## Pull Request Merging
 
@@ -54,11 +89,9 @@ gh api -X PATCH repos/{owner}/{repo} -f delete_branch_on_merge=true
 
 > 誤って削除した場合は、マージ直後に限り GitHub の "Restore branch" ボタンから復元できる。
 
-> **注意:** Classic branch protection（Settings → Branches）が残っている場合は削除すること。Classic BP はデフォルトでブランチ削除を禁止するため、自動削除が機能しない。Ruleset への移行手順は上記「[Branch Protection (Ruleset)](#branch-protection-ruleset)」セクションを参照。
-
 ### Allow Auto-merge
 
-**設定値: ON（推奨）**
+**設定値: ON（必ず有効にする）**
 
 PR がすべてのステータスチェックを通過したとき自動マージできる機能を有効にする。Dependabot PR などの bot が作成する PR を自動処理する際に有用。
 
@@ -67,6 +100,13 @@ gh api -X PATCH repos/{owner}/{repo} -F allow_auto_merge=true
 ```
 
 > この設定を ON にしても各 PR が自動でマージされるわけではない。PR ごとに "Enable auto-merge" を選択した場合のみ自動マージが走る。
+>
+> **注意:** Private リポジトリのうち、個人アカウントの通常の private リポジトリより
+> 制限が強い環境（例：private Organization が所有する private リポジトリの fork）
+> では、この設定が API 経由で `true` にならないことがある（エラーは返らず黙って
+> `false` のまま）。[main-protection Ruleset](#branch-protection-ruleset)と同様の
+> プラン・権限制限が疑われるが未確認。該当する場合は無理に追わず、既知の制限として
+> 記録だけして先送りしてよい。
 
 ## Actions: Workflow permissions
 
@@ -99,30 +139,45 @@ gh api -X PUT repos/{owner}/{repo}/actions/permissions/workflow \
 
 > このチェックボックスはリポジトリ作成時にデフォルトで OFF。`check-charter.yml` を導入する際は必ず ON になっているか確認すること。
 
-## PR Review Assignment (CODEOWNERS)
+## Actions: Allowed Actions and Reusable Workflows
 
-GitHub Dashboard の "Needs your review" を機能させるために CODEOWNERS を設定する。
+**確認場所:** GitHub リポジトリ → Settings → Actions → General → Actions permissions
 
-**ファイルパス:** `.github/CODEOWNERS`
+**設定値:** `Allow y-marui, and select non-y-marui, actions and reusable workflows`
+（API では `allowed_actions: "selected"`）にする。デフォルトの `Allow all actions and
+reusable workflows` のままにせず、そのリポジトリの `.github/workflows/*.yml` が実際に
+使う非 `actions/*` の Action・reusable workflow だけを明示許可する。
 
+`actions/*`（GitHub 公式所有）は `github_owned_allowed: true` で自動的に許可されるため
+個別指定は不要。`y-marui/*` の Action・reusable workflow（同一オーナーの別リポジトリ）は
+`github_owned_allowed`ではカバーされないため、`patterns_allowed` へ明示的に列挙する。
+
+```bash
+gh api --method PUT repos/{owner}/{repo}/actions/permissions \
+  -F enabled=true -f allowed_actions=selected
+
+gh api --method PUT repos/{owner}/{repo}/actions/permissions/selected-actions \
+  --input - <<'EOF'
+{
+  "github_owned_allowed": true,
+  "verified_allowed": false,
+  "patterns_allowed": [
+    "pre-commit/action@v3.0.1",
+    "y-marui/dev-charter/.github/workflows/check-charter.yml@main"
+  ]
+}
+EOF
 ```
-* @your-github-username
-```
 
-`*` はリポジトリ全体を対象にする。Bot PR（Dependabot など）・他者の PR・自分の PR のすべてで、オーナーがコードレビュアーとして自動追加される。
+`patterns_allowed` の内容はリポジトリごとに異なる。全ワークフローファイルの `uses:` 行から
+`actions/*` 以外（実際に使っているものだけ）を集めて列挙する。
 
-### Code Owner Review Requirement
-
-**レビュアー自動追加**（Dashboard 表示）は CODEOWNERS ファイルがあれば Ruleset 設定に関係なく動作する。
-
-Ruleset の "Require a review from Code Owners"（`require_code_owner_review`）は別機能で、**マージ時に code owner の承認を必須にするか**を制御する。
-
-| 設定 | 効果 |
-|---|---|
-| OFF（推奨：個人開発） | PR 作成時にレビュアー自動追加のみ。マージは承認なしでも可 |
-| ON | code owner の承認がないとマージ不可。自分が唯一の code owner の場合、自分の PR は自己承認できないため詰まる |
-
-個人開発リポジトリでは **OFF のまま**使う。
+> **重要な運用上の注意:** ワークフローに新しい非 `actions/*` Action を追加したら、**push
+> する前に** `patterns_allowed` へそのAction（`owner/repo@ref` の形）を追加すること。許可
+> リストの更新より先に push すると、そのワークフロー実行全体が `startup_failure`（ジョブの
+> エラーではなく「ワークフローファイルの問題」とだけ報告され、原因が分かりにくい）になる。
+> 既存の失敗した実行は再実行（rerun）できないため、許可リストを直してから空コミット等で
+> 改めて push し直す必要がある。
 
 ## Issue Auto-assign
 
@@ -196,44 +251,3 @@ gh api -X PATCH repos/{owner}/{repo} \
 ```
 
 > **注意:** プライベートリポジトリでの secret scanning は GitHub Advanced Security が必要（有料）。パブリックリポジトリは無料で使用できる。
-
-## Sponsors (FUNDING.yml)
-
-GitHub Sponsors の設定状態はリポジトリの種別（テンプレート / プロジェクト）によって異なる。
-
-| リポジトリ種別 | Features: Sponsorships | `.github/FUNDING.yml` の状態 | Sponsor ボタン |
-|---|---|---|---|
-| テンプレートリポジトリ | OFF | `[USERNAME]` プレースホルダーのまま | 非表示（意図的） |
-| プロジェクトリポジトリ | ON | 実際のユーザー名に置換済み | 表示される |
-
-### Template Repository
-
-- `.github/FUNDING.yml` に `[USERNAME]` が残っている状態でよい
-- Settings → Features → Sponsorships は OFF のまま（プロジェクト側で設定する）
-
-### Project Repository
-
-テンプレートからプロジェクトを作成した段階で、以下を両方実施する：
-
-**1. GitHub リポジトリ設定で Sponsorships を有効化**
-
-Settings → Features → Sponsorships にチェックを入れる。
-
-**2. FUNDING.yml のプレースホルダーを置換**
-
-- [ ] `.github/FUNDING.yml` の `[USERNAME]` を実際の GitHub ユーザー名（および Buy Me a Coffee のユーザー名）に置き換えた
-- [ ] リポジトリページの右カラムに「Sponsor」ボタンが表示されている
-
-```yaml
-# Before（テンプレート）
-github: [USERNAME]
-buy_me_a_coffee: [USERNAME]
-
-# After（プロジェクト）
-github: your-github-username
-buy_me_a_coffee: your-buymeacoffee-username
-```
-
-**Settings の Sponsorships と FUNDING.yml の両方が必要。** どちらか片方だけでは Sponsor ボタンが表示されない。
-
-FUNDING.yml の詳細は [MONETIZATION_POLICY.md](../MONETIZATION_POLICY.md) を参照。
