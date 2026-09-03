@@ -113,7 +113,7 @@ lint:
   name: Lint
   steps:
     - uses: actions/checkout@v7
-    - uses: astral-sh/setup-uv@v8
+    - uses: astral-sh/setup-uv@v10
     - run: uv sync --frozen
     - run: uv run ruff check .
     - run: uv run ruff format --check .
@@ -126,7 +126,7 @@ test:
       python-version: ["3.11", "3.12", "3.13", "3.14"]  # EOLまで6ヶ月以上あるバージョン
   steps:
     - uses: actions/checkout@v7
-    - uses: astral-sh/setup-uv@v8
+    - uses: astral-sh/setup-uv@v10
       with:
         python-version: ${{ matrix.python-version }}
     - run: uv sync --frozen

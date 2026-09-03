@@ -24,7 +24,7 @@ git subtree add --prefix=docs/dev-charter dev-charter lite --squash
 After installing, paste the following prompt into your AI tool:
 
 ```
-Read docs/dev-charter/CHARTER_INDEX.md and set up AI_CONTEXT.md etc. for this project
+Run docs/dev-charter/INSTALL_CHECKLIST.md
 ```
 
 The Quick Install one-liner does the same thing:
@@ -72,9 +72,11 @@ git subtree pull --prefix=docs/dev-charter dev-charter lite --squash
 > git-subtree-split: ${SPLIT}"
 > ```
 
-After updating, run `git diff HEAD~1 HEAD --name-only -- docs/dev-charter/`
-to see what changed and have your AI tool apply it to the project (lite
-doesn't have its own `UPDATE_CHECKLIST.md`).
+After updating, paste the following prompt into your AI tool:
+
+```
+Run docs/dev-charter/UPDATE_CHECKLIST.md
+```
 
 ## Version Check (CI)
 

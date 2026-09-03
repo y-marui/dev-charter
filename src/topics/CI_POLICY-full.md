@@ -290,12 +290,18 @@ skip 対象に含めない。** ロックファイルの更新は依存パッケ
 
 ## Branch Protection (Ruleset)
 
+> **lite 採用先への注意:** このセクションは `full`（PR必須運用）向けの既定値。
+> lite 採用先（`main` への直接pushを許可する運用）は
+> [CI_POLICY.md](https://github.com/y-marui/dev-charter/blob/lite/topics/CI_POLICY.md)（lite）
+> の「Branch Protection (Ruleset)」に専用の設定があるので、そちらに従うこと
+> （以降このセクションを読み替える必要はない）。
+
 この Ruleset はサーバ側で **push** のみを止める。デフォルトブランチにローカルで
 コミットを重ねてしまうこと自体は防げないため、`full` 版では
 `check-not-on-default-branch` フック（`SECURITY_POLICY.md` 参照）がコミット
 時点で同じ制約を機械的に強制する。両者は代替ではなく補完関係にある。
 
-`main` ブランチに以下のRulesetを適用する（全リポジトリ共通）：
+`main` ブランチに以下のRulesetを適用する（`full` 版共通。lite は上記の注意を参照）：
 
 ```
 Name: main-protection
@@ -385,7 +391,7 @@ Rules:
 - `actor_id: 5` は Repository admin ロール（個人リポジトリでは実質オーナー本人）
 - `bypass_mode: "pull_request"` — 直接 push は引き続き禁止。PR 経由でのマージ時のみ
   必須チェックをバイパスできる（`"always"` にはしない。`"always"` は lite 版専用の
-  設計で、[GITHUB_SETTINGS-lite.md](https://github.com/y-marui/dev-charter/blob/lite/topics/GITHUB_SETTINGS-lite.md)（lite）を参照）
+  設計で、[CI_POLICY.md](https://github.com/y-marui/dev-charter/blob/lite/topics/CI_POLICY.md)（lite）を参照）
 - 用途は、Private リポジトリの課金ブロック（支払い方法・spending limit の問題で CI が
   丸ごと失敗するケース。`~/.ai/AI_CONTEXT.md` の GitHub セクションに同様の運用メモあり：
   課金エラーによる CI 失敗はコード側の問題ではないため無視してよい）に限らず、

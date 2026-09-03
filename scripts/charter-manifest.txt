@@ -39,6 +39,9 @@
 [variant-exceptions]
 
 [full-exclude]
+INSTALL_CHECKLIST-lite.md
+UPDATE_CHECKLIST-lite.md
+topics/CI_POLICY-lite.md
 topics/GITHUB_SETTINGS-lite.md
 
 [tags]
@@ -47,7 +50,8 @@ AI_CONTEXT_HIERARCHY.md lite
 AI_TOOL_SETUP.md lite
 CODE_STYLE.md lite
 DOCS_STRUCTURE.md lite
-INSTALL_CHECKLIST.md
+INSTALL_CHECKLIST-full.md
+INSTALL_CHECKLIST-lite.md lite
 LANGUAGE_POLICY.md lite
 LEGAL_POLICY.md lite
 LOCALIZATION_POLICY.md
@@ -56,15 +60,17 @@ PRINCIPLES.md lite
 PROJECT_LIFECYCLE.md lite
 SECURITY_POLICY.md lite
 UI_GUIDELINES.md
-UPDATE_CHECKLIST.md
-topics/CI_POLICY.md
+UPDATE_CHECKLIST-full.md
+UPDATE_CHECKLIST-lite.md lite
+topics/CI_POLICY-full.md
+topics/CI_POLICY-lite.md lite
 topics/GITHUB_CONTRIBUTING.md
 topics/GITHUB_ISSUE_PR_TEMPLATES.md lite
 topics/GITHUB_PROJECT_MANAGEMENT.md lite
-topics/GITHUB_SETTINGS.md
+topics/GITHUB_SETTINGS-full.md
 topics/GITHUB_SETTINGS-lite.md lite
 topics/PROJECT_README_GUIDELINES.md
 topics/PYTHON_CLI.md
-topics/PYTHON_DEV_ENV.md
+topics/PYTHON_DEV_ENV.md lite
 topics/SOFTWARE_DESIGN_PRINCIPLES.md
 topics/TEMPLATE_README_GUIDELINES.md
