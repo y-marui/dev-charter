@@ -34,7 +34,6 @@ Rules:
 ☑ Require status checks to pass before merging
   └ Status checks: CI (GitHub Actions)
   └ Status checks: Dev Charter (GitHub Actions)   ← dev-charter-check.yml を導入している場合
-☑ Require conversation resolution before merging
 ☑ Block force pushes
 ☑ Restrict deletions
 
@@ -42,7 +41,15 @@ Bypass list:
   Repository admin — Bypass mode: Always
 ```
 
-full 版との差分は「Require a pull request before merging」をOFFにする点と、bypass actor（Repository admin, mode: Always）を追加する点。
+> **注意:** full 版のRulesetにある「Require conversation resolution before merging」は
+> lite では設定できない。この設定は GitHub API 上 "Require a pull request before merging"
+> のパラメータとしてのみ存在し、そのルール自体が「変更は必ずPR経由」を強制する一部のため、
+> 「Require a pull request」をOFFにする lite の設計とは技術的に両立しない。lite では
+> 会話解決の強制を諦め、direct push の余地を残すことを優先する。
+
+full 版との差分は「Require a pull request before merging」をOFFにする点、「Require
+conversation resolution before merging」を設定しない点、bypass actor（Repository admin,
+mode: Always）を追加する点。
 
 ```json
 {
@@ -56,9 +63,9 @@ full 版との差分は「Require a pull request before merging」をOFFにす�
 
 ### Why a Bypass Actor Is Necessary
 
-Ruleset自体には「直接pushは許可しつつ、PRを使う場合だけCI/会話解決を必須にする」という中間モードは存在しない。「Require a pull request before merging」をOFFにしても、他のルールが自動的に直接pushへ適用されなくなるわけではなく、`Require status checks` は直接pushにも適用され続ける。そして新規commitには push時点で成功ステータスが存在しないため、この設定単体では**オーナーの直接pushすら拒否されてしまう**（上記の注意参照）。
+Ruleset自体には「直接pushは許可しつつ、PRを使う場合だけCIを必須にする」という中間モードは存在しない。「Require a pull request before merging」をOFFにしても、他のルールが自動的に直接pushへ適用されなくなるわけではなく、`Require status checks` は直接pushにも適用され続ける。そして新規commitには push時点で成功ステータスが存在しないため、この設定単体では**オーナーの直接pushすら拒否されてしまう**（上記の注意参照）。
 
-そこで、オーナーだけを bypass actor（mode: always）にすることで、「オーナーは直接pushを含めて自由に運用できるが、それ以外（将来の共同作業者・Dependabot・`update-charter` 自動PR等）がPRを経由する場合は `Require status checks`・`Require conversation resolution` が実際に効く」という状態を作る。オーナー自身がPRを経由する場合も、bypass権限により会話解決・CI未通過のままマージすることは技術的には可能だが、通常は上表の判断基準に従い、大きな変更ではCIグリーンを確認してからマージする運用とする。
+そこで、オーナーだけを bypass actor（mode: always）にすることで、「オーナーは直接pushを含めて自由に運用できるが、それ以外（将来の共同作業者・Dependabot・`update-charter` 自動PR等）がPRを経由する場合は `Require status checks` が実際に効く」という状態を作る。オーナー自身がPRを経由する場合も、bypass権限によりCI未通過のままマージすることは技術的には可能だが、通常は上表の判断基準に従い、大きな変更ではCIグリーンを確認してからマージする運用とする。`pull_request` ルール自体を持たないため、会話解決の強制はオーナー・非オーナーいずれについても働かない（上記の注意参照）。
 
 ### Migration for Existing Adopters
 
