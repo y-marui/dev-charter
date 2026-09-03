@@ -119,6 +119,19 @@ repos:
         always_run: true
 
   # ----------------------------------------------------------------
+  # <name>-<branch>.md variant のペア整合性チェック
+  # (variant が [full-exclude]・対応する基底ファイル・タグ重複無しを満たすか)
+  # ----------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: check-variant-parity
+        name: Check branch variant parity
+        language: script
+        entry: scripts/check-variant-parity.sh
+        pass_filenames: false
+        always_run: true
+
+  # ----------------------------------------------------------------
   # lite (等) 配布ブランチからの相対リンク切れチェック
   # (lite タグ付きファイルが full 限定ファイルへ相対リンクしていないか)
   # ----------------------------------------------------------------

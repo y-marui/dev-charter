@@ -29,7 +29,14 @@
 # [full-exclude] にも追記すること（さもないと生ファイル名のまま full にも
 # 混入する）。
 #
+# <name>-<branch>.md variant の登録漏れ（[full-exclude] 未登録、対応する基底
+# ファイルの欠落、基底ファイルとの同一タグ重複）は scripts/check-variant-parity.sh
+# が pre-commit で検出する。誤検出時のみ [variant-exceptions] にファイルパスを
+# 追記して対象外にする（現時点で登録例なし）。
+#
 # format: <src/ からの相対パス><空白区切りのタグ（省略可）>
+
+[variant-exceptions]
 
 [full-exclude]
 topics/GITHUB_SETTINGS-lite.md
