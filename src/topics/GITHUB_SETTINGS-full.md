@@ -30,7 +30,7 @@ gh api -X PATCH repos/{owner}/{repo} -F has_wiki=true
 gh api -X PATCH repos/{owner}/{repo} -F has_projects=true
 ```
 
-> Issues・Sponsorships・Discussions は本ドキュメントで統一値を定めない（プロジェクトごとに要否が異なるため）。
+> Issues・Discussions は本ドキュメントで統一値を定めない（プロジェクトごとに要否が異なるため）。Sponsorships は [Sponsors (FUNDING.yml)](#sponsors-fundingyml) で統一値を定めている。
 
 ## Branch Protection (Ruleset)
 
@@ -272,12 +272,12 @@ gh api -X PATCH repos/{owner}/{repo} \
 
 ## Sponsors (FUNDING.yml)
 
-GitHub Sponsors の設定状態はリポジトリの種別（テンプレート / プロジェクト）によって異なる。
+GitHub Sponsors の設定状態はリポジトリの種別（テンプレート / プロジェクト）によって異なる。**public/private の可視性は判定に関係しない**（private リポジトリでは Sponsor ボタン自体が外部に見えないが、設定値は同じ基準で ON にする）。
 
 | リポジトリ種別 | Features: Sponsorships | `.github/FUNDING.yml` の状態 | Sponsor ボタン |
 |---|---|---|---|
 | テンプレートリポジトリ | OFF | `[USERNAME]` プレースホルダーのまま | 非表示（意図的） |
-| プロジェクトリポジトリ | ON | 実際のユーザー名に置換済み | 表示される |
+| プロジェクトリポジトリ（public/private 問わず） | ON | 実際のユーザー名に置換済み | public では表示される（private では非表示） |
 
 ### Template Repository
 
