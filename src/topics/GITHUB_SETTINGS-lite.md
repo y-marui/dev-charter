@@ -10,6 +10,28 @@
 - `gh` が使えない場合（GitHub Copilot・ブラウザ操作など）：「確認場所」の UI パスから手動で設定する
 - どちらの場合も、**設定を適用すること自体は必須**。コマンドが使えないことを理由にスキップしない
 
+## Repository Features
+
+**確認場所:** GitHub リポジトリ → Settings → General → Features
+
+### Wikis
+
+**設定値: ON（必ず有効にする）**
+
+```bash
+gh api -X PATCH repos/{owner}/{repo} -F has_wiki=true
+```
+
+### Projects
+
+**設定値: ON（必ず有効にする）**
+
+```bash
+gh api -X PATCH repos/{owner}/{repo} -F has_projects=true
+```
+
+> Issues・Sponsorships・Discussions は本ドキュメントで統一値を定めない（プロジェクトごとに要否が異なるため）。
+
 ## Direct Push vs. Pull Request
 
 lite の運用では、変更の大部分は `main` への直接pushで完結させ、一部の大きな変更だけPRを経由する。判断に迷う場合はPRを経由する側に倒す。
@@ -69,7 +91,7 @@ gh api -X PATCH repos/{owner}/{repo} -f delete_branch_on_merge=true
 
 ### Allow Auto-merge
 
-**設定値: ON（推奨）**
+**設定値: ON（必ず有効にする）**
 
 PR がすべてのステータスチェックを通過したとき自動マージできる機能を有効にする。Dependabot PR などの bot が作成する PR を自動処理する際に有用。
 
@@ -78,6 +100,13 @@ gh api -X PATCH repos/{owner}/{repo} -F allow_auto_merge=true
 ```
 
 > この設定を ON にしても各 PR が自動でマージされるわけではない。PR ごとに "Enable auto-merge" を選択した場合のみ自動マージが走る。
+>
+> **注意:** Private リポジトリのうち、個人アカウントの通常の private リポジトリより
+> 制限が強い環境（例：private Organization が所有する private リポジトリの fork）
+> では、この設定が API 経由で `true` にならないことがある（エラーは返らず黙って
+> `false` のまま）。[main-protection Ruleset](#branch-protection-ruleset)と同様の
+> プラン・権限制限が疑われるが未確認。該当する場合は無理に追わず、既知の制限として
+> 記録だけして先送りしてよい。
 
 ## Actions: Workflow permissions
 
