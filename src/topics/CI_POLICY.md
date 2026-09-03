@@ -385,7 +385,7 @@ Rules:
 - `actor_id: 5` は Repository admin ロール（個人リポジトリでは実質オーナー本人）
 - `bypass_mode: "pull_request"` — 直接 push は引き続き禁止。PR 経由でのマージ時のみ
   必須チェックをバイパスできる（`"always"` にはしない。`"always"` は lite 版専用の
-  設計で、[GITHUB_SETTINGS-lite.md](GITHUB_SETTINGS-lite.md) を参照）
+  設計で、[GITHUB_SETTINGS-lite.md](https://github.com/y-marui/dev-charter/blob/lite/topics/GITHUB_SETTINGS-lite.md)（lite）を参照）
 - 用途は、Private リポジトリの課金ブロック（支払い方法・spending limit の問題で CI が
   丸ごと失敗するケース。`~/.ai/AI_CONTEXT.md` の GitHub セクションに同様の運用メモあり：
   課金エラーによる CI 失敗はコード側の問題ではないため無視してよい）に限らず、
