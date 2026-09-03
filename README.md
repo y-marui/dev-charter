@@ -51,7 +51,7 @@ See [src/AI_TOOL_SETUP.md](src/AI_TOOL_SETUP.md) for the structure spec.
 Run from your project root:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh | bash
 ```
 
 On Windows PowerShell:
@@ -64,7 +64,7 @@ To install lite instead, add `CHARTER_BRANCH=lite` (PowerShell:
 `$env:CHARTER_BRANCH = 'lite'`):
 
 ```bash
-CHARTER_BRANCH=lite bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh | CHARTER_BRANCH=lite bash
 ```
 
 The script automates the git subtree setup and, if Claude Code is available,
@@ -73,7 +73,7 @@ same one-liner also updates** — it detects the existing install and its
 branch, so you never need to type `git subtree pull` by hand.
 
 > **Note:** To customize the install path, use an environment variable:
-> `CHARTER_PREFIX=path/to/charter bash <(curl -fsSL .../install.sh)`
+> `curl -fsSL .../install.sh | CHARTER_PREFIX=path/to/charter bash`
 
 After installing, paste the following prompt into your AI tool (for full):
 

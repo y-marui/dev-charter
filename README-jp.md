@@ -50,7 +50,7 @@ dev-charter は 2 種類のブランチとして配布されます：
 プロジェクトのルートで実行してください：
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh | bash
 ```
 
 Windows PowerShell の場合：
@@ -63,7 +63,7 @@ lite 版を導入する場合は `CHARTER_BRANCH=lite`（PowerShell では
 `$env:CHARTER_BRANCH = 'lite'`）を付けてください：
 
 ```bash
-CHARTER_BRANCH=lite bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh | CHARTER_BRANCH=lite bash
 ```
 
 スクリプトが git subtree のセットアップを自動化し、Claude Code が利用可能であれば
@@ -72,7 +72,7 @@ CHARTER_BRANCH=lite bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/
 `git subtree pull` を手で打つ必要はありません）。
 
 > **Note:** インストール先を変更する場合は環境変数で指定できます：
-> `CHARTER_PREFIX=path/to/charter bash <(curl -fsSL .../install.sh)`
+> `curl -fsSL .../install.sh | CHARTER_PREFIX=path/to/charter bash`
 
 インストール後、以下のプロンプトを AI ツールに貼り付けてください（full の場合）：
 
