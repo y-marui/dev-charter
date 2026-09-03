@@ -34,6 +34,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 XDG_CONFIG_HOME = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
 CONFIG_FILE = XDG_CONFIG_HOME / "appname"
 
+
 class Settings(BaseSettings):
     api_key: str = ""
     debug: bool = False
@@ -74,8 +75,11 @@ from pathlib import Path
 
 EXAMPLE_FILE = Path(__file__).parent / ".env.example"
 
+
 @app.command()
-def init(yes: bool = typer.Option(False, "--yes", "-y", help="確認をスキップする")) -> None:
+def init(
+    yes: bool = typer.Option(False, "--yes", "-y", help="確認をスキップする"),
+) -> None:
     """グローバル設定ファイルを初期化する。"""
     if CONFIG_FILE.exists():
         typer.echo(f"設定ファイルはすでに存在します: {CONFIG_FILE}")
