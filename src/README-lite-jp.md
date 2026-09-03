@@ -23,7 +23,7 @@ git subtree add --prefix=docs/dev-charter dev-charter lite --squash
 インストール後、以下のプロンプトを AI ツールに貼り付けてください：
 
 ```
-docs/dev-charter/CHARTER_INDEX.md を読み、このプロジェクトに合わせて AI_CONTEXT.md 等を構成して
+docs/dev-charter/INSTALL_CHECKLIST.md を実行して
 ```
 
 Quick Install のワンライナーでも同じことができる：
@@ -71,9 +71,11 @@ git subtree pull --prefix=docs/dev-charter dev-charter lite --squash
 > git-subtree-split: ${SPLIT}"
 > ```
 
-更新後は `git diff HEAD~1 HEAD --name-only -- docs/dev-charter/` で変更ファイル
-を確認し、AI ツールにプロジェクトへの反映を依頼すること（lite には独立した
-`UPDATE_CHECKLIST.md` が無い）。
+更新後、以下のプロンプトを AI ツールに貼り付けてください：
+
+```
+docs/dev-charter/UPDATE_CHECKLIST.md を実行して
+```
 
 ## Version Check (CI)
 

@@ -25,10 +25,13 @@ dev-charter の各ドキュメントへのインデックス。
 | 収益化、App Store、GitHub Sponsors、Buy Me a Coffee | `MONETIZATION_POLICY.md` |
 | チーム構成、git ワークフロー、Conventional Commits、ブランチ戦略、epic ブランチ、Draft PR、main の安定性 | `PROJECT_LIFECYCLE.md` |
 | UI デザイン、カラーパレット、ダークモード、アイコン（SF Symbols・Material Symbols） | `UI_GUIDELINES.md` |
-| dev-charter の初回導入手順 | `INSTALL_CHECKLIST.md` |
-| dev-charter の更新手順（subtree pull 後） | `UPDATE_CHECKLIST.md` |
-| GitHub Actions、CI ジョブ設計、ステータスチェック、Branch Protection | `topics/CI_POLICY.md` |
-| GitHub リポジトリ設定、Ruleset、Dependabot、FUNDING.yml | `topics/GITHUB_SETTINGS.md` |
+| dev-charter の初回導入手順（full版） | `INSTALL_CHECKLIST-full.md` |
+| dev-charter の初回導入手順（lite版） | `INSTALL_CHECKLIST-lite.md` |
+| dev-charter の更新手順（subtree pull 後、full版） | `UPDATE_CHECKLIST-full.md` |
+| dev-charter の更新手順（subtree pull 後、lite版） | `UPDATE_CHECKLIST-lite.md` |
+| GitHub Actions、CI ジョブ設計、ステータスチェック、Branch Protection（full版） | `topics/CI_POLICY-full.md` |
+| GitHub Actions、CI ジョブ設計、ステータスチェック、Branch Protection（lite版） | `topics/CI_POLICY-lite.md` |
+| GitHub リポジトリ設定、Ruleset、Dependabot、FUNDING.yml（full版） | `topics/GITHUB_SETTINGS-full.md` |
 | GitHub設定（lite版）、branch protection、Ruleset、direct push、PRの要否 | `topics/GITHUB_SETTINGS-lite.md` |
 | TODO・バックログ・ロードマップ管理、Issues、Sub-issues、Milestones、Projects (v2) | `topics/GITHUB_PROJECT_MANAGEMENT.md` |
 | OSS コントリビューション、Issue テンプレート、PR テンプレート、準 CLA | `topics/GITHUB_CONTRIBUTING.md` |

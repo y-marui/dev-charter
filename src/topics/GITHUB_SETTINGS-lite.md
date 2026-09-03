@@ -1,6 +1,14 @@
 # GitHub Repository Settings (lite)
 
-個人開発〜小規模で、`main` への直接pushを許可するプロジェクト向けの GitHub リポジトリ設定ガイド。Sponsors・CODEOWNERS・Actionsワークフロー権限など、外部コントリビューターの受け入れやOSS運用を前提とした項目は full 版の [topics/GITHUB_SETTINGS.md](https://github.com/y-marui/dev-charter/blob/full/topics/GITHUB_SETTINGS.md)（full）を参照する。
+個人開発〜小規模で、`main` への直接pushを許可するプロジェクト向けの GitHub リポジトリ設定ガイド。Sponsors・CODEOWNERSなど、外部コントリビューターの受け入れやOSS運用を前提とした項目は full 版の [GITHUB_SETTINGS.md（full）](https://github.com/y-marui/dev-charter/blob/full/topics/GITHUB_SETTINGS.md)を参照する。
+
+## AI-Driven Configuration
+
+各セクションには `gh` コマンドまたは設定ファイルを記載している。AI がセットアップ・更新作業を行う場合は以下の方針で適用する。
+
+- `gh` コマンドが使える場合（CLI 環境）：記載のコマンドを実行する
+- `gh` が使えない場合（GitHub Copilot・ブラウザ操作など）：「確認場所」の UI パスから手動で設定する
+- どちらの場合も、**設定を適用すること自体は必須**。コマンドが使えないことを理由にスキップしない
 
 ## Direct Push vs. Pull Request
 
@@ -14,52 +22,203 @@ lite の運用では、変更の大部分は `main` への直接pushで完結さ
 
 ## Branch Protection (Ruleset)
 
+[CI_POLICY.md（lite）](https://github.com/y-marui/dev-charter/blob/lite/topics/CI_POLICY.md)
+の「Branch Protection (Ruleset)」で定義した Ruleset が正しく設定されているか確認する。
+
 **確認場所:** GitHub リポジトリ → Settings → Rules → Rulesets
 
-Classic branch protection（Settings → Branches）ではなく **Ruleset** を使う。既存に Classic branch protection が設定されている場合は削除し、下記の Ruleset を新規作成する（Classic と Ruleset の使い分けの詳細は full 版の [GITHUB_SETTINGS.md](https://github.com/y-marui/dev-charter/blob/full/topics/GITHUB_SETTINGS.md) の「Existing Ruleset Check」を参照）。
+### Existing Ruleset Check
 
-> **注意:** 「Require status checks to pass before merging」を ON にすると、「Require a pull request before merging」の ON/OFF に関わらず直接pushにも適用される。新規にpushするcommitはpush時点でまだそのSHAに対する成功ステータスが存在しないため、bypassなしでは**直接pushそのものがブロックされてしまう**（`push` トリガーのCIも、ステータスが記録されるのはpush受理後になるため間に合わない）。「direct push許容」と「必須ステータスチェック」は、下記のようにオーナーをbypass actorにしない限り両立しない。
+既存の設定状態に応じて対応が異なる（full 版と同じ判断基準。詳細は full 版の
+[GITHUB_SETTINGS.md（full）の Existing Ruleset Check](https://github.com/y-marui/dev-charter/blob/full/topics/GITHUB_SETTINGS.md#existing-ruleset-check)参照）：
 
-### Content
+| 状態 | 対応 |
+|---|---|
+| `main-protection` が存在する | 下記チェックリストで内容を確認する |
+| 別名（`main`・`branch-protection` 等）の Ruleset が存在する | `main-protection` に改名し、内容を確認する |
+| Classic branch protection が設定されている | 削除して `main-protection` Ruleset を新規作成する（Classic は機能が限定的） |
+| 何も設定されていない | `main-protection` Ruleset を新規作成する |
 
-「Require a pull request before merging」は **OFFのまま**にして直接pushの余地を残しつつ、リポジトリオーナー（実質1名の個人開発を想定）を bypass actor として登録する。bypassの目的は「PR必須を免除する」ことではなく、**「Require status checks」が直接pushをブロックしてしまう副作用を、オーナーの分だけ打ち消す**こと。
+### Content Checklist
 
+設定値・ルール一覧は
+[CI_POLICY.md（lite）の Branch Protection (Ruleset)](https://github.com/y-marui/dev-charter/blob/lite/topics/CI_POLICY.md#branch-protection-ruleset)
+を参照。
+
+確認ポイント：
+
+- `Enforcement` が `Active` になっているか（`Evaluate` / `Disabled` は機能しない）
+- Status check のソースが `GitHub Actions` に設定されているか（`Any source` にしない）
+- Bypass list に Repository admin（mode: Always）が登録されているか
+
+## Pull Request Merging
+
+**確認場所:** GitHub リポジトリ → Settings → General → Pull Requests
+
+### Automatically Delete Head Branches
+
+**設定値: ON（必ず有効にする）**
+
+PR マージ後にリモートブランチを自動削除する。マージ済みブランチが蓄積してリポジトリが汚れるのを防ぐ。
+
+```bash
+gh api -X PATCH repos/{owner}/{repo} -f delete_branch_on_merge=true
 ```
-Name: main-protection
-Target: main
-Enforcement: Active
 
-Rules:
-☐ Require a pull request before merging   （OFFのまま。直接pushを許可する）
-☑ Require status checks to pass before merging
-  └ Status checks: CI (GitHub Actions)
-  └ Status checks: Dev Charter (GitHub Actions)   ← dev-charter-check.yml を導入している場合
-☑ Require conversation resolution before merging
-☑ Block force pushes
-☑ Restrict deletions
+> 誤って削除した場合は、マージ直後に限り GitHub の "Restore branch" ボタンから復元できる。
 
-Bypass list:
-  Repository admin — Bypass mode: Always
+### Allow Auto-merge
+
+**設定値: ON（推奨）**
+
+PR がすべてのステータスチェックを通過したとき自動マージできる機能を有効にする。Dependabot PR などの bot が作成する PR を自動処理する際に有用。
+
+```bash
+gh api -X PATCH repos/{owner}/{repo} -F allow_auto_merge=true
 ```
 
-full 版との差分は「Require a pull request before merging」をOFFにする点と、bypass actor（Repository admin, mode: Always）を追加する点。
+> この設定を ON にしても各 PR が自動でマージされるわけではない。PR ごとに "Enable auto-merge" を選択した場合のみ自動マージが走る。
 
-```json
+## Actions: Workflow permissions
+
+**確認場所:** GitHub リポジトリ → Settings → Actions → General → Workflow permissions
+
+### Workflow Permissions
+
+**設定値:** `Read repository contents and packages permissions`（デフォルト）のまま使う。
+
+リポジトリレベルの権限は Read only のままにしておき、書き込みが必要なワークフローでは workflow ファイル内で `permissions` を個別に指定する。
+
+```yaml
+# 例: update-version.yml でコミット・プッシュする場合
+permissions:
+  contents: write
+```
+
+個別指定はリポジトリのデフォルト設定より優先されるため、グローバルを変更する必要はない。
+
+### Allow GitHub Actions to create and approve pull requests
+
+**設定値:** dev-charter を導入するリポジトリでは **ON にする**。
+
+`check-charter.yml` は `gh pr create` でプルリクエストを作成するため、このチェックボックスが OFF のままだとワークフローが失敗する。
+
+```bash
+gh api -X PUT repos/{owner}/{repo}/actions/permissions/workflow \
+  -F can_approve_pull_request_reviews=true
+```
+
+> このチェックボックスはリポジトリ作成時にデフォルトで OFF。`check-charter.yml` を導入する際は必ず ON になっているか確認すること。
+
+## Actions: Allowed Actions and Reusable Workflows
+
+**確認場所:** GitHub リポジトリ → Settings → Actions → General → Actions permissions
+
+**設定値:** `Allow y-marui, and select non-y-marui, actions and reusable workflows`
+（API では `allowed_actions: "selected"`）にする。デフォルトの `Allow all actions and
+reusable workflows` のままにせず、そのリポジトリの `.github/workflows/*.yml` が実際に
+使う非 `actions/*` の Action・reusable workflow だけを明示許可する。
+
+`actions/*`（GitHub 公式所有）は `github_owned_allowed: true` で自動的に許可されるため
+個別指定は不要。`y-marui/*` の Action・reusable workflow（同一オーナーの別リポジトリ）は
+`github_owned_allowed`ではカバーされないため、`patterns_allowed` へ明示的に列挙する。
+
+```bash
+gh api --method PUT repos/{owner}/{repo}/actions/permissions \
+  -F enabled=true -f allowed_actions=selected
+
+gh api --method PUT repos/{owner}/{repo}/actions/permissions/selected-actions \
+  --input - <<'EOF'
 {
-  "actor_id": 5,
-  "actor_type": "RepositoryRole",
-  "bypass_mode": "always"
+  "github_owned_allowed": true,
+  "verified_allowed": false,
+  "patterns_allowed": [
+    "pre-commit/action@v3.0.1",
+    "y-marui/dev-charter/.github/workflows/check-charter.yml@main"
+  ]
 }
+EOF
 ```
 
-`actor_id: 5` は Repository admin ロール（個人リポジトリでは実質オーナー本人）。`bypass_mode: "always"` は「この Ruleset のあらゆる制約を常にバイパスできる」ことを意味する（full 版の [CI_POLICY.md](https://github.com/y-marui/dev-charter/blob/full/topics/CI_POLICY.md) にある `bypass_mode: "pull_request"`（PR経由のマージ時のみ必須チェックをバイパスできるが直接pushは引き続き禁止）よりも広い権限である点に注意）。
+`patterns_allowed` の内容はリポジトリごとに異なる。全ワークフローファイルの `uses:` 行から
+`actions/*` 以外（実際に使っているものだけ）を集めて列挙する。
 
-### Why a Bypass Actor Is Necessary
+> **重要な運用上の注意:** ワークフローに新しい非 `actions/*` Action を追加したら、**push
+> する前に** `patterns_allowed` へそのAction（`owner/repo@ref` の形）を追加すること。許可
+> リストの更新より先に push すると、そのワークフロー実行全体が `startup_failure`（ジョブの
+> エラーではなく「ワークフローファイルの問題」とだけ報告され、原因が分かりにくい）になる。
+> 既存の失敗した実行は再実行（rerun）できないため、許可リストを直してから空コミット等で
+> 改めて push し直す必要がある。
 
-Ruleset自体には「直接pushは許可しつつ、PRを使う場合だけCI/会話解決を必須にする」という中間モードは存在しない。「Require a pull request before merging」をOFFにしても、他のルールが自動的に直接pushへ適用されなくなるわけではなく、`Require status checks` は直接pushにも適用され続ける。そして新規commitには push時点で成功ステータスが存在しないため、この設定単体では**オーナーの直接pushすら拒否されてしまう**（上記の注意参照）。
+## Issue Auto-assign
 
-そこで、オーナーだけを bypass actor（mode: always）にすることで、「オーナーは直接pushを含めて自由に運用できるが、それ以外（将来の共同作業者・Dependabot・`update-charter` 自動PR等）がPRを経由する場合は `Require status checks`・`Require conversation resolution` が実際に効く」という状態を作る。オーナー自身がPRを経由する場合も、bypass権限により会話解決・CI未通過のままマージすることは技術的には可能だが、通常は上表の判断基準に従い、大きな変更ではCIグリーンを確認してからマージする運用とする。
+リポジトリオーナーが Issue を作成したときに自動で自分にアサインする。
+GitHub Dashboard の "Assigned to me" に即座に表示されるようになる。
 
-### Migration for Existing Adopters
+**ファイルパス:** `.github/workflows/auto-assign-self.yml`
 
-Classic branch protection（`enforce_admins`・`required_conversation_resolution` 等）を既に設定している採用先は、上記 Ruleset（オーナーのbypass actor登録を含む）への移行が別途必要になる。移行自体は本ドキュメントの適用範囲外とし、各採用先で個別に対応する。
+```yaml
+name: Assign self when I create an issue
+
+on:
+  issues:
+    types: [opened, reopened]
+
+jobs:
+  assign:
+    if: github.actor == github.repository_owner || endsWith(github.actor, '[bot]')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: [context.repo.owner],
+            })
+```
+
+`github.repository_owner` を使うことでユーザー名のハードコードが不要。
+他者が Issue を作成した場合は `if` 条件が false になりスキップされる。
+
+## Security & Analysis
+
+**確認場所:** GitHub リポジトリ → Settings → Security & analysis
+
+### Dependabot Alerts
+
+**設定値: ON**
+
+脆弱性のある依存パッケージを検出して通知する。パブリック・プライベートリポジトリ問わず無料。
+
+```bash
+gh api -X PUT repos/{owner}/{repo}/vulnerability-alerts
+```
+
+### Dependabot Security Updates
+
+**設定値: ON**
+
+Dependabot が脆弱性を検出したとき、修正 PR を自動作成する。
+
+```bash
+gh api -X PUT repos/{owner}/{repo}/automated-security-fixes
+```
+
+### Secret Scanning & Push Protection
+
+**設定値: ON**
+
+コミット・コードにシークレット（API キー等）が含まれていないか検出する。Push protection は push 時点でブロックする。
+
+```bash
+gh api -X PATCH repos/{owner}/{repo} \
+  -f 'security_and_analysis[secret_scanning][status]=enabled' \
+  -f 'security_and_analysis[secret_scanning_push_protection][status]=enabled'
+```
+
+> **注意:** プライベートリポジトリでの secret scanning は GitHub Advanced Security が必要（有料）。パブリックリポジトリは無料で使用できる。
