@@ -292,6 +292,25 @@ GitHub Sponsors の設定状態はリポジトリの種別（テンプレート 
 
 Settings → Features → Sponsorships にチェックを入れる。
 
+> **注意（AI 向け）:** この設定は REST API の `PATCH repos/{owner}/{repo}` に `has_sponsorships` のような
+> フィールドとして存在しない（`gh api -X PATCH ... -F has_sponsorships=true` は指定したこと自体は成功する
+> ように見えるが値が反映されない silent no-op になる）。GraphQL の `updateRepository` mutation の
+> `hasSponsorshipsEnabled` を使う。
+
+```bash
+REPO_ID=$(gh api graphql -f query='
+  query($owner:String!, $name:String!) {
+    repository(owner:$owner, name:$name) { id }
+  }' -f owner={owner} -f name={repo} -q '.data.repository.id')
+
+gh api graphql -f query='
+  mutation($id:ID!) {
+    updateRepository(input:{repositoryId:$id, hasSponsorshipsEnabled:true}) {
+      repository { hasSponsorshipsEnabled }
+    }
+  }' -f id="$REPO_ID"
+```
+
 **2. FUNDING.yml のプレースホルダーを置換**
 
 - [ ] `.github/FUNDING.yml` の `[USERNAME]` を実際の GitHub ユーザー名（および Buy Me a Coffee のユーザー名）に置き換えた
