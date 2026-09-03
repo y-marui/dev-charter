@@ -30,7 +30,7 @@ Run docs/dev-charter/INSTALL_CHECKLIST.md
 The Quick Install one-liner does the same thing:
 
 ```bash
-CHARTER_BRANCH=lite bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh | CHARTER_BRANCH=lite bash
 ```
 
 ## Update
@@ -41,7 +41,7 @@ pull` for you (stashing/restoring uncommitted changes as needed, and falling
 back to a full re-sync for template-repo checkouts):
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh | bash
 ```
 
 To update manually instead: if the `dev-charter` remote is not set up (e.g., after cloning the project), add it first:
@@ -168,7 +168,7 @@ full install with lite or vice versa.
 ```
 .PHONY: update-charter
 update-charter:
-	CHARTER_UPDATE_ONLY=1 bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+	curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh | CHARTER_UPDATE_ONLY=1 bash
 ```
 
 `CHARTER_UPDATE_ONLY=1` means that if this target is ever run before

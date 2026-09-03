@@ -2,7 +2,7 @@
 # dev-charter quick installer
 #
 # Usage:
-#   bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+#   curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh | bash
 #
 # Environment variables (all optional):
 #   CHARTER_REMOTE       git remote name          (default: dev-charter)
@@ -156,8 +156,8 @@ if [ "${CHARTER_UPDATE_ONLY:-0}" = "1" ]; then
     else
         cat <<EOF >&2
 Run one of these to install it (this only updates an existing install):
-  bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
-  CHARTER_BRANCH=lite bash <(curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh)
+  curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/y-marui/dev-charter/main/scripts/install.sh | CHARTER_BRANCH=lite bash
 EOF
         exit 1
     fi
