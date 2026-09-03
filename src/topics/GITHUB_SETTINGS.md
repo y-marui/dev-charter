@@ -99,6 +99,50 @@ gh api -X PUT repos/{owner}/{repo}/actions/permissions/workflow \
 
 > このチェックボックスはリポジトリ作成時にデフォルトで OFF。`check-charter.yml` を導入する際は必ず ON になっているか確認すること。
 
+## Actions: Allowed Actions and Reusable Workflows
+
+**確認場所:** GitHub リポジトリ → Settings → Actions → General → Actions permissions
+
+**設定値:** `Allow y-marui, and select non-y-marui, actions and reusable workflows`
+（API では `allowed_actions: "selected"`）にする。デフォルトの `Allow all actions and
+reusable workflows` のままにせず、そのリポジトリの `.github/workflows/*.yml` が実際に
+使う非 `actions/*` の Action・reusable workflow だけを明示許可する。
+
+`actions/*`（GitHub 公式所有）は `github_owned_allowed: true` で自動的に許可されるため
+個別指定は不要。`y-marui/*` の Action・reusable workflow（同一オーナーの別リポジトリ）は
+`github_owned_allowed`ではカバーされないため、`patterns_allowed` へ明示的に列挙する。
+
+```bash
+gh api --method PUT repos/{owner}/{repo}/actions/permissions \
+  -F enabled=true -f allowed_actions=selected
+
+gh api --method PUT repos/{owner}/{repo}/actions/permissions/selected-actions \
+  --input - <<'EOF'
+{
+  "github_owned_allowed": true,
+  "verified_allowed": false,
+  "patterns_allowed": [
+    "dorny/paths-filter@v4",
+    "pre-commit/action@v3.0.1",
+    "astral-sh/setup-uv@v10.0.1",
+    "y-marui/dev-charter/.github/workflows/check-charter.yml@main"
+  ]
+}
+EOF
+```
+
+`patterns_allowed` の内容はリポジトリごとに異なる。全ワークフローファイルの `uses:` 行から
+`actions/*` 以外（`dorny/paths-filter`・`pre-commit/action`・`astral-sh/setup-uv`・
+`softprops/action-gh-release`・`y-marui/dev-charter` の reusable workflow など、実際に
+使っているものだけ）を集めて列挙する。
+
+> **重要な運用上の注意:** ワークフローに新しい非 `actions/*` Action を追加したら、**push
+> する前に** `patterns_allowed` へそのAction（`owner/repo@ref` の形）を追加すること。許可
+> リストの更新より先に push すると、そのワークフロー実行全体が `startup_failure`（ジョブの
+> エラーではなく「ワークフローファイルの問題」とだけ報告され、原因が分かりにくい）になる。
+> 既存の失敗した実行は再実行（rerun）できないため、許可リストを直してから空コミット等で
+> 改めて push し直す必要がある。
+
 ## PR Review Assignment (CODEOWNERS)
 
 GitHub Dashboard の "Needs your review" を機能させるために CODEOWNERS を設定する。

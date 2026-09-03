@@ -97,7 +97,7 @@ build:
   needs: [security, lint, test]
   runs-on: macos-latest
   steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - run: pip install -e .
     - run: python -c "import mypackage"
 
@@ -156,7 +156,7 @@ jobs:
     outputs:
       code: ${{ steps.filter.outputs.code }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
         id: filter
         with:
@@ -228,6 +228,24 @@ jobs:
             fi
           done
 ```
+
+### Concurrency (Cancel Superseded Runs)
+
+同じブランチ/PRに素早く連続でpushすると、古いrunが完走するまで新しいrunと並行して
+走り続け、Actions分・実時間を無駄に消費する（`macos-latest`・`windows-latest`は
+`ubuntu-latest`より分あたりのコストが高いため特に影響が大きい）。ワークフローの
+トップレベルに以下を追加し、同一ワークフロー・同一refで新しいrunが始まったら
+古いrunを自動キャンセルする：
+
+```yaml
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+```
+
+キャンセルされたrunは `cancelled` として終了するが、Ruleset の必須ステータスチェックは
+常に最新commitのrunの結果だけを見るため、マージ可否の判定には影響しない。デメリットが
+ないため、全ワークフローファイル（`ci.yml`・`dev-charter-check.yml` 等）に一律で追加する。
 
 ### Draft PRs
 
@@ -351,15 +369,10 @@ Rules:
 
 `epic/<name>` から `main` へのPRには、通常どおり `main-protection` のRulesetがそのまま適用される。
 
-### Bypass for Billing-Blocked CI (Private Repos, Provisional)
+### Bypass Actor (Repository Admin)
 
-Private リポジトリは GitHub Actions の課金対象（Public リポジトリは無料）。開発リソースが
-限られる個人開発では、支払い方法・spending limit の問題で CI が丸ごと失敗し、必須チェック
-がブロックされたままになることがある（`~/.ai/AI_CONTEXT.md` の GitHub セクションに同様の
-運用メモあり：課金エラーによる CI 失敗はコード側の問題ではないため無視してよい）。
-
-暫定処置として、Private リポジトリの `main-protection` Ruleset に **Repository admin の
-bypass（PR 経由のみ）** を追加してよい（Ruleset の `bypass_actors` に以下を追加）：
+`main-protection` Ruleset には、Public/Private を問わず全リポジトリで **Repository admin
+の bypass（PR 経由のみ）** を登録する（Ruleset の `bypass_actors` に以下を追加）：
 
 ```json
 {
@@ -371,8 +384,13 @@ bypass（PR 経由のみ）** を追加してよい（Ruleset の `bypass_actors
 
 - `actor_id: 5` は Repository admin ロール（個人リポジトリでは実質オーナー本人）
 - `bypass_mode: "pull_request"` — 直接 push は引き続き禁止。PR 経由でのマージ時のみ
-  必須チェックをバイパスできる（`"always"` にはしない）
-- Public リポジトリには適用しない（CI が無料で課金ブロックが起きないため不要）
+  必須チェックをバイパスできる（`"always"` にはしない。`"always"` は lite 版専用の
+  設計で、[GITHUB_SETTINGS-lite.md](GITHUB_SETTINGS-lite.md) を参照）
+- 用途は、Private リポジトリの課金ブロック（支払い方法・spending limit の問題で CI が
+  丸ごと失敗するケース。`~/.ai/AI_CONTEXT.md` の GitHub セクションに同様の運用メモあり：
+  課金エラーによる CI 失敗はコード側の問題ではないため無視してよい）に限らず、
+  インフラ障害・flaky なランナーなど、コードの問題ではない理由で必須チェックが
+  ブロックされたままになるケース全般への緊急避難とする
 - ローカルで `pre-commit run` 等により変更内容を確認済みの場合のみ使う。CI が本当に
   コードの問題で落ちているときの緊急回避には使わない
 - 設定は GitHub の Settings → Rules → Rulesets（または `gh api` で既存 Ruleset 全体を
