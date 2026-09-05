@@ -62,6 +62,7 @@ SECURITY_POLICY.md lite
 UI_GUIDELINES.md
 UPDATE_CHECKLIST-full.md
 UPDATE_CHECKLIST-lite.md lite
+topics/ALFRED_DEV_ENV.md
 topics/CI_POLICY-full.md
 topics/CI_POLICY-lite.md lite
 topics/GITHUB_CONTRIBUTING.md
