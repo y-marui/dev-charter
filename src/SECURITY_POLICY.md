@@ -56,7 +56,7 @@ git config hooks.skip-policy-check true
 | コミットメッセージが Conventional Commits 形式でない | 層2（commit-msg ステージ。`core.hooksPath` 使用時は個人の dotfiles 側の追加対応が無い限り機能しない） | PROJECT_LIFECYCLE.md の遵守 |
 | 日英ペアドキュメントの冒頭宣言・末尾フッターの欠如 | 層2 | LANGUAGE_POLICY.md の遵守 |
 | `AI_CONTEXT.md` があるのに `CLAUDE.md`/`GEMINI.md`/`AGENTS.md`/`.github/copilot-instructions.md` がそれを参照していない | 層2 | AI_TOOL_SETUP.md の遵守 |
-| `pyproject.toml` があるのに `requirements.txt` が存在する、または `uv.lock` が無い | 層2 | topics/PYTHON_DEV_ENV.md の遵守 |
+| `pyproject.toml` があるのに `requirements.txt` が存在する、または `uv.lock` が無い | 層2 | topics/python/PYTHON_DEV_ENV.md の遵守 |
 | `LICENSE`/`.github/FUNDING.yml`/`README` にプレースホルダ（`[YEAR]` 等）が残っている | 層2（テンプレートリポジトリ自体は対象外） | topics/PROJECT_README_GUIDELINES.md の遵守 |
 | デフォルトブランチ（`main`/`master`）へ直接コミット | 層2（CI 上ではスキップ。detached HEAD/PR ref でブランチ名を持たないため） | サーバ側 Ruleset は push のみ止めるため、コミット時点で検知する（topics/CI_POLICY.md「Branch Protection (Ruleset)」参照） |
 

@@ -65,7 +65,13 @@ dev-charter の本体。他プロジェクトが `git subtree` で取り込む�
 - **新規ドキュメントを追加するとき**は正本の索引である `src/CHARTER_INDEX.md` を更新し、
   `scripts/charter-manifest.txt` の `[tags]` にも分類を追記する（未分類は `check-charter-manifest`
   フックが pre-commit で検出する）
-- **憲章に追加できる原則・ルール**は複数の異なるプロジェクトに適用できるものに限る（1プロジェクト固有のルールは不可）
+- **技術スタック別の `*_DEV_ENV.md`（および付随する `*_CLI.md` 等）**は `topics/<スタック名>/`
+  サブフォルダに配置する（例: `topics/python/PYTHON_DEV_ENV.md`、`topics/alfred/ALFRED_DEV_ENV.md`）。
+  ファイル名自体は既存の UPPER_SNAKE_CASE 規則を維持し、パスのみでカテゴリ分けする
+- **憲章に追加できる原則・ルール**は複数の異なるプロジェクトに適用できるものに限る（1プロジェクト固有のルールは不可）。
+  特定の採用先テンプレートリポジトリ名など 1 プロジェクト固有の固有名詞は憲章側に含めない
+  （[topics/TEMPLATE_README_GUIDELINES.md](src/topics/TEMPLATE_README_GUIDELINES.md) の
+  「Relationship to dev-charter Dev-Env Topics」参照）
 - **dev-charter 全ドキュメントのセクションヘッダ**：日本語ドキュメントでも英語で記載する
 - **ブランチ運用は main + develop の2ブランチモデル**：通常の変更は `develop` 向け
   PR として作成する。ある程度まとまったタイミングで `develop` → `main` の PR を
