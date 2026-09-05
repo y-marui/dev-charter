@@ -4,10 +4,11 @@ Alfred 5 Script Filter ワークフローを Go で実装するプロジェク�
 アーキテクチャ方針を定義する。`PYTHON_DEV_ENV.md` の Alfred ワークフロー版。
 
 このトピックは「Go を使う開発環境」の一般方針であり、`info.plist` の
-オブジェクトスキーマや Configuration Builder のキー一覧といった Alfred 固有の
-技術リファレンスは対象外。それらは `alfred-workflow-template` の
-`docs/alfred-workflow-notes/`（同リポジトリが正本、`git subtree` で配布）を
-参照する。
+オブジェクトスキーマや Configuration Builder のキー一覧といった、実際の
+Alfred エクスポートからしか再生成できない Alfred 固有の技術リファレンスは
+対象外。それらは各プロジェクトが採用しているテンプレート／親リポジトリ側の
+docs を正本とし、そちらを参照する（[TEMPLATE_README_GUIDELINES.md](../TEMPLATE_README_GUIDELINES.md)
+「Relationship to dev-charter Dev-Env Topics」参照）。
 
 ## Version Policy
 
@@ -91,10 +92,10 @@ lipo -create -output .build/name-alfred .build/name-amd64 .build/name-arm64
     コードで分岐できないため、この違いを理解しているかどうかで実装が
     大きく変わる）
 - `info.plist` の正確なオブジェクトスキーマと、各オブジェクトについて
-  「確認済み／未検証」の制約は `alfred-workflow-template` の
-  `docs/alfred-workflow-notes/workflow-object-schema.md` に記録する
-  （実際の Alfred エクスポートから再生成された技術リファレンスであり、
-  原則を扱うこのトピックとは分離する）。Go 実装に倒す前に必ず参照する
+  「確認済み／未検証」の制約は、採用しているテンプレート／親リポジトリ側の
+  技術リファレンスドキュメントに記録する（実際の Alfred エクスポートから
+  再生成された技術リファレンスであり、原則を扱うこのトピックとは分離する）。
+  Go 実装に倒す前に必ず参照する
 
 ## Testing
 
