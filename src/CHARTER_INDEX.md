@@ -40,4 +40,5 @@ dev-charter の各ドキュメントへのインデックス。
 | README の構成（テンプレートリポジトリ自体の設計） | `topics/TEMPLATE_README_GUIDELINES.md` |
 | Python 開発環境、pyenv、uv、ruff、mypy、pytest、py.typed、PEP 561 | `topics/PYTHON_DEV_ENV.md` |
 | Python CLI、typer、pydantic-settings、XDG 設定ファイル | `topics/PYTHON_CLI.md` |
+| Alfred ワークフロー（Go）、cmd/+internal/、ユニバーサルバイナリ、lipo、Configuration Builder、native vs Go | `topics/ALFRED_DEV_ENV.md` |
 | 設計哲学、依存最小化、スモールツール、ローカルファースト、オフライン、UI | `topics/SOFTWARE_DESIGN_PRINCIPLES.md` |
