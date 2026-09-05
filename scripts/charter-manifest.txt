@@ -74,4 +74,5 @@ topics/PROJECT_README_GUIDELINES.md
 topics/python/PYTHON_CLI.md
 topics/python/PYTHON_DEV_ENV.md lite
 topics/SOFTWARE_DESIGN_PRINCIPLES.md
+topics/swift/SWIFT_DEV_ENV.md lite
 topics/TEMPLATE_README_GUIDELINES.md

@@ -41,4 +41,5 @@ dev-charter の各ドキュメントへのインデックス。
 | Python 開発環境、pyenv、uv、ruff、mypy、pytest、py.typed、PEP 561 | `topics/python/PYTHON_DEV_ENV.md` |
 | Python CLI、typer、pydantic-settings、XDG 設定ファイル | `topics/python/PYTHON_CLI.md` |
 | Alfred ワークフロー（Go）、cmd/+internal/、ユニバーサルバイナリ、lipo、Configuration Builder、native vs Go | `topics/alfred/ALFRED_DEV_ENV.md` |
+| Swift 開発環境、XcodeGen、SwiftLint、SwiftFormat、App/+Packages/Core/、swift test、CI | `topics/swift/SWIFT_DEV_ENV.md` |
 | 設計哲学、依存最小化、スモールツール、ローカルファースト、オフライン、UI | `topics/SOFTWARE_DESIGN_PRINCIPLES.md` |
