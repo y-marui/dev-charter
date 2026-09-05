@@ -35,6 +35,9 @@ Gallery の提出基準は Alfred 公式ページが正本であり、随時更�
   同梱するのは問題ない）
 - **アイコン** — メインアイコンは 256×256px 以上、かつ正方形
 - **キーワード** — 3文字以上。他のワークフローと衝突しにくい、意味の通る文字列にする
+- **カテゴリ** — `info.plist` の `category` キーを、ワークフローの用途に合った
+  有効な値で設定する（未設定のまま放置しない）。有効な値の一覧は
+  [Relationship to alfred-workflow-notes](#relationship-to-alfred-workflow-notes) 参照
 - **ユーザー設定** — ユーザーが変更しうる値は Alfred の Configuration Builder
   で公開する。変更しうる値が何もない場合は「対象外」でよい
 - **README・説明文** — Gallery 上の表示言語である英語で記述し、
