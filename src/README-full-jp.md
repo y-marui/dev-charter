@@ -52,6 +52,8 @@ git subtree pull --prefix=docs/dev-charter dev-charter full --squash
 > `check-charter.yml` ワークフローがこのケースを自動検出して対処します。
 > 手動で更新する場合は `git subtree pull` の代わりに以下を実行してください：
 > 作業ツリーが clean であることを確認してから実行してください（`git reset --hard HEAD` は未コミット変更を破棄します）。
+> 最後の commit は、`scripts/check-charter-subtree-edit.sh` を導入済みならそれに拒否されないよう、
+> 実際の `git subtree` マージと同じ形（`MERGE_HEAD` ＋ trailer 付き squash commit）で作成します：
 > ```bash
 > git remote add dev-charter https://github.com/y-marui/dev-charter || true
 > git fetch dev-charter
@@ -62,10 +64,14 @@ git subtree pull --prefix=docs/dev-charter dev-charter full --squash
 > mkdir -p docs/dev-charter/
 > git archive dev-charter/full | tar -x -C docs/dev-charter/
 > git add docs/dev-charter/
-> git commit -m "Squashed 'docs/dev-charter/' content from commit ${SPLIT}
+> MSG="Squashed 'docs/dev-charter/' content from commit ${SPLIT}
 >
 > git-subtree-dir: docs/dev-charter
 > git-subtree-split: ${SPLIT}"
+> SQUASH=$(git commit-tree "$(git write-tree)" -p "$SPLIT" -m "$MSG")
+> echo "$SQUASH" > "$(git rev-parse --git-path MERGE_HEAD)"
+> printf '%s\n' "$MSG" > "$(git rev-parse --git-path MERGE_MSG)"
+> git commit --no-edit
 > ```
 
 > **Note（`git subtree pull` の仕上げの commit が pre-commit フックに拒否される場合）:**

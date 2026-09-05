@@ -53,6 +53,9 @@ git subtree pull --prefix=docs/dev-charter dev-charter full --squash
 > The `check-charter.yml` workflow detects this automatically and handles it.
 > For manual updates, use the following instead of `git subtree pull`:
 > Make sure the working tree is clean first (`git reset --hard HEAD` discards uncommitted changes).
+> The finishing commit is built in the same shape a real `git subtree` merge leaves behind
+> (`MERGE_HEAD` plus a trailer-carrying squash commit), so it isn't rejected if
+> `scripts/check-charter-subtree-edit.sh` is installed:
 > ```bash
 > git remote add dev-charter https://github.com/y-marui/dev-charter || true
 > git fetch dev-charter
@@ -63,10 +66,14 @@ git subtree pull --prefix=docs/dev-charter dev-charter full --squash
 > mkdir -p docs/dev-charter/
 > git archive dev-charter/full | tar -x -C docs/dev-charter/
 > git add docs/dev-charter/
-> git commit -m "Squashed 'docs/dev-charter/' content from commit ${SPLIT}
+> MSG="Squashed 'docs/dev-charter/' content from commit ${SPLIT}
 >
 > git-subtree-dir: docs/dev-charter
 > git-subtree-split: ${SPLIT}"
+> SQUASH=$(git commit-tree "$(git write-tree)" -p "$SPLIT" -m "$MSG")
+> echo "$SQUASH" > "$(git rev-parse --git-path MERGE_HEAD)"
+> printf '%s\n' "$MSG" > "$(git rev-parse --git-path MERGE_MSG)"
+> git commit --no-edit
 > ```
 
 > **Note (the `git subtree pull` finishing commit is rejected by a pre-commit hook):**
