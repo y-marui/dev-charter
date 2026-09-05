@@ -69,6 +69,28 @@ git subtree pull --prefix=docs/dev-charter dev-charter full --squash
 > git-subtree-split: ${SPLIT}"
 > ```
 
+> **Note (the `git subtree pull` finishing commit is rejected by a pre-commit hook):**
+> If your local copies of `scripts/check-charter-subtree-edit.sh` etc. still predate a fix
+> carried by the update you're pulling in (e.g. a `MERGE_HEAD` exemption), the commit that
+> finishes the merge can get blocked, leaving `.git/MERGE_HEAD` in place. Trying to work
+> around this with a separate pre-sync commit doesn't help either — `docs/dev-charter/VERSION`
+> is still the old value at that point, so `check-local-charter-version.sh` blocks that too.
+> When `.git/MERGE_HEAD` is still present, finish that same merge instead of restarting it
+> (the Quick Install one-liner does this automatically when updating):
+> ```bash
+> # Re-copy only the files that differ from docs/dev-charter/scripts/ (keep them executable)
+> for f in scripts/*.sh scripts/*.ps1; do
+>   [ -e "$f" ] || continue
+>   incoming="docs/dev-charter/scripts/$(basename "$f")"
+>   [ -f "$incoming" ] && ! cmp -s "$f" "$incoming" && cp "$incoming" "$f" && chmod +x "$f"
+> done
+> git add scripts/
+> git commit --no-edit
+> ```
+> If there are conflicts under `docs/dev-charter/` (e.g. shared history was rewritten), that
+> tree is never meant to be hand-edited locally, so always take the incoming side first —
+> `git checkout --theirs -- docs/dev-charter/ && git add docs/dev-charter/` — then proceed as above.
+
 After updating, paste the following prompt into your AI tool:
 
 ```

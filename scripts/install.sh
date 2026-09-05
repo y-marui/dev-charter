@@ -92,21 +92,69 @@ if [ -d "$PREFIX" ]; then
 
     if ! git subtree pull --prefix="$PREFIX" "$REMOTE_NAME" "$BRANCH" --squash \
             -m "chore: update dev-charter to ${REMOTE_NAME}/${BRANCH}"; then
-        # Fallback: projects created from a GitHub template repo don't carry
-        # git history, so git subtree pull has no shared history to diff
-        # against (see README's "projects created from a template
-        # repository" note). Re-sync by replacing $PREFIX wholesale.
-        echo "git subtree pull failed (likely no shared history — a template-repo checkout). Falling back to a full re-sync..."
-        git reset --hard HEAD
-        git clean -fd "$PREFIX/"
-        SPLIT=$(git rev-parse "${REMOTE_NAME}/${BRANCH}")
-        rm -rf "$PREFIX"
-        mkdir -p "$PREFIX"
-        git archive "${REMOTE_NAME}/${BRANCH}" | tar -x -C "$PREFIX/"
-        git add "$PREFIX/"
-        if ! git diff --cached --quiet; then
-            git commit -m "$(printf 'Squashed '\''%s/'\'' content from commit %s\n\ngit-subtree-dir: %s\ngit-subtree-split: %s' \
-                "$PREFIX" "$SPLIT" "$PREFIX" "$SPLIT")"
+        MERGE_HEAD_PATH=$(git rev-parse --git-path MERGE_HEAD 2>/dev/null || true)
+        if [ -n "$MERGE_HEAD_PATH" ] && [ -f "$MERGE_HEAD_PATH" ]; then
+            # A real subtree merge is in progress (shared history exists) but
+            # its finishing commit was rejected — typically because this
+            # project's local scripts/*.sh pre-commit hook copies predate a
+            # fix that the incoming update itself carries (e.g. a MERGE_HEAD
+            # exemption in check-charter-subtree-edit.sh: the fix that would
+            # let this exact commit through only exists in the content the
+            # pull is trying to deliver). Resync those hook scripts from the
+            # now-staged $PREFIX/scripts/ and finish the SAME merge commit —
+            # do NOT fall through to the template-repo fallback below, which
+            # would discard shared subtree history unnecessarily.
+            echo "git subtree pull's merge commit was rejected (MERGE_HEAD present) — resyncing local hook scripts and retrying..."
+
+            UNMERGED_OUTSIDE_PREFIX=$(git diff --name-only --diff-filter=U | grep -v "^${PREFIX}/" || true)
+            if [ -n "$UNMERGED_OUTSIDE_PREFIX" ]; then
+                echo "Error: unresolved merge conflicts outside $PREFIX — resolve manually, then commit to finish the merge:" >&2
+                while IFS= read -r path; do
+                    echo "  $path" >&2
+                done <<< "$UNMERGED_OUTSIDE_PREFIX"
+                exit 1
+            fi
+
+            # $PREFIX is machine-managed (never hand-edited locally, per
+            # INSTALL_CHECKLIST.md), so a conflict confined to it is always
+            # resolved in favor of the incoming side.
+            if [ -n "$(git diff --name-only --diff-filter=U -- "$PREFIX")" ]; then
+                git checkout --theirs -- "$PREFIX"
+                git add "$PREFIX"
+            fi
+
+            for f in scripts/*.sh scripts/*.ps1; do
+                [ -e "$f" ] || continue
+                INCOMING="$PREFIX/scripts/$(basename "$f")"
+                if [ -f "$INCOMING" ] && ! cmp -s "$f" "$INCOMING"; then
+                    cp "$INCOMING" "$f"
+                    chmod +x "$f"
+                    git add "$f"
+                fi
+            done
+
+            if ! git commit --no-edit; then
+                echo "Error: could not finish the subtree merge commit even after resyncing scripts/*.sh." >&2
+                echo "  Resolve manually (git status), then run 'git commit --no-edit' to finish the same merge." >&2
+                exit 1
+            fi
+        else
+            # Fallback: projects created from a GitHub template repo don't
+            # carry git history, so git subtree pull has no shared history to
+            # diff against (see README's "projects created from a template
+            # repository" note). Re-sync by replacing $PREFIX wholesale.
+            echo "git subtree pull failed (likely no shared history — a template-repo checkout). Falling back to a full re-sync..."
+            git reset --hard HEAD
+            git clean -fd "$PREFIX/"
+            SPLIT=$(git rev-parse "${REMOTE_NAME}/${BRANCH}")
+            rm -rf "$PREFIX"
+            mkdir -p "$PREFIX"
+            git archive "${REMOTE_NAME}/${BRANCH}" | tar -x -C "$PREFIX/"
+            git add "$PREFIX/"
+            if ! git diff --cached --quiet; then
+                git commit -m "$(printf 'Squashed '\''%s/'\'' content from commit %s\n\ngit-subtree-dir: %s\ngit-subtree-split: %s' \
+                    "$PREFIX" "$SPLIT" "$PREFIX" "$SPLIT")"
+            fi
         fi
     fi
 

@@ -68,6 +68,29 @@ git subtree pull --prefix=docs/dev-charter dev-charter full --squash
 > git-subtree-split: ${SPLIT}"
 > ```
 
+> **Note（`git subtree pull` の仕上げの commit が pre-commit フックに拒否される場合）:**
+> ローカルの `scripts/check-charter-subtree-edit.sh` 等が更新前の古い内容のままだと、
+> 取り込もうとしている変更自体に含まれる修正（例: `MERGE_HEAD` 例外）がまだ手元に無いため、
+> マージを完了させる commit がブロックされ、`.git/MERGE_HEAD` が残ったまま失敗することがあります。
+> 新しく別の pre-sync commit を先に作ろうとしても、今度は `docs/dev-charter/VERSION` が
+> まだ古いままなので `check-local-charter-version.sh` にブロックされます。
+> `.git/MERGE_HEAD` が残っている場合は、マージをやり直すのではなく完了させてください
+> （Quick Install のワンライナーで更新する場合はこの手順を自動で行います）：
+> ```bash
+> # docs/dev-charter/scripts/ と差分があるファイルだけ再コピーする（実行権限も維持）
+> for f in scripts/*.sh scripts/*.ps1; do
+>   [ -e "$f" ] || continue
+>   incoming="docs/dev-charter/scripts/$(basename "$f")"
+>   [ -f "$incoming" ] && ! cmp -s "$f" "$incoming" && cp "$incoming" "$f" && chmod +x "$f"
+> done
+> git add scripts/
+> git commit --no-edit
+> ```
+> `docs/dev-charter/` 配下に競合がある場合（共有履歴が組み替えられていた場合など）は、
+> このツリーはローカルで手編集しない前提のため、先に
+> `git checkout --theirs -- docs/dev-charter/ && git add docs/dev-charter/` で
+> 常に取り込み側を採用してから上記を実行してください。
+
 更新後、以下のプロンプトを AI ツールに貼り付けてください：
 
 ```
