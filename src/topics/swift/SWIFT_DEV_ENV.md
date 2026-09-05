@@ -59,6 +59,20 @@ targets:
       - package: Core
 ```
 
+- SwiftUI のプロパティラッパー属性は改行させない
+  （`attributes.always_on_same_line`）。対象は `@Environment` / `@AppStorage` /
+  `@SceneStorage` / `@FetchRequest`
+
+```yaml
+# .swiftlint.yml（抜粋）
+attributes:
+  always_on_same_line:
+    - "@Environment"
+    - "@AppStorage"
+    - "@SceneStorage"
+    - "@FetchRequest"
+```
+
 ### Changing SwiftLint Rules
 
 - ルールを**無効化**する場合 → PR に理由を必ず記載する
