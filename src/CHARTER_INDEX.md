@@ -42,4 +42,5 @@ dev-charter の各ドキュメントへのインデックス。
 | Python CLI、typer、pydantic-settings、XDG 設定ファイル | `topics/python/PYTHON_CLI.md` |
 | Alfred ワークフロー（Go）、cmd/+internal/、ユニバーサルバイナリ、lipo、Configuration Builder、native vs Go | `topics/alfred/ALFRED_DEV_ENV.md` |
 | Swift 開発環境、XcodeGen、SwiftLint、SwiftFormat、App/+Packages/Core/、swift test、CI | `topics/swift/SWIFT_DEV_ENV.md` |
+| Chrome Extension 開発環境、Manifest V3、esbuild、ESLint、node --test、Chrome/Firefox dual build | `topics/chrome-extension/CHROME_EXTENSION_DEV_ENV.md` |
 | 設計哲学、依存最小化、スモールツール、ローカルファースト、オフライン、UI | `topics/SOFTWARE_DESIGN_PRINCIPLES.md` |
