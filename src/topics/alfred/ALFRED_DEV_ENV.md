@@ -160,6 +160,27 @@ build:
         path: dist/*.alfredworkflow
 ```
 
+## Release Process
+
+- `v*` タグの push で CI の build job とは別の `release.yml` をトリガーする。
+  タグが `workflow/info.plist` の `version` と一致するか検証してから
+  `make build-workflow` を実行し、SHA-256 チェックサムを添えて GitHub
+  Release を作成する
+- リリースノートは GitHub の自動生成（`--generate-notes`）に頼らず、
+  `scripts/extract-changelog.sh <tag>` で `CHANGELOG.md` の該当バージョンの
+  セクションを抽出したものを使う。一致するエントリがなければ
+  `Release vX.Y.Z` にフォールバックし、常に exit 0 とする（リリース自体を
+  失敗させない）
+- コード署名・notarization・build provenance の attestation は、Apple
+  Developer 証明書等のシークレットを用意したプロジェクトのみ有効化する
+  オプション拡張であり、必須ではない
+- **ローカルフォールバック**: Actions が実行できない場合（billing・spending
+  limit の問題等）に備え、同じビルド・チェックサム・GitHub Release 作成の
+  手順を `scripts/release.sh`（`make release` で呼び出す）としてローカルからも
+  実行できるようにする。タグの push・Release 作成それぞれの実行前にユーザーへ
+  確認する（署名・notarization は `CODESIGN_IDENTITY` 等が未設定ならスキップし、
+  通常の未署名ローカルビルドと同じ扱いにする）
+
 ## Dependency Policy
 
 - 既定でサードパーティ依存ゼロ（`go.mod` に `require` ブロックを持たない）
