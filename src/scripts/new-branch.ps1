@@ -16,4 +16,7 @@ if ($branchName -in @('main', 'master', 'develop')) {
 }
 
 git checkout -b $branchName
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
 Write-Host "ブランチ '$branchName' を作成し、そちらに移動しました。"
