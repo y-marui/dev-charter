@@ -79,7 +79,12 @@ dev-charter の本体。他プロジェクトが `git subtree` で取り込む�
   割り込みを減らすため。`full`/`lite` 等の配布ブランチは `main` への push（`branches:
   [main]` 固定のトリガ。GitHub 上の「デフォルトブランチ」設定とは独立）で
   `scripts/publish-branch.sh` が再生成し、採用先はそのブランチ自身の VERSION を
-  参照するため、develop 運用は採用先には一切見えない）
+  参照するため、develop 運用は採用先には一切見えない）。**作業ブランチが
+  （ツールの自動作成等で）`main` 起点で切られていた場合は、`develop` 向け PR を
+  開く前に `git rebase origin/develop` で乗せ替えること。** 乗せ替えないまま
+  PR を開くと、GitHub の three-dot diff は `main`/`develop` 間の共通祖先まで
+  遡って差分を計算するため、develop 側で既にマージ済みの過去コミット群が
+  無関係な差分として PR に混入する
 - **GitHub 上のデフォルトブランチは `develop`**（`main` ではない）。理由：GitHub は
   Issue を閉じるキーワード（`Closes #N` 等）を、コミット・PR がデフォルトブランチへ
   到達したときにしか自動クローズに反映しない。通常の変更は develop へ直接 PR
