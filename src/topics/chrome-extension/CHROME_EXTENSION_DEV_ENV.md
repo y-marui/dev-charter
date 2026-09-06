@@ -128,6 +128,19 @@ build:
         path: dist/*.zip
 ```
 
+## Release Process
+
+- `v*` タグの push で CI の build job とは別の `release.yml` をトリガーする。
+  タグが `manifest.json`/`package.json` の `version` と一致するか検証してから
+  `npm run build` を実行し、SHA-256 チェックサムを添えて GitHub Release を
+  作成する。リリースノートは GitHub の自動生成（`--generate-notes`）でよい
+- build provenance の attestation は必須ではないオプション拡張とする
+- **ローカルフォールバック**: Actions が実行できない場合（billing・spending
+  limit の問題等）に備え、同じビルド・チェックサム・GitHub Release 作成の
+  手順を `scripts/release.sh`（`make release` で呼び出す）としてローカルからも
+  実行できるようにする。タグの push・Release 作成それぞれの実行前にユーザーへ
+  確認する
+
 ## Dependency Policy
 
 - 実行時（`src/` にバンドルされる）依存は既定でゼロとする。バニラ JS と
