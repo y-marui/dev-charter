@@ -29,7 +29,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.0.1
+      - uses: astral-sh/setup-uv@v10.1.0
       # Charter docs embed fenced Python examples; ruff format checks
       # those too. Consuming repos pull src/ in via git subtree and
       # can't fix formatting there themselves, so it has to be clean
