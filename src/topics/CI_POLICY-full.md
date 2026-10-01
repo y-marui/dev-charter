@@ -294,6 +294,22 @@ Docker コンテナの中で macOS は動かないため、Mac にネイティ�
 - 同じラベルの runner を複数の Mac に登録すると、空いている方に自動で割り当てられる。runner が
   すべて停止していると job は待機のままになり、GitHub-hosted には自動で落ちない。
   その場合は変数を外す
+- hosted の `macos-latest` の既定の Xcode に合わせて、runner の環境変数 `DEVELOPER_DIR` で Xcode を
+  固定する。OS と Xcode が hosted と違うと、結果が食い違う（実例: Swift 6.3 の SwiftPM は `swift test`
+  で `.xcstrings` を `.lproj` にコンパイルせず、`.lproj` を前提にするテストが Xcode 26.6 で失敗し、
+  Xcode 27 で成功した）。両方の Xcode で通るように書くか、hosted と同じ Xcode に揃える
+- runner ユーザーは Homebrew に書き込めない（`brew install` が `... is not writable` を出す）。
+  ツールは事前に入れておき、CI は `command -v <tool> >/dev/null || brew install <tool>` の形にする
+  （hosted でも同じ動作になる）
+- **private の SwiftPM 依存**（`ssh://git@github.com/<owner>/<repo>.git`）を持つ場合、runner ユーザーに
+  読み取り専用のデプロイキーと、GitHub のホスト鍵を入れた `known_hosts` が要る。ない場合、
+  `swift package resolve` が `Host key verification failed` で失敗する。デプロイキーは 1 つの
+  リポジトリにしか登録できないため、依存先ごとに別の鍵を作る。鍵は runner ユーザーのホームに置くので、
+  その Mac のすべての runner（依存を使う側のすべてのリポジトリ）から使える。
+  デプロイキーを hosted には渡さないため、**この依存を持つリポジトリは self-hosted 専用**になる
+  （hosted に戻すには、デプロイキーを Secrets に置いて ssh-agent で解決する別の設定が要る）
+- 複数のリポジトリが同時にビルドすると、1 台の Mac の負荷が上がり、各 job が遅くなる
+  （課金は発生しない）。更新 PR を複数のアプリに一斉にマージするときに起きやすい
 - 課金ブロック中は Linux の job も起動しないため、self-hosted は課金ブロックの恒久対策にならない
   （[Bypass Actor](#bypass-actor-repository-admin) 参照）
 
