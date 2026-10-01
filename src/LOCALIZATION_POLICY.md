@@ -2,10 +2,12 @@
 
 ## Default Language
 
-英語をデフォルト言語とする。これは次の両方を含む。
+フォールバック言語は英語とする。開発言語は、プロジェクトの種別に従う。
 
 - **フォールバック**: 明示のユーザー設定もシステム言語との一致もない場合は英語にする。対応外の言語・文字体系（繁体字など）も英語にフォールバックする
-- **開発言語**: 文言のソース言語（Xcode の development region、String Catalog の source language 等）は英語にする。他言語は英語からの翻訳とする
+- **開発言語**: 文言のソース言語（Xcode の development region、String Catalog の source language 等）は、[LANGUAGE_POLICY.md](LANGUAGE_POLICY.md) のプロジェクト種別に合わせる。
+  - クローズドプロジェクトは日本語にする。他言語は日本語からの翻訳とする
+  - 公開する OSS プロジェクトは英語にする。他言語は英語からの翻訳とする
 
 ## Supported Languages
 

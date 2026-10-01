@@ -160,7 +160,8 @@ extension Button where Label == Text {
 - 文言は Xcode の String Catalog（`Localizable.xcstrings`）で管理する。Swift Package のリソースとして
   `Packages/Core/Sources/Core/Resources/` に置く
 - `Package.swift` に `defaultLocalization` と `resources: [.process("Resources")]` を指定する。`defaultLocalization` の値は、
-  アプリの `project.yml` の `developmentLanguage`（Xcode の development region）と同じにする
+  アプリの `project.yml` の `developmentLanguage`（Xcode の development region）と同じにする。
+  値は [LOCALIZATION_POLICY.md](../../LOCALIZATION_POLICY.md) の開発言語に従う（クローズドなら `ja`、公開 OSS なら `en`）
 - カタログは対応言語の 7 言語すべてで揃える。ポルトガル語の言語キーは `pt`（`pt-BR` などの地域付きにしない）
 - アプリが対応言語の一部しか翻訳していない場合は、翻訳を追加するか、選択肢を実際の対応言語に絞るかを決める。
   選べるのに翻訳がない言語を残さない
