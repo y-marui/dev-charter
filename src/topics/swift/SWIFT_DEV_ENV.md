@@ -10,7 +10,9 @@ macOS/iOS 向け SwiftUI アプリ（クローズドプロジェクト前提）�
 
 ## Version Policy
 
-- Xcode 自体のバージョンは固定しない。CI は `macos-latest` に同梱された Xcode を使う
+- Xcode 自体のバージョンは固定しない。CI は `macos-latest` に同梱された Xcode を使う。
+  self-hosted runner を使う場合は、hosted の既定の Xcode に合わせて、runner 側で `DEVELOPER_DIR`
+  により固定する（[Runner Billing](https://github.com/y-marui/dev-charter/blob/full/topics/CI_POLICY.md#runner-billing) 参照）
 - Deployment Target は別ファイルで固定せず、`project.yml`（XcodeGen）の
   `options.deploymentTarget` を単一の情報源とする
 - Swift 言語バージョンは対象ごとに管理場所が異なる：
@@ -127,7 +129,7 @@ swift test --package-path Packages/Core
 - ドキュメントのみ・dev-charter 配布ファイルのみの変更で `lint`/`build` を skip できるよう、
   `changes` job（`dorny/paths-filter`）で Markdown・`docs/**`・dev-charter 配布ファイル等を
   除外し、`code` フラグが `true` のときだけ後続 job を実行する
-- XcodeGen は Homebrew でインストールする（バージョンを pin しない）
+- XcodeGen は Homebrew でインストールする（バージョンを pin しない）。導入済みなら `brew` を呼ばない（self-hosted runner のユーザーは Homebrew に書き込めない）
 - 署名なしビルドで検証する（`CODE_SIGN_IDENTITY=""` / `CODE_SIGNING_REQUIRED=NO` /
   `CODE_SIGNING_ALLOWED=NO`）。配布用の署名付きビルドは CI では行わない
 - private リポジトリでは、リポジトリ変数 `MACOS_RUNNER` で self-hosted macOS runner に
@@ -163,7 +165,7 @@ build:
       run: swift test
       working-directory: Packages/Core
     - name: Install XcodeGen
-      run: brew install xcodegen
+      run: command -v xcodegen >/dev/null || brew install xcodegen
     - name: Generate Xcode project
       run: xcodegen generate
     - name: Build
