@@ -181,8 +181,7 @@ jobs:
               - '!.github/workflows/auto-assign-self.yml'
               # dev-charter 配布ファイル（git subtree 更新 PR が持ち込む）
               - '!.pre-commit-config.yaml'
-              - '!scripts/check-*'
-              - '!scripts/install.*'
+              - '!scripts/{check-ai-context-reference,check-charter-ci-template,check-charter-doc-links,check-charter-subtree-edit,check-conventional-commit,check-dotenv-gitignore,check-language-pair-footer,check-language-pair-sync,check-license-exists,check-local-charter-version,check-markdown-heading-language,check-not-on-default-branch,check-powershell-lint,check-python-package-management,check-readme-placeholders,check-version-date,new-branch}.{sh,ps1}'
               - '!scripts/PSScriptAnalyzerSettings.psd1'
 
   security:
@@ -237,9 +236,11 @@ jobs:
           done
 ```
 
-dev-charter 配布ファイル（`.pre-commit-config.yaml`、`scripts/check-*`、`scripts/install.*`、
-`scripts/PSScriptAnalyzerSettings.psd1`）だけの更新は、アプリのコードに影響しないため code 扱い
-にしない。`git subtree pull` による更新 PR（`update-charter`）でこれらのファイルが `code` を
+dev-charter 配布ファイル（`.pre-commit-config.yaml`、dev-charter の `src/scripts/` が配布する
+スクリプト、`scripts/PSScriptAnalyzerSettings.psd1`）だけの更新は、アプリのコードに影響しない
+ため code 扱いにしない。採用先独自のスクリプトを巻き込まないよう、`scripts/check-*` の
+ワイルドカードではなく、配布されるスクリプトの名前を列挙する。dev-charter が新しいスクリプトを
+配布したときは、この一覧に追加するまで code 扱いになる（CI が走る側＝安全側に倒れる）。`git subtree pull` による更新 PR（`update-charter`）でこれらのファイルが `code` を
 `true` にしてしまい、高額ランナーが毎回走る原因になる。`ci.yml` 自体や `Makefile` の変更は
 CI の挙動を変えうるため、code 扱いのままにする（更新 PR に `ci.yml` が含まれる場合は 1 回だけ
 走る）。
@@ -253,7 +254,7 @@ private リポジトリでは、GitHub-hosted runner の実行時間が課金対
 macOS が約 $0.062/分で、macOS は実質 **約 10 倍**になる。単価は変わりうるため、設計判断の
 たびに公式ページで確認する。public リポジトリの標準ランナーと self-hosted runner は無料。
 
-job の実行時間が短くても、macOS では切り上げの影響が大きい。`swift-closed-template` の
+job の実行時間が短くても、macOS では切り上げの影響が大きい。ある Swift アプリのテンプレートでの
 実測では、Lint（13 秒）が macOS では 1 分分（Linux 換算 10 分）として課金されていた。
 Actions UI の実行時間だけを見ると、この差は見えない。
 
