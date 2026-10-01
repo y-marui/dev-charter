@@ -78,9 +78,15 @@ Keyboard Extension は、`UIHostingController` などのルートに同じ `.env
 `String(localized:)`・App Intents・AppleScript の文言は、環境の `locale` では変わらない。
 これらが必要なアプリだけ、次のどちらかを使う。
 
-- **選択言語の lproj を直接引く。** ビュー外の文言（パネルのタイトル、エラー文言など）に向く。
-  解決した識別子の `.lproj` の `Bundle` から `localizedString(forKey:value:table:)` で引き、見つからなければ
-  既定の `Bundle` に戻す。即時に反映される。システムが返す文言（OS のエラー本文など）は対象外
+- **選択言語の lproj を直接引く。** ビュー外の文言（パネルのタイトル、エラー文言、Widget のプレースホルダなど）に向く。
+  即時に反映される。システムが返す文言（OS のエラー本文など）は対象外。実装は次の 2 通りがある
+  - `AppLanguage` のメソッド（`localizedString(_:bundle:)`）: 解決した識別子の `.lproj` の `Bundle` から
+    `localizedString(forKey:value:table:)` で引く。見つからなければ `bundle` の既定の解決（システム言語）に戻す。
+    カタログがアプリ target にあるなら `.main`、Swift Package のリソースなら `Bundle.module` を渡す
+  - 自由関数 `localizedString(_:locale:)`: `locale` を省略すると保存された言語設定に従う。ビューでは
+    `@Environment(\.locale)` を渡すと、言語変更で再描画される。補間つきの文言は
+    `String(localized: key, defaultValue: "...\(x)", bundle: languageBundle, locale: locale)` の形で
+    `defaultValue` に補間を持たせる（キーは補間を含まない）
 - **起動時に `AppleLanguages` へ書き込む。** App Intents・AppleScript など、環境の `locale` も lproj の直接参照も
   届かない箇所に使う。`UserDefaults.standard` の `AppleLanguages` へ選択言語を書き込み、反映はアプリの
   再起動後になる。使うアプリは、設定画面に「再起動後に反映される」旨を出す
@@ -115,6 +121,27 @@ Text("タイトル")
 - 計算結果の文言（残り時間など）やビュー外の文言は環境の `locale` を購読しない。選択言語を明示的に解決して渡す
   （[Non-SwiftUI strings](#non-swiftui-strings) 参照）
 
+### Localized Initializers in a Package
+
+`Button(_:)`・`Label(_:systemImage:)`・`Section(_:)` などの標準イニシャライザは `bundle:` を取れない。
+Swift Package のカタログ（`Bundle.module`）を引くには、`Text(_, bundle:)` をラベルに使う形が必要になる。
+呼び出し側の差分を小さくするため、`bundle:` を取るイニシャライザを Core の `Shared` に 1 ファイルで用意する。
+
+~~~swift
+extension Button where Label == Text {
+    init(_ key: LocalizedStringKey, bundle: Bundle, role: ButtonRole? = nil, action: @escaping () -> Void) {
+        self.init(role: role, action: action) { Text(key, bundle: bundle) }
+    }
+}
+~~~
+
+`Label`・`Section`・`Picker`・`Toggle`・`TextField`・`ProgressView` も同じ形で書ける。呼び出し側は
+`Button("common.done", bundle: .module) { ... }` になる。`alert`・`confirmationDialog`・`navigationTitle` は
+`Text("key", bundle: .module)` を渡す。`ContentUnavailableView` は `Label` を使うクロージャ形式にする。
+
+文言を返すプロパティ（enum の `label` など）は `String` ではなく `LocalizedStringKey`（または `Text`）を返す型にし、
+使う側で `Text(x.label, bundle: .module)` にする。`String` で返すとキーそのものが表示される。
+
 ### Rebuilding on Language Change
 
 言語の変更時に、ビューツリーの一部が古い言語のまま残ることがある（`Picker` の単位、アラート、タブ名など）。
@@ -142,6 +169,31 @@ settings.language.system  → システム設定
 ~~~
 
 文言を変えてもキーが変わらず、翻訳の対応づけが壊れない。スコープは機能名・画面名・共通（`common`）などで切る。
+複数の機能で使う文言（OK、キャンセル、削除など）は `common.*` に置き、単位は `unit.*` のようにまとめる。
+
+### Interpolated Keys
+
+SwiftUI は補間つきの `Text("score \(n)")` から、`score %lld` のようなキーを自動で作る。補間を含む文言は、
+次のどちらかに統一する。
+
+- キーを補間なしのドット区切りにし、値に書式指定子（`%@`・`%lld`）を持たせる。`String(localized: "key", defaultValue: "...\(x)")`
+  や `String(format: localizedString("key"), x)` で引く。ビュー外でも使える
+- 自動生成されるキーの形（`key %lld`）を保つ。コードの補間リテラルとカタログのキーが一致していないと、
+  翻訳が当たらず英語（開発言語）のまま表示されるので、置き換え後に一致を確認する
+
+### Renaming Existing Keys
+
+文言そのものをキーにしている既存アプリを移行するときは、次の点に注意する。
+
+- カタログのキーと、コードのリテラルを同じ対応表で一括して変える。対応表はカタログから生成し、
+  適用後に「コードのキーがカタログにあるか」「カタログのキーが使われているか」をスクリプトで確認する
+- JSON の整形を変えない（Xcode の書式を保つ）。変えるとキー以外の差分が膨らむ
+- 英語の語（`Goal`・`Date`・`kg` など）がキーのときは、データ層の識別子（SwiftData のストア名、集計の系列名、
+  単位の文字列）と同じリテラルが他の用途にも現れる。リテラルの全置換はせず、`Text(`・`Button(`・`String(localized:`
+  などローカライズ用の呼び出しの文脈に限る。`String` 型で受ける箇所に置き換えると、キーがそのまま表示される
+- 型で文言と分かるもの（`LocalizedStringResource` を返す enum、App Intents の `title:`）は、文脈の判定では
+  拾えないので、ファイル単位で対象にして目視で確認する
+- カタログに無かった文言（日本語や英語が固定で表示されていたもの）が見つかったら、キーと全言語の訳を追加する
 
 ## Testing
 
