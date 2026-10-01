@@ -101,6 +101,22 @@ API_KEY=your-api-key-here
 > 版を導入すること。lite のみを導入している場合は、本セクションの
 > 手順は実行できないため、Layer 1 の個人フックと「Manual Compliance Policy」
 > 節の手動遵守で代替する。
+>
+> **lite のまま一部のフックだけ使いたい場合**：必要なスクリプトだけを `full`
+> ブランチから取得して `scripts/` に置き、自分の `.pre-commit-config.yaml` に
+> フックを追加する。取得元は `git subtree` 導入時に追加済みの `dev-charter` リモート
+> である。
+>
+> ~~~bash
+> git fetch dev-charter full
+> git show dev-charter/full:scripts/<name>.sh > scripts/<name>.sh
+> chmod +x scripts/<name>.sh
+> ~~~
+>
+> コピーしたスクリプトは `git subtree pull`（`lite`）では更新されない。dev-charter
+> を更新するたびに、`git diff --no-index <(git show dev-charter/full:scripts/<name>.sh)
+> scripts/<name>.sh` などで `full` の最新と比べ、差分があれば取り込む。採用先で意図的に
+> 変更した箇所は、スクリプト内のコメントに理由を残す。
 
 新規リポジトリに本憲章を適用し、`.pre-commit-config.yaml` がまだ存在しない場合：
 
