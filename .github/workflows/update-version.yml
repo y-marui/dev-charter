@@ -11,9 +11,12 @@ jobs:
     # Only runs for PRs from branches within this repo (not forks) and not
     # triggered by the auto-update commit itself (prevents redundant re-runs).
     # Fork PRs must update VERSION manually; CI will fail with a clear message.
+    # Skipped for develop -> main release PRs: the head (develop) is protected,
+    # so the bot's push would be rejected; VERSION is already current on develop.
     if: >
       github.event.pull_request.head.repo.full_name == github.repository &&
-      github.actor != 'github-actions[bot]'
+      github.actor != 'github-actions[bot]' &&
+      github.head_ref != 'develop'
     permissions:
       contents: write
       actions: write
