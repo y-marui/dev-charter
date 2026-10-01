@@ -217,6 +217,17 @@ SwiftUI は補間つきの `Text("score \(n)")` から、`score %lld` のよう�
 パースする。Xcode 26.x の SwiftPM は `.xcstrings` を `.lproj` にコンパイルしないため、`String(localized:)` を使う
 テストは `swift test` で失敗することがある。
 
+CI の Xcode でも同じことが起きる。カタログが `.lproj` にコンパイルされないと、文言を引く処理（`String(localized:)`・
+`localizedString`・`Bundle.module`）は訳ではなくキーをそのまま返す。そのため、次の点に注意する。
+
+- 文言のテキスト（`"太字"` など）を直接期待するテストは、ローカルでは通っても CI で落ちる。期待値は、テスト対象自身が返す
+  値（例: `MarkdownAction.bold.syntax.placeholder`）か、空でないことの確認にする
+- 文言そのものをキーにしているアプリでは、キーが返ることで偶然通る。キーをドット区切りに変えた時点で、
+  そのようなテストが初めて落ちる
+- ローカルと CI で結果が変わらないように、lproj を引くテストは fixture bundle（一時ディレクトリに `ja.lproj/Localizable.strings` を
+  書いた `Bundle`）を使う。見つからない場合の確認には、どの lproj にもないキーを使う（実行環境の言語に依存させない）
+- 保存された言語設定を読む処理は、テストの前後で保存値を固定・復元する（実行環境の言語に依存させない）
+
 ## Verification
 
 次はユニットテストで確認できないため、実機（または実行環境）で確認する。
