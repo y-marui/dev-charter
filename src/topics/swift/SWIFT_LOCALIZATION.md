@@ -20,6 +20,8 @@ public enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
     case ja, en
     case zhHans = "zh-Hans"
     case hi, es, fr, pt
+
+    public var id: String { rawValue }
 }
 ~~~
 
@@ -37,8 +39,13 @@ public enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
 2. `system` なら、`Locale.preferredLanguages` から、対応言語に一致する最初のもの
 3. 一致がなければ英語
 
-一致判定は言語コードで行う。中国語（`zh`）だけは文字体系まで見て、簡体字（`Hans`）のときに限り `zh-Hans` とする。
-文字体系がない `zh-TW`・`zh-HK`・`zh-MO` は繁体字として対応外にし、英語にフォールバックする。
+一致判定は言語コードで行う。中国語（`zh`）だけは文字体系で判定する。
+
+- 文字体系がある場合は、`Hans` のときに限り `zh-Hans` とする（`zh-Hant` は対応外）
+- 文字体系がない場合は、地域で判定する。`zh-TW`・`zh-HK`・`zh-MO` は繁体字として対応外にし、
+  それ以外（`zh`・`zh-CN`・`zh-SG` など）は簡体字として `zh-Hans` とする
+
+対応外は英語にフォールバックする。
 `preferredLanguages` を引数に取るオーバーロードを用意すると、テストで差し替えられる。
 
 ## Storage
@@ -152,7 +159,8 @@ extension Button where Label == Text {
 
 - 文言は Xcode の String Catalog（`Localizable.xcstrings`）で管理する。Swift Package のリソースとして
   `Packages/Core/Sources/Core/Resources/` に置く
-- `Package.swift` に `defaultLocalization` と `resources: [.process("Resources")]` を指定する
+- `Package.swift` に `defaultLocalization` と `resources: [.process("Resources")]` を指定する。`defaultLocalization` の値は、
+  アプリの `project.yml` の `developmentLanguage`（Xcode の development region）と同じにする
 - カタログは対応言語の 7 言語すべてで揃える。ポルトガル語の言語キーは `pt`（`pt-BR` などの地域付きにしない）
 - アプリが対応言語の一部しか翻訳していない場合は、翻訳を追加するか、選択肢を実際の対応言語に絞るかを決める。
   選べるのに翻訳がない言語を残さない
