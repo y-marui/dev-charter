@@ -203,6 +203,15 @@ SwiftUI は補間つきの `Text("score \(n)")` から、`score %lld` のよう�
 - 型で文言と分かるもの（`LocalizedStringResource` を返す enum、App Intents の `title:`）は、文脈の判定では
   拾えないので、ファイル単位で対象にして目視で確認する
 - カタログに無かった文言（日本語や英語が固定で表示されていたもの）が見つかったら、キーと全言語の訳を追加する
+- 対応表による一括置換では、コードとカタログの対応が合っているかをビルドが抽出するキーで確認する。
+  `xcodebuild ... SWIFT_EMIT_LOC_STRINGS=YES build` が出力する `*.stringsdata` のキーを集め、「コードのキーがカタログにある」
+  「カタログのキーがコードから抽出される」を突き合わせる（macOS と iOS の両方をビルドする）
+- 抽出されないカタログのキーは、`String` 型の引数を経由している（`LabeledContent(title)`・`Text(title)` に `String` を渡している）可能性がある。
+  `String` は翻訳されず verbatim 表示になるため、キーを変えた後は英語の原文ではなくキーがそのまま画面に出る。
+  引数の型を `LocalizedStringKey` にする（意図して `localizedString` で引く箇所は除く）
+- 補間を含む文言（`Text("Years: \(n)")`）のカタログのキーは、整数なら `%lld`、文字列なら `%@`、`specifier:` つきなら
+  `%.1f` のように、コードの引数の型から作られる。型が違うと一致せず、翻訳が当たらない。ドット区切りにするときは
+  `duration.years %lld` のように、キーの後ろに書式指定子を残す
 
 ## Testing
 
