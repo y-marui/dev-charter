@@ -203,6 +203,15 @@ SwiftUI は補間つきの `Text("score \(n)")` から、`score %lld` のよう�
 - 型で文言と分かるもの（`LocalizedStringResource` を返す enum、App Intents の `title:`）は、文脈の判定では
   拾えないので、ファイル単位で対象にして目視で確認する
 - カタログに無かった文言（日本語や英語が固定で表示されていたもの）が見つかったら、キーと全言語の訳を追加する
+- 対応表による一括置換では、コードとカタログの対応が合っているかをビルドが抽出するキーで確認する。
+  `xcodebuild ... SWIFT_EMIT_LOC_STRINGS=YES build` が出力する `*.stringsdata` のキーを集め、「コードのキーがカタログにある」
+  「カタログのキーがコードから抽出される」を突き合わせる（macOS と iOS の両方をビルドする）
+- 抽出されないカタログのキーは、`String` 型の引数を経由している（`LabeledContent(title)`・`Text(title)` に `String` を渡している）可能性がある。
+  `String` は翻訳されず verbatim 表示になるため、キーを変えた後は英語の原文ではなくキーがそのまま画面に出る。
+  引数の型を `LocalizedStringKey` にする（意図して `localizedString` で引く箇所は除く）
+- 補間を含む文言（`Text("Years: \(n)")`）のカタログのキーは、整数なら `%lld`、文字列なら `%@`、`specifier:` つきなら
+  `%.1f` のように、コードの引数の型から作られる。型が違うと一致せず、翻訳が当たらない。ドット区切りにするときは
+  `duration.years %lld` のように、キーの後ろに書式指定子を残す
 
 ## Testing
 
@@ -216,6 +225,17 @@ SwiftUI は補間つきの `Text("score \(n)")` から、`score %lld` のよう�
 カタログの文言をテストで確認する場合、`String(localized:)` は使わず、ソースの `Localizable.xcstrings` を直接
 パースする。Xcode 26.x の SwiftPM は `.xcstrings` を `.lproj` にコンパイルしないため、`String(localized:)` を使う
 テストは `swift test` で失敗することがある。
+
+CI の Xcode でも同じことが起きる。カタログが `.lproj` にコンパイルされないと、文言を引く処理（`String(localized:)`・
+`localizedString`・`Bundle.module`）は訳ではなくキーをそのまま返す。そのため、次の点に注意する。
+
+- 文言のテキスト（`"太字"` など）を直接期待するテストは、ローカルでは通っても CI で落ちる。期待値は、テスト対象自身が返す
+  値（例: `MarkdownAction.bold.syntax.placeholder`）か、空でないことの確認にする
+- 文言そのものをキーにしているアプリでは、キーが返ることで偶然通る。キーをドット区切りに変えた時点で、
+  そのようなテストが初めて落ちる
+- ローカルと CI で結果が変わらないように、lproj を引くテストは fixture bundle（一時ディレクトリに `ja.lproj/Localizable.strings` を
+  書いた `Bundle`）を使う。見つからない場合の確認には、どの lproj にもないキーを使う（実行環境の言語に依存させない）
+- 保存された言語設定を読む処理は、テストの前後で保存値を固定・復元する（実行環境の言語に依存させない）
 
 ## Verification
 
