@@ -43,5 +43,6 @@ dev-charter の各ドキュメントへのインデックス。
 | Alfred ワークフロー（Go）、cmd/+internal/、ユニバーサルバイナリ、lipo、Configuration Builder、native vs Go、リリースプロセス、タグ push、CHANGELOG からのリリースノート生成 | `topics/alfred/ALFRED_DEV_ENV.md` |
 | Alfred Gallery 提出基準、署名・公証、アイコン・キーワード要件、README スタイルガイド、Gallery readiness チェックリスト | `topics/alfred/ALFRED_GALLERY.md` |
 | Swift 開発環境、XcodeGen、SwiftLint、SwiftFormat、App/+Packages/Core/、swift test、CI | `topics/swift/SWIFT_DEV_ENV.md` |
+| Swift のアプリ内言語設定、AppLanguage、resolvedLocale、App Group、`.environment(\.locale)`、AppleLanguages、String Catalog、文言キーの規則 | `topics/swift/SWIFT_LOCALIZATION.md` |
 | Chrome Extension 開発環境、Manifest V3、esbuild、ESLint、node --test、Chrome/Firefox dual build、リリースプロセス、タグ push | `topics/chrome-extension/CHROME_EXTENSION_DEV_ENV.md` |
 | 設計哲学、依存最小化、スモールツール、ローカルファースト、オフライン、UI | `topics/SOFTWARE_DESIGN_PRINCIPLES.md` |
