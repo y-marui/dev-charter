@@ -312,3 +312,11 @@ gh api -X PATCH repos/{owner}/{repo} \
 ```
 
 > **注意:** プライベートリポジトリでの secret scanning は GitHub Advanced Security が必要（有料）。パブリックリポジトリは無料で使用できる。
+> 有効化できないプライベートリポジトリ（API が "not available" を返す場合）は既知の制約として許容し、pre-commit の gitleaks と CI のセキュリティスキャンで補う。
+
+## Exemptions from the Baseline
+
+本ドキュメントの設定は、現在も更新・PR が発生するリポジトリに適用する。次のリポジトリは意図的に適用対象外とする。
+
+- レガシー・メンテナンス終了の個人リポジトリ（更新も PR も発生しないため、設定を維持する意味がない）
+- CI ワークフローを持たないリポジトリ（プロフィールリポジトリ、ステータスダッシュボード等）は `main-protection` Ruleset の対象外とする。標準の必須チェック（`CI`・`Dev Charter`）が報告されず、すべての PR・push をブロックするため

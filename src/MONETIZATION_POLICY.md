@@ -46,9 +46,9 @@ Swift で開発し、Apple App Store で配布する macOS・iOS アプリには
 - いずれか一方で購入した利用者は、もう一方でも購入を復元して同じ権利を利用できるようにする
 - 月間・年間サブスクリプションと買い切りのすべてで、macOS・iOS 間の購入権利を共有する
 
-## GitHub Published Projects
+## GitHub Projects
 
-GitHub 上で公開するプロジェクトは、Open/Closed にかかわらず、プラットフォーム別の方式に加えて **GitHub Sponsors** を追加する。
+GitHub 上のすべてのプロジェクトは、public / private および Open/Closed にかかわらず、プラットフォーム別の方式に加えて **GitHub Sponsors** を追加する。
 
 ### .github/FUNDING.yml
 
