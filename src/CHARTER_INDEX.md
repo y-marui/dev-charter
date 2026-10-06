@@ -45,4 +45,5 @@ dev-charter の各ドキュメントへのインデックス。
 | Swift 開発環境、XcodeGen、SwiftLint、SwiftFormat、App/+Packages/Core/、swift test、CI | `topics/swift/SWIFT_DEV_ENV.md` |
 | Swift のアプリ内言語設定、AppLanguage、resolvedLocale、App Group、`.environment(\.locale)`、AppleLanguages、String Catalog、文言キーの規則 | `topics/swift/SWIFT_LOCALIZATION.md` |
 | Chrome Extension 開発環境、Manifest V3、esbuild、ESLint、node --test、Chrome/Firefox dual build、リリースプロセス、タグ push | `topics/chrome-extension/CHROME_EXTENSION_DEV_ENV.md` |
+| C# 開発環境、.NET SDK、dotnet format、WinForms、net8.0-windows、単一ファイル publish、WiX（MSI）、Windows ランナー、WINDOWS_RUNNER、CI | `topics/csharp/CSHARP_DEV_ENV.md` |
 | 設計哲学、依存最小化、スモールツール、ローカルファースト、オフライン、UI | `topics/SOFTWARE_DESIGN_PRINCIPLES.md` |
