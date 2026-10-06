@@ -15,6 +15,10 @@ on:
         description: "dev-charter branch/variant to track (full, lite, or another distribution branch)"
         default: "full"
         type: string
+      runner:
+        description: "runs-on label for the check job (e.g. a self-hosted Linux runner label; default: GitHub-hosted ubuntu-latest)"
+        default: "ubuntu-latest"
+        type: string
   workflow_dispatch:
     inputs:
       prefix:
@@ -29,7 +33,7 @@ on:
 jobs:
   check:
     name: Check
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
     permissions:
       contents: write
       pull-requests: write
