@@ -133,7 +133,8 @@ swift test --package-path Packages/Core
 - 署名なしビルドで検証する（`CODE_SIGN_IDENTITY=""` / `CODE_SIGNING_REQUIRED=NO` /
   `CODE_SIGNING_ALLOWED=NO`）。配布用の署名付きビルドは CI では行わない
 - private リポジトリでは、リポジトリ変数 `MACOS_RUNNER` で self-hosted macOS runner に
-  切り替えられる（条件は [Runner Billing](https://github.com/y-marui/dev-charter/blob/full/topics/CI_POLICY.md#runner-billing) 参照）
+  切り替えられる。**新規リポジトリのセットアップ時に忘れず設定する**（未設定だと
+  `macos-latest` で動き、macOS 分が課金される）（条件は [Runner Billing](https://github.com/y-marui/dev-charter/blob/full/topics/CI_POLICY.md#runner-billing) 参照）
 
 ```yaml
 lint:
