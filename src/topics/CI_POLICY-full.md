@@ -282,6 +282,11 @@ Docker コンテナの中で macOS は動かないため、Mac にネイティ�
 （Linux 用の Docker runner とは別物）。導入する場合の条件：
 
 - **private リポジトリだけに登録する。** public では fork の PR が runner 上で任意のコードを実行できる
+- **新規の private リポジトリを作るたびに、リポジトリ変数を設定する**
+  （`gh variable set MACOS_RUNNER --body <ラベル> -R <owner>/<repo>`）。設定漏れは
+  GitHub-hosted の macOS で課金され続け、CI の動作確認では気づきにくい
+  （実例: 設定漏れの 1 リポジトリだけが macOS 課金の大半を占めた）。
+  public リポジトリには設定しない
 - `runs-on` はリポジトリ変数で切り替える。変数を設定しなければ GitHub-hosted に戻る。
   fork の PR は常に GitHub-hosted にする：
 
