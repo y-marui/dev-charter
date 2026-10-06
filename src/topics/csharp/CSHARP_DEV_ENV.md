@@ -10,93 +10,220 @@ Windows 向けデスクトップアプリ・ツール（.NET、WinForms 等）�
 
 ## Version Policy
 
-- **.NET SDK は LTS を使う。** メジャーバージョンは、CI の `actions/setup-dotnet` の
-  `dotnet-version`（例: `8.0.x`）と各 csproj の `TargetFramework`（例: `net8.0-windows`）で揃える。
-  `global.json` でパッチまで固定する仕組みは持たない（`x` 指定で、そのメジャーの最新パッチに追従する）
-- メジャーバージョンの更新は、LTS の切り替わり（サポート終了の半年前を目安）に、
-  `ci.yml`・csproj・README・`DEVELOPING.md` を同じ PR で更新して行う
-- csproj の既定プロパティは次を標準とする:
-  - `<Nullable>enable</Nullable>`
-  - `<ImplicitUsings>enable</ImplicitUsings>`
-  - `<InvariantGlobalization>true</InvariantGlobalization>`（アプリ内でカルチャ依存の動作が不要な場合）
-- アセンブリのバージョンは csproj の `<Version>` を単一の情報源とし、`CHANGELOG.md` と揃える
+- **.NET は LTS を使う。** 公式のサポート期間は、LTS が 3 年（偶数バージョン）、STS が 2 年（奇数バージョン）。
+  確認時点（2026-10）の LTS は .NET 10（2025-11-11 リリース、2028-11-14 まで）で、.NET 8 は
+  **2026-11-10 にサポートが終了する**。STS（.NET 9 等）は使わない
+  （[Support Policy](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core) 参照）
+- LTS は 2 年ごとの 11 月に出る。次の LTS が出たら、現行 LTS のサポート終了（リリースの約 3 年後）
+  までに移行する。移行は `global.json`・`TargetFramework`・CI・README・`DEVELOPING.md` を同じ PR で更新する
+- **SDK は `global.json` で固定する。** ローカルと CI で同じ SDK を使い、ビルドを再現可能にする
+  （公式も CI では範囲指定を推奨している）。`rollForward` は `latestFeature` にする
+  （指定した版以降の、同じメジャー・マイナーの最新の機能バンド・パッチ）
+
+```json
+{
+  "sdk": { "version": "10.0.100", "rollForward": "latestFeature" },
+  "test": { "runner": "Microsoft.Testing.Platform" },
+  "msbuild-sdks": { "WixToolset.Sdk": "6.0.2" }
+}
+```
+
+- `global.json` の `sdk.version` は、ワイルドカードや `10.0` のような省略形を受け付けない（`10.0.100` のように書く）
+- `test.runner` は、xUnit v3 のように Microsoft.Testing.Platform（MTP）で動くテストに必須
+  （.NET 10 SDK の `dotnet test` が、VSTest モードか MTP モードかをここで判断する）。
+  `msbuild-sdks` は、MSBuild SDK（WiX 等）のバージョンを 1 か所に集約する
+- Dependabot は `dotnet-sdk` ecosystem で `global.json` の SDK 更新を扱える
 
 ## Toolchain
 
-- ビルド・実行・テストは **`dotnet` CLI** で行う（Visual Studio を前提にしない）。
-  ローカルの前提は .NET SDK だけで、`dotnet build` が入口になる
-- Linter / Formatter: **`dotnet format`**（SDK 同梱）。CI は `--verify-no-changes` で実行し、
-  差分があれば失敗させる。サードパーティの Analyzer は既定では追加しない
-- フォーマット規則は、リポジトリ直下の `.editorconfig` で管理する（`dotnet format` が参照する）。
-  規則を変える場合は、全ファイルに違反がないことを確認してからマージする
+- ビルド・実行・テストは **`dotnet` CLI** で行う（Visual Studio を前提にしない）。ローカルの前提は
+  .NET SDK だけで、`dotnet build` が入口になる
+- ソリューションは **`.slnx`**（.NET 10 の `dotnet new sln` の既定）。XML で読みやすく、diff・マージが
+  扱いやすい。`dotnet build` / `dotnet format` / `dotnet test` が `.slnx` で動く
+- 共通のビルド設定は、リポジトリ直下の次の 4 ファイルに集約する:
 
-```powershell
-dotnet format <Solution>.sln --verify-no-changes
+| ファイル | 役割 |
+|---|---|
+| `global.json` | SDK・テストランナー・MSBuild SDK のバージョン |
+| `Directory.Build.props` | 全プロジェクト共通のプロパティ（`Version`、`Nullable`、解析設定） |
+| `Directory.Packages.props` | NuGet のバージョン（Central Package Management） |
+| `.editorconfig` | 整形・コードスタイル・アナライザの重大度 |
+
+- **Central Package Management（CPM）を常に使う。** `Directory.Packages.props` に
+  `<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>` と `<PackageVersion>` を書き、
+  各 csproj の `<PackageReference>` には `Version` を書かない。依存の追加・更新が 1 か所に集まる。
+  Dependabot の `nuget` ecosystem は CPM に対応している
+- `Directory.Build.props` に置く値:
+  - `<Version>`（アセンブリと MSI の単一の情報源。`CHANGELOG.md` と揃える）
+  - `<Nullable>enable</Nullable>`、`<ImplicitUsings>enable</ImplicitUsings>`
+  - 解析設定（[Lint](#lint) 参照）
+
+## Lint
+
+C# の lint は、SDK 同梱の **Roslyn アナライザ**（コード品質の `CA` 系と、コードスタイルの `IDE` 系）と
+`dotnet format` の組み合わせで行う。既定のままだと、警告に出る規則が少数で、CI も警告で落ちない
+ため、実質ほとんど何も検査しない。次の設定で、実効性のある lint にする:
+
+```xml
+<!-- Directory.Build.props -->
+<PropertyGroup>
+  <AnalysisLevel>latest-Recommended</AnalysisLevel>
+  <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  <!-- 警告をエラーにするのは CI のときだけ（GitHub Actions は CI=true を設定する）。
+       ローカルでは警告として見え、作業を止めない -->
+  <TreatWarningsAsErrors Condition="'$(CI)' == 'true'">true</TreatWarningsAsErrors>
+</PropertyGroup>
 ```
 
-- 複数プロジェクトの場合はソリューションを、単一プロジェクトの場合は csproj を対象にする
+- `AnalysisLevel` は `latest-Recommended`（`AnalysisMode` が `Recommended`。`Default` より多くの規則が
+  ビルド警告になる）。SDK を上げると規則が増えるため、増えた警告は更新 PR で解消する
+- `EnforceCodeStyleInBuild` で、`IDE` 系の規則をコマンドラインのビルドでも警告・エラーにできる。
+  各規則の重大度は `.editorconfig` に書く
+- **サードパーティのアナライザは既定では入れない**（StyleCop・Roslynator・Meziantou・SonarAnalyzer 等）。
+  不足を実感した時点で、`PrivateAssets="all"` の開発専用依存として追加し、理由を記録する
+- テストプロジェクトでは、`Method_Condition_Expected` 形式のテスト名が `CA1707`（名前にアンダースコア）に
+  触れるので、`.editorconfig` で緩める:
+
+```ini
+[tests/**.cs]
+dotnet_diagnostic.CA1707.severity = none
+```
+
+- フォーマットは `dotnet format <ソリューション> --verify-no-changes`（CI で差分があれば失敗させる）
+- 規則を**無効化**する場合は PR に理由を書く。規則を**追加**する場合は、全ファイルに違反がないことを確認してからマージする
 
 ## Project Structure
 
-- ソースは `src/<Project>/` に置く（プロジェクトごとに 1 ディレクトリ）。
-  複数プロジェクトの場合は、ルートに `<Name>.sln` を置き、ライブラリ（`Core`）と
-  実行ファイル（`Collector`・`Setup` 等）に分ける。単一プロジェクトでは `.sln` を省略してよい
-- テストプロジェクトは `tests/<Project>.Tests/` に置く（[Testing](#testing) 参照）
-- インストーラ（WiX）は `installer/` に置く
+```text
+<repo>/
+├── global.json
+├── Directory.Build.props
+├── Directory.Packages.props
+├── .editorconfig
+├── <Name>.slnx
+├── src/
+│   ├── <Name>.App/          # WinForms アプリ（エントリポイント、UI）
+│   └── <Name>.Core/         # UI に依存しないロジック
+├── tests/
+│   └── <Name>.Core.Tests/   # xUnit v3
+├── installer/               # WiX（MSI）
+└── docs/
+```
+
+- ソースは `src/<Project>/`、テストは `tests/<Project>.Tests/` に置く
+- **`Core` は UI 非依存にする。** `System.Windows.Forms` / `System.Drawing` に依存させず、`net10.0` を
+  対象にする。UI に依存する処理（画像の変換・描画）は `App` 側に置く。これにより Windows 以外でも
+  ビルド・テストでき、純粋関数としてテストしやすい
+- 単一の小さなツールは `src/<Name>/` 1 つでよい。複数の実行ファイルがロジックを共有する場合に、
+  `Core` を分ける
 - `bin/`・`obj/`・`dist/` は `.gitignore` に入れる（ビルド成果物はコミットしない）
-- 実行機固有の設定は `config.json` のように `.gitignore` 対象にし、`config.example.json` だけをコミットする
+- 実行機固有の設定は `.gitignore` 対象にし、`*.example` だけをコミットする
+
+## App Shell Defaults
+
+常駐する WinForms アプリ（トレイアプリ）の土台として、次を標準にする:
+
+- **トレイ**は `ApplicationContext` に `NotifyIcon` を載せる（隠したフォームを置かない）。`Dispose` で
+  `NotifyIcon` を破棄する
+- **高 DPI** は `<ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>`（csproj）
+- **単一インスタンス**は名前付き `Mutex` で保証する。2 つ目の起動は何もせずに終了する
+- **未処理例外**は `Application.ThreadException` / `AppDomain.UnhandledException` で、
+  `%APPDATA%\<App>\app.log` に書いて終了する。ロギングのライブラリは入れない
+- **設定**は `%APPDATA%\<App>\settings.json`（型付きの設定。ユーザーごと）。`Core` に型と Load/Save を
+  置き、単体テストの対象にする。設定は独立した「設定」ウィンドウで編集し、トレイのメニューには
+  「設定…」と「終了」を置く
+- ローカライズ・DI（Generic Host）・ロギングのライブラリは、既定では入れない。必要になったら、
+  `LOCALIZATION_POLICY.md` と依存方針に従って追加する
 
 ## Build and Publish
 
-配布する実行ファイルは、**自己完結の単一ファイル**（win-x64）で作る。
-利用者の PC に .NET ランタイムが無くても動く。csproj に次を書き、`dotnet publish` の
-オプションを減らす:
+配布する成果物は、**自己完結（self-contained）のフォルダ**（win-x64）で作り、インストーラー
+（MSI）に載せる。利用者の PC に .NET ランタイムが無くても動く。**単一ファイル（`PublishSingleFile`）
+にはしない。** インストーラーで配るなら単一にする理由が薄く、自己展開による起動の遅さや
+アンチウイルスの誤検知の原因になる。
 
 ```xml
+<!-- 実行ファイルの csproj -->
 <RuntimeIdentifier>win-x64</RuntimeIdentifier>
 <SelfContained>true</SelfContained>
-<PublishSingleFile>true</PublishSingleFile>
-<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
 ```
 
 ```powershell
-dotnet publish src/<Project> -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o dist
+dotnet publish src/<Name>.App -c Release -o publish
 ```
 
+- `OutputType` は、UI を持つ常駐アプリは `WinExe`（コンソールを出さない）、コンソールツールは `Exe`
+- **Windows 専用のスタックである。** WinForms/WPF は `net10.0-windows` を対象にするため、Linux では
+  `EnableWindowsTargeting` を指定しても `restore`/`build` までしか確かめられない。このため CI の
+  `lint`・`build` は Windows ランナーで行う
 - ビルドのコマンドは `Makefile`（または同等のスクリプト）に集約し、README・CI から同じコマンドを呼ぶ
-- トレイアプリのように UI を持つ常駐アプリは、`OutputType` を `WinExe` にする（コンソールを出さない）。
-  コンソールツールは `Exe`
-- **Windows 専用のスタックである。** WinForms/WPF は `net8.0-windows` を対象にするため、
-  Linux では `EnableWindowsTargeting` を指定しても `restore`/`build` までしか確かめられない
-  （実行・テストは Windows が要る）。このため CI の `lint`・`build` は Windows ランナーで行う
 
-### Installer (MSI)
+## Installer (MSI)
 
-MSI が要る場合は、WiX の SDK スタイル（`.wixproj`）を使い、`dotnet build` でビルドする。
-`installer/` に置き、CI の `build` でも同じコマンドでビルドして壊れていないことを確認する。
+**配布の入口はインストーラー（MSI）に一本化する。** exe を直接配る経路や、アプリ自身がショートカットを
+作る経路（`--install` 等）は持たない。開発時の起動は `dotnet run` で足りる。
+
+- **WiX 6.x** の SDK スタイル（`.wixproj`）で、`dotnet build` により MSI をビルドする。バージョンは
+  `global.json` の `msbuild-sdks` で固定する。`.wixproj` の SDK は `Sdk="WixToolset.Sdk"`（バージョンなし）
+- publish したフォルダは、`Files` 要素で丸ごと取り込む（Heat によるハーベストは非推奨）
+- インストールの範囲は `Scope="perMachine"`（`Program Files`）を既定にする。ユーザーごとの設定は
+  `%APPDATA%` に置くので、`Program Files` に書き込めなくても動く
+- `MajorUpgrade` を入れ、上書きアップグレードできるようにする。`UpgradeCode` は**製品ごとに固定の GUID**
+  （テンプレートから作ったときに新しく採番し、以後変えない）
+- MSI のバージョンは、`Directory.Build.props` の `<Version>` を `$(Version)` で受ける（二重管理しない）
+- CI の `build` でも同じコマンドで MSI をビルドし、壊れていないことを確認する
+
+```xml
+<!-- installer/Package.wxs（抜粋） -->
+<Package Name="MyApp" Manufacturer="..." Version="$(Version)" UpgradeCode="..." Scope="perMachine">
+  <MajorUpgrade DowngradeErrorMessage="A newer version of MyApp is already installed." />
+  <MediaTemplate EmbedCab="yes" />
+  <StandardDirectory Id="ProgramFiles64Folder">
+    <Directory Id="INSTALLFOLDER" Name="MyApp">
+      <Files Include="$(PublishDir)\**" />
+    </Directory>
+  </StandardDirectory>
+</Package>
+```
 
 ```powershell
-dotnet build installer/<Name>.Installer.wixproj -c Release -o dist
+dotnet build installer/<Name>.Installer.wixproj -c Release -p:PublishDir=<publish フォルダの絶対パス>
 ```
+
+### WiX License (OSMF)
+
+WiX v6 以降は、Open Source Maintenance Fee（OSMF）の対象。年間売上が 1 万ドルを超える組織が
+wixtoolset の GitHub 組織へスポンサーすることが条件で、v7 以降は EULA の承諾も要る。**個人・研究室の用途
+（収益なし）では支払いは不要**だが、収益が出るプロジェクトでは条件を確認する。WiX 5.x は OSMF の対象外。
+
+### Release
+
+タグ `vX.Y.Z` の push で、Windows ランナーが MSI をビルドし、GitHub Releases に添付する。
+`GITHUB_TOKEN`（`contents: write`）だけを使い、OIDC・署名鍵は使わない。このため、private リポジトリでは
+`WINDOWS_RUNNER`（self-hosted）で動かしてよい（[Runner Billing](https://github.com/y-marui/dev-charter/blob/full/topics/CI_POLICY.md#runner-billing)
+の、OIDC を使う release job だけ hosted に残す規則に抵触しない）。MSI の署名は対象外
+（利用者の PC で SmartScreen の警告が出る。必要になったら別途検討する）。
 
 ## Testing
 
-- 認識・変換などのロジックは、ハードウェアや UI に依存しない**純粋な関数**として書き、
-  実機なしで検証できるようにする
-- テストプロジェクトを追加する場合は、`tests/<Project>.Tests/` に置き、`dotnet test` で実行する。
-  フレームワークは xUnit を第一候補とする
-- テストを追加したら、CI の `build` job で `dotnet test` を実行する（テストとビルドは同じ
-  Windows job にまとめる。理由は [Runner Billing](https://github.com/y-marui/dev-charter/blob/full/topics/CI_POLICY.md#runner-billing) の「job の切り上げ」と同じ）
+- ロジックは、ハードウェアや UI に依存しない**純粋な関数**として `Core` に書き、実機なしで検証する
+- **xUnit v3**（`xunit.v3`）を標準とし、`tests/<Project>.Tests/` に置く。xUnit v3 のテストプロジェクトは
+  `OutputType` が `Exe` で、MTP で動く。`global.json` の `test.runner` が必要（[Version Policy](#version-policy) 参照）
+- 実行は `dotnet test --solution <ソリューション>`（MTP モードの引数。VSTest 時代の `--nologo` 等は
+  「不明なオプション」になる）
+- Visual Studio のテストエクスプローラーは、xUnit v3 の環境で固まる事例が報告されている。`dotnet test`
+  で通ることを正とする
+- テストは CI の `build` job で、ビルドと同じ Windows job にまとめて実行する（job ごとの切り上げ課金を避ける）
 - UI・実機（カメラ等）のテストは自動化せず、手動で確認する。手順は `DEVELOPING.md` に残す
 
 ## Dependency Policy
 
 - 既定でサードパーティの NuGet 依存ゼロ
 - 追加してよい依存: Microsoft が提供する公式パッケージ（例: `System.ServiceProcess.ServiceController`）、
-  テスト専用ライブラリ（テストプロジェクトにのみ追加）
-- 上記以外の依存を追加する場合は、**ユーザーに確認し**、理由とライセンスを csproj のコメントと
-  `AI_CONTEXT.md` に記録する。バージョンは `PackageReference` で固定する（浮動バージョンにしない）
+  テストプロジェクトにだけ追加するテストライブラリ（`xunit.v3` 等）、開発専用のアナライザ
+  （`PrivateAssets="all"`）
+- 上記以外の依存を追加する場合は、**ユーザーに確認し**、理由とライセンスを `Directory.Packages.props`
+  のコメントと `AI_CONTEXT.md` に記録する。バージョンは固定する（浮動バージョンにしない）
 - 追加の可否を判断するときは、まず .NET 標準ライブラリ・WinForms の範囲で実現できないかを検討する
 
 ## CI Integration
@@ -105,9 +232,11 @@ dotnet build installer/<Name>.Installer.wixproj -c Release -o dist
 C# では次の点が他のスタックと異なる:
 
 - `security`・`changes`・`gate` は Linux、`lint`・`build` は **Windows** ランナーで動かす
-  （上記のとおり Windows でしか確かめられないため）
-- `lint` と `build` で `actions/setup-dotnet` を使う。`lint` は `dotnet format --verify-no-changes`、
-  `build` は `dotnet publish`（MSI があれば `dotnet build` の wixproj も）を実行する
+- `actions/setup-dotnet`（v5。node24 で動くため、runner は v2.327.1 以降）は `global-json-file: global.json`
+  で、`global.json` と同じ SDK を入れる。`dotnet-version` を CI に重複して書かない
+- `lint` は `dotnet format <ソリューション> --verify-no-changes` と、警告をエラーにした `dotnet build`
+  （`CI=true` で `TreatWarningsAsErrors` が有効になる）
+- `build` は `dotnet test --solution`、`dotnet publish`、MSI の `dotnet build`（wixproj）を実行する
 - `changes` job（`dorny/paths-filter`）は、PR の情報を読むため `permissions` に
   `contents: read` と `pull-requests: read` を付ける。付けないと private リポジトリで
   `Resource not accessible by integration` で失敗する
@@ -116,6 +245,7 @@ C# では次の点が他のスタックと異なる:
 - private リポジトリでは、リポジトリ変数 `LINUX_RUNNER`・`WINDOWS_RUNNER` で self-hosted
   runner に切り替えられる。**ランナーを登録してから、両方の変数を設定する**
   （条件は [Runner Billing](https://github.com/y-marui/dev-charter/blob/full/topics/CI_POLICY.md#runner-billing) 参照）
+- Dependabot（`.github/dependabot.yml`）は `nuget`・`dotnet-sdk`・`github-actions` の 3 つの ecosystem を設定する
 
 ```yaml
 lint:
@@ -129,10 +259,11 @@ lint:
     contents: read
   steps:
     - uses: actions/checkout@v7
-    - uses: actions/setup-dotnet@v4
+    - uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: '8.0.x'
-    - run: dotnet format <Solution>.sln --verify-no-changes
+        global-json-file: global.json
+    - run: dotnet format <Name>.slnx --verify-no-changes
+    - run: dotnet build <Name>.slnx -c Release --no-incremental
 
 build:
   name: Build
@@ -144,10 +275,12 @@ build:
     contents: read
   steps:
     - uses: actions/checkout@v7
-    - uses: actions/setup-dotnet@v4
+    - uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: '8.0.x'
-    - run: dotnet publish src/<Project> -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o dist
+        global-json-file: global.json
+    - run: dotnet test --solution <Name>.slnx -c Release
+    - run: dotnet publish src/<Name>.App -c Release -o publish
+    - run: dotnet build installer/<Name>.Installer.wixproj -c Release -p:PublishDir=${{ github.workspace }}\publish
 ```
 
 `gate` の `needs` は `[changes, security, lint, build]` にし、結果の検証ループも `lint` と
