@@ -14,6 +14,7 @@ jobs:
   security:
     name: Security scan (pre-commit)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -29,6 +30,7 @@ jobs:
   lint:
     name: Lint (ruff format)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -45,6 +47,7 @@ jobs:
     needs: [security, lint]
     if: always()
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions: {}
     steps:
       - name: Verify required jobs succeeded
