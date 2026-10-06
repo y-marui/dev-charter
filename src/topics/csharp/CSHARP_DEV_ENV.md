@@ -165,11 +165,18 @@ dotnet publish src/<Name>.App -c Release -o publish
 
 - **WiX 6.x** の SDK スタイル（`.wixproj`）で、`dotnet build` により MSI をビルドする。バージョンは
   `global.json` の `msbuild-sdks` で固定する。`.wixproj` の SDK は `Sdk="WixToolset.Sdk"`（バージョンなし）
-- publish したフォルダは、`Files` 要素で丸ごと取り込む（Heat によるハーベストは非推奨）
+- **インストーラーのプロジェクトは `.slnx` に含めない。** publish したフォルダが入力なので、ソリューション全体の
+  ビルド（`lint` の `dotnet build` 等）が、publish 前に失敗する。publish のあとに、`.wixproj` を単独でビルドする
+- publish したフォルダは、`Files` 要素で丸ごと取り込む（Heat によるハーベストは非推奨）。**`<Feature>` は
+  書かない**（明示すると暗黙の既定 feature が作られず、`Files` の部品が「親 Feature なし」の
+  `WIX0267` になる）。ショートカット等の部品も、`Package` 直下に置けば暗黙の feature に入る
 - インストールの範囲は `Scope="perMachine"`（`Program Files`）を既定にする。ユーザーごとの設定は
   `%APPDATA%` に置くので、`Program Files` に書き込めなくても動く
 - `MajorUpgrade` を入れ、上書きアップグレードできるようにする。`UpgradeCode` は**製品ごとに固定の GUID**
-  （テンプレートから作ったときに新しく採番し、以後変えない）
+  （テンプレートから作ったときに新しく採番し、以後変えない）。テンプレートの仮の値は、全部 0 の GUID に
+  してはならない（MSI の検証 ICE74 で不正になる。クリーンビルドでだけ失敗し、増分ビルドでは検証が
+  省かれて通るため、気づきにくい）。有効な GUID を入れる。`Manufacturer` に `[AUTHOR]` のような
+  角括弧のプレースホルダを書くと、プロパティ参照と解釈されて `WIX1077` になる
 - MSI のバージョンは、`Directory.Build.props` の `<Version>` を `$(Version)` で受ける（二重管理しない）
 - CI の `build` でも同じコマンドで MSI をビルドし、壊れていないことを確認する
 
