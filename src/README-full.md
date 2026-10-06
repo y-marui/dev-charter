@@ -138,7 +138,8 @@ jobs:
   gate:
     name: Dev Charter
     needs: [check]
-    if: always()
+    # Skip on draft PRs too (a draft can't be merged, so no status is awaited).
+    if: always() && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     steps:
       - name: Verify dev-charter check did not fail
@@ -155,8 +156,9 @@ full is this workflow's default `branch` input, so you don't need to set
 `with: branch: full` explicitly.
 
 > **Note:** `check` is skipped for Dependabot PRs and draft PRs (see below). `gate`
-> treats a `skipped` result as fine in both cases and always reports a `Dev Charter`
-> status (matching this workflow's own `name:`). Register `Dev Charter` — not `Check /
+> treats a `skipped` result as fine for Dependabot PRs and reports a `Dev Charter`
+> status (matching this workflow's own `name:`); on draft PRs `gate` itself is skipped
+> too (a draft can't be merged, so no status is awaited, and it avoids a billed minute). Register `Dev Charter` — not `Check /
 > check` — as the required status check in Branch Protection (Ruleset); see
 > [CI_POLICY.md's Ruleset section](topics/CI_POLICY.md#branch-protection-ruleset).
 > Registering the `check` job itself is unsafe: when it's skipped, the `Check / check`

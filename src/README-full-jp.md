@@ -136,7 +136,8 @@ jobs:
   gate:
     name: Dev Charter
     needs: [check]
-    if: always()
+    # Skip on draft PRs too (a draft can't be merged, so no status is awaited).
+    if: always() && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     steps:
       - name: Verify dev-charter check did not fail
@@ -153,8 +154,10 @@ full はこのワークフローの `branch` 入力の既定値なので、`with
 明示する必要はない。
 
 > **Note:** dependabot が作成した PR や draft PR では `check` 自体がスキップされます
-> （後述）。`gate` はその場合も `skipped` を正常として扱い、必ず `Dev Charter`（ワークフロー
-> 自身の `name:` と同じ値）を報告します。Branch Protection（Ruleset）に必須ステータス
+> （後述）。`gate` は dependabot の場合も `skipped` を正常として扱い、`Dev Charter`（ワークフロー
+> 自身の `name:` と同じ値）を報告します（draft PR は `gate` ごとスキップします。draft は
+> マージできず、必須チェックの報告を待たないためです。1 job ごとに分単位で課金されるのを避ける
+> 目的もあります）。Branch Protection（Ruleset）に必須ステータス
 > チェックとして登録するのは `Check / check` ではなく `Dev Charter` です（[CI_POLICY.md
 > の Ruleset 節](topics/CI_POLICY.md#branch-protection-ruleset)参照）。
 > `check` job だけを直接必須チェックに登録すると、skip 時に `Check / check` という
