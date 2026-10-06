@@ -333,7 +333,8 @@ macOS 版と同じ条件に加えて、次を守る：
 - `pull_request_target` で特権トークンを使う job（assign 等）と、OIDC を使う release job は
   self-hosted に載せず、hosted のままにする
 - runner が止まると job は待機のままになり、hosted には自動で落ちない（必須チェックが pending のままに
-  なる）。その場合は変数を外す。job には `timeout-minutes` を付けて、待機が長引かないようにする
+  なる。待機は最長 24 時間で、`timeout-minutes` は開始後の実行時間にしか効かない）。その場合は変数を
+  外す。実行中に固まった job が runner を占有し続けないよう、`timeout-minutes` は付けておく
 - 再利用ワークフロー `check-charter.yml` は `runner` 入力で runs-on を受け取る（既定は `ubuntu-latest`）
 
 ### Concurrency (Cancel Superseded Runs)
