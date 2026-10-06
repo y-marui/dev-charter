@@ -220,7 +220,7 @@ CI での実行例（GitHub Actions）：
 | `.pre-commit-config.yaml` | pre-commit フック定義（セキュリティ＋品質） |
 | `.gitleaks.toml` | gitleaks カスタムルール設定 |
 | `scripts/check-markdown-heading-language.sh` | Markdown セクションヘッダの言語検証 |
-| `scripts/check-local-charter-version.sh` | ローカルの `../dev-charter` チェックアウトとの VERSION 差分をチェック（sibling が新しい場合はブロック、古い場合は警告） |
+| `scripts/check-local-charter-version.sh` | ローカルの `../dev-charter` チェックアウトとの VERSION 差分をチェック（sibling が新しい場合も古い場合も警告のみ。ブロックしない） |
 | `scripts/check-charter-ci-template.sh` | `.github/workflows/dev-charter-check.yml` を README-jp.md の CI テンプレートと比較（不一致ならブロック） |
 | `scripts/check-charter-subtree-edit.sh` | `docs/dev-charter/` 配下がステージされていればブロック。ただし `MERGE_HEAD` が `git-subtree-dir` トレーラーを持つ場合（`git subtree add`/`pull`/`merge` が競合し手動コミットで完了させる場合）は誤検知しないよう除外する |
 | `scripts/check-language-pair-sync.sh` | `<name>-jp.<ext>` / `<name>.<ext>` ペアが片側のみステージされていればブロック |

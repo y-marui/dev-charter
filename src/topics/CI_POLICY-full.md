@@ -313,6 +313,29 @@ Docker コンテナの中で macOS は動かないため、Mac にネイティ�
 - 課金ブロック中は Linux の job も起動しないため、self-hosted は課金ブロックの恒久対策にならない
   （[Bypass Actor](#bypass-actor-repository-admin) 参照）
 
+**self-hosted Linux runner（任意）：** private リポジトリの Linux job（`security`・`changes`・`lint`・
+`gate` 等）は、各 job が分単位に切り上げられるため、リポジトリと PR が増えると無料枠
+（GitHub Pro は月 3,000 分）を超える。自前の PC（Docker）に runner を置いて逃がせる。
+macOS 版と同じ条件に加えて、次を守る：
+
+- 変数名は `LINUX_RUNNER`（値は runner のラベル）。**private リポジトリだけ**に設定し、public には設定しない：
+
+  ```yaml
+  runs-on: ${{ vars.LINUX_RUNNER && !github.event.pull_request.head.repo.fork && vars.LINUX_RUNNER || 'ubuntu-latest' }}
+  ```
+
+- 個人アカウントのリポジトリでは runner はリポジトリ単位でしか登録できないため、対象リポジトリごとに
+  runner（コンテナ）を 1 つ登録する。登録済みのホスト・リポジトリは、変数を設定する前に必ず確認する
+  （runner のないリポジトリに変数だけ設定すると、job が待機のままになる）
+- runner のイメージには、hosted の `ubuntu-latest` が持つツールのうち CI が使うもの（git、gh、curl、jq、
+  python3・pip・uv、node、go・gitleaks、shellcheck、zip、SwiftLint 等）を入れる。docker が要る step は、
+  ホストのソケットをマウントせず、イメージ側のツールで置き換えるか DinD にする
+- `pull_request_target` で特権トークンを使う job（assign 等）と、OIDC を使う release job は
+  self-hosted に載せず、hosted のままにする
+- runner が止まると job は待機のままになり、hosted には自動で落ちない（必須チェックが pending のままに
+  なる）。その場合は変数を外す。job には `timeout-minutes` を付けて、待機が長引かないようにする
+- 再利用ワークフロー `check-charter.yml` は `runner` 入力で runs-on を受け取る（既定は `ubuntu-latest`）
+
 ### Concurrency (Cancel Superseded Runs)
 
 同じブランチ/PRに素早く連続でpushすると、古いrunが完走するまで新しいrunと並行して

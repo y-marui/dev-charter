@@ -140,13 +140,19 @@ lint:
   name: Lint
   needs: changes
   if: needs.changes.outputs.code == 'true'
-  runs-on: ubuntu-latest
+  runs-on: ${{ vars.LINUX_RUNNER && !github.event.pull_request.head.repo.fork && vars.LINUX_RUNNER || 'ubuntu-latest' }}
   steps:
     - uses: actions/checkout@v7
     - name: Run SwiftLint
+      # self-hosted runner のイメージには swiftlint を入れ、docker を使わない
+      # （hosted に戻ったときは公式コンテナで同じ検査をする）
       run: |
-        docker run --rm -v "$PWD":/work -w /work \
-          ghcr.io/realm/swiftlint:latest --strict
+        if command -v swiftlint >/dev/null; then
+          swiftlint --strict
+        else
+          docker run --rm -v "$PWD":/work -w /work \
+            ghcr.io/realm/swiftlint:latest --strict
+        fi
 
 build:
   name: Build & Test

@@ -106,6 +106,8 @@ jobs:
     uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
     with:
       branch: lite
+      # Set the repository variable LINUX_RUNNER only in PRIVATE repositories (see CI_POLICY Runner Billing).
+      runner: ${{ vars.LINUX_RUNNER && !github.event.pull_request.head.repo.fork && vars.LINUX_RUNNER || 'ubuntu-latest' }}
     permissions:
       contents: write
       pull-requests: write
@@ -116,7 +118,7 @@ jobs:
     needs: [check]
     # Skip on draft PRs too (a draft can't be merged, so no status is awaited).
     if: always() && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.LINUX_RUNNER && !github.event.pull_request.head.repo.fork && vars.LINUX_RUNNER || 'ubuntu-latest' }}
     steps:
       - name: Verify dev-charter check did not fail
         run: |

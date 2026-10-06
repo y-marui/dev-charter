@@ -79,9 +79,7 @@ git subtree pull --prefix=docs/dev-charter dev-charter full --squash
 > **Note (the `git subtree pull` finishing commit is rejected by a pre-commit hook):**
 > If your local copies of `scripts/check-charter-subtree-edit.sh` etc. still predate a fix
 > carried by the update you're pulling in (e.g. a `MERGE_HEAD` exemption), the commit that
-> finishes the merge can get blocked, leaving `.git/MERGE_HEAD` in place. Trying to work
-> around this with a separate pre-sync commit doesn't help either — `docs/dev-charter/VERSION`
-> is still the old value at that point, so `check-local-charter-version.sh` blocks that too.
+> finishes the merge can get blocked, leaving `.git/MERGE_HEAD` in place.
 > When `.git/MERGE_HEAD` is still present, finish that same merge instead of restarting it
 > (the Quick Install one-liner does this automatically when updating):
 > ```bash
@@ -130,6 +128,9 @@ jobs:
     name: Check
     if: github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
+    with:
+      # Set the repository variable LINUX_RUNNER only in PRIVATE repositories (see CI_POLICY Runner Billing).
+      runner: ${{ vars.LINUX_RUNNER && !github.event.pull_request.head.repo.fork && vars.LINUX_RUNNER || 'ubuntu-latest' }}
     permissions:
       contents: write
       pull-requests: write
@@ -140,7 +141,7 @@ jobs:
     needs: [check]
     # Skip on draft PRs too (a draft can't be merged, so no status is awaited).
     if: always() && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.LINUX_RUNNER && !github.event.pull_request.head.repo.fork && vars.LINUX_RUNNER || 'ubuntu-latest' }}
     steps:
       - name: Verify dev-charter check did not fail
         run: |

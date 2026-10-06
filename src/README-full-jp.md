@@ -78,8 +78,6 @@ git subtree pull --prefix=docs/dev-charter dev-charter full --squash
 > ローカルの `scripts/check-charter-subtree-edit.sh` 等が更新前の古い内容のままだと、
 > 取り込もうとしている変更自体に含まれる修正（例: `MERGE_HEAD` 例外）がまだ手元に無いため、
 > マージを完了させる commit がブロックされ、`.git/MERGE_HEAD` が残ったまま失敗することがあります。
-> 新しく別の pre-sync commit を先に作ろうとしても、今度は `docs/dev-charter/VERSION` が
-> まだ古いままなので `check-local-charter-version.sh` にブロックされます。
 > `.git/MERGE_HEAD` が残っている場合は、マージをやり直すのではなく完了させてください
 > （Quick Install のワンライナーで更新する場合はこの手順を自動で行います）：
 > ```bash
@@ -128,6 +126,9 @@ jobs:
     name: Check
     if: github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     uses: y-marui/dev-charter/.github/workflows/check-charter.yml@main
+    with:
+      # Set the repository variable LINUX_RUNNER only in PRIVATE repositories (see CI_POLICY Runner Billing).
+      runner: ${{ vars.LINUX_RUNNER && !github.event.pull_request.head.repo.fork && vars.LINUX_RUNNER || 'ubuntu-latest' }}
     permissions:
       contents: write
       pull-requests: write
@@ -138,7 +139,7 @@ jobs:
     needs: [check]
     # Skip on draft PRs too (a draft can't be merged, so no status is awaited).
     if: always() && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.LINUX_RUNNER && !github.event.pull_request.head.repo.fork && vars.LINUX_RUNNER || 'ubuntu-latest' }}
     steps:
       - name: Verify dev-charter check did not fail
         run: |
