@@ -242,7 +242,7 @@ wixtoolset の GitHub 組織へスポンサーすることが条件で、v7 以�
 C# では次の点が他のスタックと異なる:
 
 - `security`・`changes`・`gate` は Linux、`lint`・`build` は **Windows** ランナーで動かす
-- `actions/setup-dotnet`（v5。node24 で動くため、runner は v2.327.1 以降）は `global-json-file: global.json`
+- `actions/setup-dotnet`（v6。v5 以降は node24 で動くため、runner は v2.327.1 以降）は `global-json-file: global.json`
   で、`global.json` と同じ SDK を入れる。`dotnet-version` を CI に重複して書かない
 - `lint` は `dotnet format <ソリューション> --verify-no-changes` と、警告をエラーにした `dotnet build`
   （`CI=true` で `TreatWarningsAsErrors` が有効になる）
@@ -269,7 +269,7 @@ lint:
     contents: read
   steps:
     - uses: actions/checkout@v7
-    - uses: actions/setup-dotnet@v5
+    - uses: actions/setup-dotnet@v6
       with:
         global-json-file: global.json
     - run: dotnet format <Name>.slnx --verify-no-changes
@@ -285,7 +285,7 @@ build:
     contents: read
   steps:
     - uses: actions/checkout@v7
-    - uses: actions/setup-dotnet@v5
+    - uses: actions/setup-dotnet@v6
       with:
         global-json-file: global.json
     - run: dotnet test --solution <Name>.slnx -c Release
