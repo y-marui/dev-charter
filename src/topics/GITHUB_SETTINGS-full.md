@@ -332,6 +332,18 @@ gh api -X PATCH repos/{owner}/{repo} \
 > **注意:** プライベートリポジトリでの secret scanning は GitHub Advanced Security が必要（有料）。パブリックリポジトリは無料で使用できる。
 > 有効化できないプライベートリポジトリ（API が "not available" を返す場合）は既知の制約として許容し、pre-commit の gitleaks と CI のセキュリティスキャンで補う。
 
+### Private Vulnerability Reporting
+
+**設定値: 公開リポジトリは ON（private は対象外）**
+
+外部の発見者が、脆弱性を公開 Issue に書かず、非公開でメンテナーに報告できるようにする。リポジトリの `SECURITY.md`（[GITHUB_CONTRIBUTING.md](GITHUB_CONTRIBUTING.md) の「SECURITY.md」）の文面が、報告フォームの上に表示される。
+
+PVR は公開リポジトリ専用の機能で、private リポジトリでは使えない。private では `SECURITY.md` を置くだけにする。テンプレートから生成したリポジトリには、この設定はコピーされない。公開リポジトリを生成するたびに有効化する。
+
+```bash
+gh api -X PUT repos/{owner}/{repo}/private-vulnerability-reporting
+```
+
 ## Sponsors (FUNDING.yml)
 
 GitHub Sponsors の設定状態はリポジトリの種別（テンプレート / プロジェクト）によって異なる。**public/private の可視性は判定に関係しない**（private リポジトリでは Sponsor ボタン自体が外部に見えないが、設定値は同じ基準で ON にする）。
