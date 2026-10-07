@@ -42,7 +42,7 @@ dev-charter の各ドキュメントへのインデックス。
 | Python CLI、typer、pydantic-settings、XDG 設定ファイル | `topics/python/PYTHON_CLI.md` |
 | Alfred ワークフロー（Go）、cmd/+internal/、ユニバーサルバイナリ、lipo、Configuration Builder、native vs Go、リリースプロセス、タグ push、CHANGELOG からのリリースノート生成 | `topics/alfred/ALFRED_DEV_ENV.md` |
 | Alfred Gallery 提出基準、署名・公証、アイコン・キーワード要件、README スタイルガイド、Gallery readiness チェックリスト | `topics/alfred/ALFRED_GALLERY.md` |
-| Swift 開発環境、XcodeGen、SwiftLint、SwiftFormat、App/+Packages/Core/、swift test、CI | `topics/swift/SWIFT_DEV_ENV.md` |
+| Swift 開発環境、XcodeGen、SwiftLint、SwiftFormat、App/+Packages/Core/、swift test、CI、プライバシーマニフェスト（`PrivacyInfo.xcprivacy`、理由コード） | `topics/swift/SWIFT_DEV_ENV.md` |
 | Swift のアプリ内言語設定、AppLanguage、resolvedLocale、App Group、`.environment(\.locale)`、AppleLanguages、String Catalog、文言キーの規則 | `topics/swift/SWIFT_LOCALIZATION.md` |
 | Chrome Extension 開発環境、Manifest V3、esbuild、ESLint、node --test、Chrome/Firefox dual build、リリースプロセス、タグ push | `topics/chrome-extension/CHROME_EXTENSION_DEV_ENV.md` |
 | C# 開発環境、.NET SDK、dotnet format、WinForms、net8.0-windows、単一ファイル publish、WiX（MSI）、Windows ランナー、WINDOWS_RUNNER、CI | `topics/csharp/CSHARP_DEV_ENV.md` |
