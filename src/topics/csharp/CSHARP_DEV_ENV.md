@@ -179,6 +179,9 @@ dotnet publish src/<Name>.App -c Release -o publish
   角括弧のプレースホルダを書くと、プロパティ参照と解釈されて `WIX1077` になる
 - MSI のバージョンは、`Directory.Build.props` の `<Version>` を `$(Version)` で受ける（二重管理しない）
 - CI の `build` でも同じコマンドで MSI をビルドし、壊れていないことを確認する
+- **self-hosted の Windows runner（標準ユーザー）では、MSI の検証（ICE）が動かない。** runner のユーザーは
+  Windows Installer サービスに触れず、`WIX0217`（ICE01 等が失敗）でビルドが落ちる。`WINDOWS_RUNNER` が設定
+  されているときだけ `-p:SuppressValidation=true` を付けて検証を省く（hosted では検証する。ローカルでも検証する）
 
 ```xml
 <!-- installer/Package.wxs（抜粋） -->
@@ -287,7 +290,8 @@ build:
         global-json-file: global.json
     - run: dotnet test --solution <Name>.slnx -c Release
     - run: dotnet publish src/<Name>.App -c Release -o publish
-    - run: dotnet build installer/<Name>.Installer.wixproj -c Release -p:PublishDir=${{ github.workspace }}\publish
+    # self-hosted の Windows runner では ICE 検証が動かないため、そのときだけ省く
+    - run: dotnet build installer/<Name>.Installer.wixproj -c Release -p:PublishDir=${{ github.workspace }}\publish ${{ vars.WINDOWS_RUNNER && '-p:SuppressValidation=true' || '' }}
 ```
 
 `gate` の `needs` は `[changes, security, lint, build]` にし、結果の検証ループも `lint` と

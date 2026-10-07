@@ -371,6 +371,10 @@ Linux 版と同じ条件に加えて、次を守る：
   標準ユーザーでは失敗する。runner の `.env` で `DOTNET_INSTALL_DIR` を runner 専用のディレクトリに
   向ける。変更は runner の再起動後に有効になる
 - runner のサービス名は、長いと切り詰められる。名前ではなく、サービスの実行ファイルのパスで特定する
+- 標準ユーザーの runner は、Windows Installer サービスに触れない。MSI を作る job（WiX 等）は、検証（ICE）が
+  `WIX0217` で失敗するので、self-hosted のときだけ検証を省く（`-p:SuppressValidation=true`）。
+  hosted の runner とローカルでは検証する
+- release job（タグの push で GitHub Releases に添付する）が `gh` を使う場合は、`gh` もシステム全体の PATH に入れる
 - `git` と `dotnet`（SDK）は、システム全体の PATH に入れておく（サービスが見られるように、
   ユーザー単位ではなくマシン単位でインストールする）
 - 課金ブロック中は hosted の Linux job も起動しない。self-hosted で逃がすには、Linux と Windows の
