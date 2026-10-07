@@ -113,6 +113,7 @@ modify, distribute, sublicense, and relicense your contributions under any licen
 
 - 置き場所はリポジトリ直下の `SECURITY.md`。アカウント共通の `.github` リポジトリによる既定値には頼らない（憲章を取り込む他の採用先やローカルの clone でも成り立たせるため）
 - 文面は次の定型文をそのまま使う。プロジェクトごとに書き換えない（文面を変えるときは、この節を直してから各リポジトリに反映する）
+- プロジェクト固有のセキュリティ設計・保証・脅威モデル（例: 「テレメトリやネットワーク送信を行わない」「信頼境界と許可リスト」）や、開発側のセキュリティチェックの一覧は、`docs/` の既存の文書（設計・仕様の文書、`DEVELOPING.md` 等）に置き、`SECURITY.md` には書かない。`SECURITY.md` は報告方法の定型文だけにする
 - 数値の SLA は書かない。守れない約束を載せないため
 - メールアドレスなどの個人の連絡先は載せない。報告経路は GitHub の Private vulnerability reporting（以下 PVR）にする
 - PVR は公開リポジトリでのみ使える。有効化の手順は [GITHUB_SETTINGS-full.md](GITHUB_SETTINGS-full.md) / [GITHUB_SETTINGS-lite.md](GITHUB_SETTINGS-lite.md) の「Private Vulnerability Reporting」を参照する。PVR が使えない private リポジトリや、有効化し忘れたリポジトリでは、文面の後半（脆弱性の詳細を含めずに連絡手段を尋ねる Issue）が代わりの経路になる
