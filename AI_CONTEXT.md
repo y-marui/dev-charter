@@ -18,7 +18,7 @@ dev-charter の本体。他プロジェクトが `git subtree` で取り込む�
 `main` への push をきっかけに `scripts/publish-branch.sh` が `src/` から自動生成
 する（各ブランチへの分類ルールは `scripts/charter-manifest.txt` を参照）。
 リポジトリルート直下の `AI_CONTEXT.md`・`CLAUDE.md`・`GEMINI.md`・`AGENTS.md`・
-`README.md`/`README-jp.md` は dev-charter 自体の編集専用で、配布対象には含まれない。
+`SECURITY.md`・`README.md`/`README-jp.md` は dev-charter 自体の編集専用で、配布対象には含まれない。
 
 ### Technology Stack
 
