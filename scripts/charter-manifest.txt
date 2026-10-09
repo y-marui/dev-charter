@@ -65,6 +65,7 @@ UPDATE_CHECKLIST-lite.md lite
 topics/alfred/ALFRED_DEV_ENV.md
 topics/alfred/ALFRED_GALLERY.md
 topics/chrome-extension/CHROME_EXTENSION_DEV_ENV.md
+topics/csharp/CSHARP_DEV_ENV.md lite
 topics/CI_POLICY-full.md
 topics/CI_POLICY-lite.md lite
 topics/GITHUB_CONTRIBUTING.md

@@ -34,7 +34,7 @@ dev-charter の各ドキュメントへのインデックス。
 | GitHub リポジトリ設定、Ruleset、Dependabot、FUNDING.yml（full版） | `topics/GITHUB_SETTINGS-full.md` |
 | GitHub設定（lite版）、branch protection、Ruleset、direct push、PRの要否 | `topics/GITHUB_SETTINGS-lite.md` |
 | TODO・バックログ・ロードマップ管理、Issues、Sub-issues、Milestones、Projects (v2) | `topics/GITHUB_PROJECT_MANAGEMENT.md` |
-| OSS コントリビューション、Issue テンプレート、PR テンプレート、準 CLA | `topics/GITHUB_CONTRIBUTING.md` |
+| OSS コントリビューション、Issue テンプレート、PR テンプレート、準 CLA、SECURITY.md | `topics/GITHUB_CONTRIBUTING.md` |
 | issue/PRテンプレート（lite版）、個人開発、チェックリスト | `topics/GITHUB_ISSUE_PR_TEMPLATES.md` |
 | README の構成（テンプレートから作成したプロジェクト用） | `topics/PROJECT_README_GUIDELINES.md` |
 | README の構成（テンプレートリポジトリ自体の設計） | `topics/TEMPLATE_README_GUIDELINES.md` |
@@ -42,7 +42,8 @@ dev-charter の各ドキュメントへのインデックス。
 | Python CLI、typer、pydantic-settings、XDG 設定ファイル | `topics/python/PYTHON_CLI.md` |
 | Alfred ワークフロー（Go）、cmd/+internal/、ユニバーサルバイナリ、lipo、Configuration Builder、native vs Go、リリースプロセス、タグ push、CHANGELOG からのリリースノート生成 | `topics/alfred/ALFRED_DEV_ENV.md` |
 | Alfred Gallery 提出基準、署名・公証、アイコン・キーワード要件、README スタイルガイド、Gallery readiness チェックリスト | `topics/alfred/ALFRED_GALLERY.md` |
-| Swift 開発環境、XcodeGen、SwiftLint、SwiftFormat、App/+Packages/Core/、swift test、CI | `topics/swift/SWIFT_DEV_ENV.md` |
+| Swift 開発環境、XcodeGen、SwiftLint、SwiftFormat、App/+Packages/Core/、swift test、CI、プライバシーマニフェスト（`PrivacyInfo.xcprivacy`、理由コード） | `topics/swift/SWIFT_DEV_ENV.md` |
 | Swift のアプリ内言語設定、AppLanguage、resolvedLocale、App Group、`.environment(\.locale)`、AppleLanguages、String Catalog、文言キーの規則 | `topics/swift/SWIFT_LOCALIZATION.md` |
 | Chrome Extension 開発環境、Manifest V3、esbuild、ESLint、node --test、Chrome/Firefox dual build、リリースプロセス、タグ push | `topics/chrome-extension/CHROME_EXTENSION_DEV_ENV.md` |
+| C# 開発環境、.NET SDK、dotnet format、WinForms、net8.0-windows、単一ファイル publish、WiX（MSI）、Windows ランナー、WINDOWS_RUNNER、CI | `topics/csharp/CSHARP_DEV_ENV.md` |
 | 設計哲学、依存最小化、スモールツール、ローカルファースト、オフライン、UI | `topics/SOFTWARE_DESIGN_PRINCIPLES.md` |
