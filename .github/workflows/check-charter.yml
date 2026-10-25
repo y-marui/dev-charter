@@ -130,6 +130,59 @@ jobs:
             echo "outdated=true" >> "$GITHUB_OUTPUT"
           fi
 
+      # Warn-only for now: version updates (dependabot.yml) are required by
+      # CI_POLICY.md, but flipping this to a failure waits until the impact on
+      # existing repositories is known (see dev-charter#195). Only the
+      # ecosystem is checked, not `directory`.
+      - name: Check Dependabot version updates config
+        if: steps.throttle.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          PREFIX="${{ inputs.prefix }}"
+          PREFIX="${PREFIX:-"."}"
+
+          CONFIG=""
+          for f in .github/dependabot.yml .github/dependabot.yaml; do
+            [ -f "$f" ] && CONFIG="$f" && break
+          done
+
+          # manifests of this repository itself (the charter subtree is excluded)
+          FILES=$(git ls-files | { grep -v "^${PREFIX#./}/" || true; })
+          has() { printf '%s\n' "$FILES" | grep -Eq "$1"; }
+
+          NEED=""
+          add() { NEED="${NEED}${1}|${2}"$'\n'; }
+          has '^\.github/workflows/[^/]+\.ya?ml$' && add github-actions "GitHub Actions workflow"
+          if has '(^|/)uv\.lock$'; then
+            add uv "uv.lock"
+          elif has '(^|/)(pyproject\.toml|requirements[^/]*\.txt)$'; then
+            add pip "pyproject.toml / requirements*.txt"
+          fi
+          has '(^|/)Dockerfile[^/]*$' && add docker "Dockerfile"
+          has '(^|/)package\.json$' && add npm "package.json"
+          has '(^|/)Package\.swift$' && add swift "Package.swift"
+          has '\.csproj$' && add nuget "*.csproj"
+          has '(^|/)go\.mod$' && add gomod "go.mod"
+
+          if [ -z "$NEED" ]; then
+            echo "No dependency manifests found; dependabot.yml is not required."
+            exit 0
+          fi
+
+          if [ -z "$CONFIG" ]; then
+            echo "::warning::.github/dependabot.yml is missing, but this repository has dependency manifests ($(printf '%s' "$NEED" | cut -d'|' -f2 | paste -sd, -)). See CI_POLICY.md (Dependabot)."
+            exit 0
+          fi
+
+          configured() { grep -Eq "package-ecosystem:[[:space:]]*[\"']?${1}[\"']?[[:space:]]*$" "$CONFIG"; }
+          while IFS='|' read -r eco desc; do
+            [ -n "$eco" ] || continue
+            configured "$eco" && continue
+            # `uv` and `pip` are interchangeable for Python manifests
+            [ "$eco" = "pip" ] && configured uv && continue
+            echo "::warning file=${CONFIG}::package-ecosystem '${eco}' is not configured, but ${desc} exists. See CI_POLICY.md (Dependabot)."
+          done <<< "$NEED"
+
       - name: Update branch
         if: steps.throttle.outputs.skip != 'true' && steps.versions.outputs.outdated == 'true'
         env:

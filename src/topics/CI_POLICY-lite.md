@@ -140,7 +140,66 @@ draft の PR でも自動レビュー（`@codex review`、`@copilot review`）�
 
 ## Dependabot
 
-`.github/dependabot.yml` の導入を検討する。依存パッケージがあるプロジェクトでは自動でアップデートPRを作成し、脆弱性対応を省力化できる。ドキュメントのみのリポジトリや依存パッケージが存在しないプロジェクトでは不要。
+依存マニフェスト・Dockerfile・GitHub Actions の workflow のいずれかを持つリポジトリは、
+`.github/dependabot.yml` を**必須**とする。ドキュメントのみのリポジトリ、および依存を一切持たない
+リポジトリは対象外。
+
+**version updates と security updates は別機能。** セキュリティ更新（Settings → Security &
+analysis の Dependabot security updates）は脆弱性アラートが出たときだけ PR を作る。定期的な
+バージョン更新は `dependabot.yml` がなければ動かないため、security updates を ON にしていても
+`dependabot.yml` の代わりにはならない。
+
+### Ecosystems
+
+| 検出するファイル | `package-ecosystem` |
+|---|---|
+| `.github/workflows/*.yml` | `github-actions` |
+| `uv.lock`（無ければ `pyproject.toml`・`requirements*.txt`） | `uv`（無ければ `pip`） |
+| `Dockerfile` | `docker` |
+| `package.json` | `npm` |
+| `Package.swift` | `swift` |
+| `*.csproj` | `nuget` |
+| `go.mod` | `gomod` |
+
+マニフェストが置かれているディレクトリごとに `directory` を指定する（サブディレクトリにある場合は
+`/` では検出されない）。
+
+### Defaults
+
+- 頻度（`schedule.interval`）は `weekly` を既定とする
+- `open-pull-requests-limit` は ecosystem ごとに 5 前後を目安とする（既定の 5 のままでよい。
+  PR が溜まりやすい ecosystem だけ下げる）
+
+```yaml
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+```
+
+### Out of Scope for Dependabot
+
+次は Dependabot が上げられないため、運用側が手動で更新する。
+
+- digest 固定のコンテナイメージ（cloudflared、Caddy 等）
+- ホストの OS・Docker・ランタイム本体
+
+### Verification
+
+`check-charter.yml` が、マニフェストがあるのに対応する `package-ecosystem` が
+`dependabot.yml` に無い場合（`dependabot.yml` 自体が無い場合を含む）に警告する。現在は警告のみで、
+既存リポジトリへの影響を確認してから失敗扱いにする。`directory` の過不足は検査しない。
 
 ## Branch Protection (Ruleset)
 
