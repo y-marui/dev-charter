@@ -35,7 +35,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.3.0
+      - uses: astral-sh/setup-uv@v10.3.2
       # Charter docs embed fenced Python examples; ruff format checks
       # those too. Consuming repos pull src/ in via git subtree and
       # can't fix formatting there themselves, so it has to be clean
