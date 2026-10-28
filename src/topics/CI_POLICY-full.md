@@ -348,6 +348,51 @@ macOS 版と同じ条件に加えて、次を守る：
   呼ばれる側のワークフローで付ける
 - 再利用ワークフロー `check-charter.yml` は `runner` 入力で runs-on を受け取る（既定は `ubuntu-latest`）
 
+**self-hosted runner のキャッシュ・容量・並列度：** runner のローカルディスクは job をまたいで残る
+（コンテナの永続ボリュームに `~/.cache` 相当を置く）。hosted 向けの定番設定をそのまま使うと、ローカルに
+同じものがあるのにリモートへ数 GB を保存・復元するだけになり、`Post Run` のキャッシュ保存が実処理より
+長くなる（実測：uv のキャッシュ約 2.9 GB の保存に 1 job あたり 6〜11 分）。
+
+- **キャッシュは runs-on と同じ条件で切り替える：** self-hosted ではローカルの永続キャッシュ（uv、
+  npm/pnpm、pip、Cargo、Gradle、NuGet、SwiftPM、pre-commit 等）を直接使い、リモートへの保存・復元は
+  無効にする。hosted（public リポジトリ、fork PR、`LINUX_RUNNER` 未設定）では有効のままにする。
+  `runs-on` の条件式から `!( ... )` で導くと、変数の設定だけで両方が正しく切り替わる：
+
+  ```yaml
+  - uses: astral-sh/setup-uv@vX.Y.Z
+    with:
+      enable-cache: ${{ !(vars.LINUX_RUNNER && !github.event.pull_request.head.repo.fork) }}
+  ```
+
+  対象は `setup-uv` の `enable-cache` のほか、`actions/setup-node` の `cache:`、`Swatinem/rust-cache`、
+  `actions/cache`、Docker の `cache-to: type=gha` 等、リモートへ保存する設定すべて。ツールの既定が
+  自動で切り替わる場合も、明示して揃える（読み手が runner の種類で挙動が変わると推測しなくて済む）
+- **ローカルキャッシュは増え続ける：** 特にディスクの小さい runner（Raspberry Pi 等）では、job の末尾で
+  掃除する。self-hosted のときだけ実行し、失敗時も走らせる：
+
+  ```yaml
+  - name: Prune local uv cache
+    if: ${{ always() && vars.LINUX_RUNNER && !github.event.pull_request.head.repo.fork }}
+    run: uv cache prune --ci
+  ```
+
+  掃除用のコマンドがないツール（pre-commit、Playwright、toolcache 等）は、runner 側の定期掃除で
+  上限を決める。空き容量は runner の登録時に確認する
+- **同一 runner 上の並列 job はキャッシュを共有する：** uv は排他ロックするので共有してよい。
+  ただし、キャッシュ内に実行ファイルを展開するツール（pre-commit が入れる shellcheck 等）は、同時に
+  更新すると `Text file busy` で失敗することがある。その場合は失敗した job を再実行する。繰り返すなら、
+  そのツールを runner のイメージに入れて `language: system` にする
+- **言語バージョンの matrix：** uv のキャッシュはホイールのタグ単位で共有できるが、インタープリタ本体
+  （`UV_PYTHON_INSTALL_DIR` 等）は永続ボリュームに置かないと毎回取得される。
+  runner は 1 台あたり同時に 1 job なので、matrix の要素数 × 実行時間が、runner が空いていなければ
+  そのまま待ち時間になる。private リポジトリでは、サポート範囲を満たす最小の matrix にする
+- **runner の台数と性能差：** runner が少ないと、job が runner を占有する時間（キャッシュ保存を含む）が
+  そのまま後続 job の待ち時間になる。runner ごとに性能が違う（Raspberry Pi は x86 の PC の 2 倍以上遅い
+  ことがある）ので、`timeout-minutes` は最も遅い runner の実測で決める。重い job が遅い runner に
+  偏る場合は、重い job 用のラベルを分けるか、その job だけ hosted に戻す
+- **止まっている runner は異常とは限らない：** アイドルの runner を止め、job が溜まったら起動する運用
+  では、オフラインは通常の状態。待機が長いときは、起動の仕組みが動いているかを確認する
+
 **self-hosted Windows runner（任意）：** .NET の WinForms/WPF のように Windows でしかビルドできないスタック
 （`net8.0-windows` 等）は、`lint`・`build` が Windows job になる。Linux runner に載せられないため、
 課金ブロックや無料枠の超過の影響を受け続ける。自前の Windows PC にネイティブの runner を置いて逃がせる。
