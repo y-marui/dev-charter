@@ -67,6 +67,23 @@ Manifest V3 で実装する Chrome（および Firefox 同時対応）拡張機�
 - `permissions`/`host_permissions` を追加する前に、審査で求められる説明を
   想定して必要性を確認する
 
+## Runtime Assets (No External Requests)
+
+拡張機能のページ（popup・options 等）は、フォント・アイコン・画像・スクリプトを外部（CDN・
+Google Fonts 等）から読み込まず、パッケージに同梱する。ストアの審査と privacy policy で
+「外部通信をしない」「リモートコードを使わない」と説明できる状態を保ち、開くたびに利用者の
+IP アドレスが第三者へ渡ることを避けるため。
+
+- Material Symbols は、Google Fonts の CSS API で `icon_names` に使用中のアイコンだけを指定した
+  サブセット（woff2、数 KB）を `public/fonts/` に置き、`@font-face` で参照する。アイコンを
+  追加したら作り直す。全アイコンの可変フォント（数 MB）は同梱しない
+- Buy Me a Coffee 等のボタン画像も `public/images/` に同梱する
+- 同梱するフォント・画像のライセンス（Material Symbols は Apache License 2.0）を確認する
+- 例外として外部へ通信する場合（祝日 API 等、機能上必要なもの）は、通信先と送る内容を
+  privacy policy と `docs/store/<platform>/permissions.md` に記載する
+- 提出前に、popup・options を開いて外部ドメインへのリクエストが無いことを DevTools の
+  Network で確認する
+
 ## Testing
 
 - `test/unit/*.test.js` に `node --test` 形式のユニットテストを置く
