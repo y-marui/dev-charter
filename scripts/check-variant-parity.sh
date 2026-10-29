@@ -33,8 +33,8 @@ full_exclude=$(awk '/^\[full-exclude\]/{f=1;next} /^\[tags\]/{f=0} f' "$MANIFEST
 exceptions=$(awk '/^\[variant-exceptions\]/{f=1;next} /^\[/{f=0} f' "$MANIFEST" | trim | sort -u)
 known_branches=$( { echo "$TAG_LINES" | awk '{for(i=2;i<=NF;i++) print $i}'; echo full; } | sort -u)
 
-is_exception() { echo "$exceptions" | grep -qx "$1"; }
-in_full_exclude() { echo "$full_exclude" | grep -qx "$1"; }
+is_exception() { grep -qx "$1" <<<"$exceptions"; }
+in_full_exclude() { grep -qx "$1" <<<"$full_exclude"; }
 
 status=0
 VARIANTS_FILE=$(mktemp)
