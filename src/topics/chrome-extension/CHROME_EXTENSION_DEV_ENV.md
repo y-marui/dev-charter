@@ -61,8 +61,8 @@ Manifest V3 で実装する Chrome（および Firefox 同時対応）拡張機�
 ## Extension Naming
 
 拡張機能の名前とヘッダー表示は次の規約にそろえる。詳細（レイアウト・表示規則）は採用している
-テンプレートの popup 仕様書（`docs/popup-spec.md` の Header 節）を正本とし、ここでは要点だけを
-定める（内容を二重管理しない）。
+テンプレートのヘッダー仕様（popup 仕様書の Header 節等。具体的なパスは各プロジェクトの
+`AI_CONTEXT.md` で管理する）を正本とし、ここでは要点だけを定める（内容を二重管理しない）。
 
 - 正規の名前（`manifest.json` の `name`。`_locales` を使う場合は `appName`）は
   `<アプリ名> – <タグライン>` とする。区切りは en dash（U+2013）の前後に半角スペース。
@@ -82,11 +82,11 @@ Manifest V3 で実装する Chrome（および Firefox 同時対応）拡張機�
 | ストア | `name` の上限 |
 |---|---|
 | Chrome Web Store | 75 文字 |
-| Firefox（addons.mozilla.org） | 50 文字 |
+| Firefox（addons.mozilla.org） | 45 文字 |
 | Microsoft Edge Add-ons | 45 文字 |
 
-- Firefox にも出す場合は、全体（`<アプリ名> – <タグライン>`）を **50 文字以内**を目標にする。
-  Edge にも出す場合は **45 文字以内**にする
+- Firefox または Edge にも出す場合は、全体（`<アプリ名> – <タグライン>`）を **45 文字以内**にする。
+  Chrome Web Store のみに出す場合は 75 文字以内とする
 - `short_name` は Chrome が 12 文字以内を推奨している（強制ではない）
 - `_locales` を使う場合は、全ロケールの展開後の文字列で上限を満たす
 - 文字数の検証は、ストア掲載素材の検証（`npm run validate:store` 等）に含めてよい
