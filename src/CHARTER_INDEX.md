@@ -44,6 +44,6 @@ dev-charter の各ドキュメントへのインデックス。
 | Alfred Gallery 提出基準、署名・公証、アイコン・キーワード要件、README スタイルガイド、Gallery readiness チェックリスト | `topics/alfred/ALFRED_GALLERY.md` |
 | Swift 開発環境、XcodeGen、SwiftLint、SwiftFormat、App/+Packages/Core/、swift test、CI、プライバシーマニフェスト（`PrivacyInfo.xcprivacy`、理由コード） | `topics/swift/SWIFT_DEV_ENV.md` |
 | Swift のアプリ内言語設定、AppLanguage、resolvedLocale、App Group、`.environment(\.locale)`、AppleLanguages、String Catalog、文言キーの規則 | `topics/swift/SWIFT_LOCALIZATION.md` |
-| Chrome Extension 開発環境、Manifest V3、esbuild、ESLint、node --test、Chrome/Firefox dual build、リリースプロセス、タグ push、フォント・画像の同梱、外部通信なし | `topics/chrome-extension/CHROME_EXTENSION_DEV_ENV.md` |
+| Chrome Extension 開発環境、Manifest V3、esbuild、ESLint、node --test、Chrome/Firefox dual build、リリースプロセス、タグ push、フォント・画像の同梱、外部通信なし、拡張機能の名前（name・short_name・タグライン）、ストア別の name 文字数上限 | `topics/chrome-extension/CHROME_EXTENSION_DEV_ENV.md` |
 | C# 開発環境、.NET SDK、dotnet format、WinForms、net8.0-windows、単一ファイル publish、WiX（MSI）、Windows ランナー、WINDOWS_RUNNER、CI | `topics/csharp/CSHARP_DEV_ENV.md` |
 | 設計哲学、依存最小化、スモールツール、ローカルファースト、オフライン、UI、バックアップ・エクスポートのファイル名 | `topics/SOFTWARE_DESIGN_PRINCIPLES.md` |
