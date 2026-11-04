@@ -21,6 +21,11 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+      - name: Check UPDATE_CHECKLIST was run
+        if: github.event_name == 'pull_request'
+        run: CHARTER_CHECK_BASE="origin/${{ github.base_ref }}" bash src/scripts/check-update-checklist.sh
+      - name: Test check-update-checklist
+        run: bash scripts/test-check-update-checklist.sh
       - uses: pre-commit/action@v3.0.1
         env:
           # powershell-lint is a local-only convenience check (see

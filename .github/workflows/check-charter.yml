@@ -31,6 +31,46 @@ on:
         type: string
 
 jobs:
+  # docs/dev-charter のみを変更する PR は、UPDATE_CHECKLIST 実施の印
+  # （Update-Checklist: done trailer の commit、または subtree 外の変更）が
+  # 無い限り失敗させる。bot の更新 PR は draft のため CI が失敗し、draft 解除後の
+  # 取りこぼしを防ぐ。pull_request のときだけ動く（push・dispatch では何もしない）。
+  # ロジックは src/scripts/check-update-checklist.sh と同一（lite には
+  # スクリプトが配布されないためインラインで持つ）。
+  update-checklist:
+    name: Update checklist
+    if: github.event_name == 'pull_request'
+    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Verify UPDATE_CHECKLIST sign
+        env:
+          PREFIX_INPUT: ${{ inputs.prefix }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          PREFIX="${PREFIX_INPUT:-docs/dev-charter}"
+          PREFIX="${PREFIX%/}"
+          BASE="origin/${BASE_REF}"
+
+          CHANGED=$(git diff --name-only "${BASE}...HEAD")
+          [ -n "$CHANGED" ] || exit 0
+          INSIDE=$(printf '%s\n' "$CHANGED" | grep -c "^${PREFIX}/" || true)
+          OUTSIDE=$(printf '%s\n' "$CHANGED" | grep -vc "^${PREFIX}/" || true)
+          if [ "$INSIDE" -eq 0 ] || [ "$OUTSIDE" -gt 0 ]; then
+            exit 0
+          fi
+          if git log "${BASE}..HEAD" --format=%B | grep -Eq '^Update-Checklist: done[[:space:]]*$'; then
+            exit 0
+          fi
+          echo "::error::${PREFIX}/ のみを変更する PR に UPDATE_CHECKLIST 実施の印がありません。${PREFIX}/UPDATE_CHECKLIST.md を実行し、反映があれば同じブランチに含めてください。不要なら 'git commit --allow-empty -m \"chore: confirm UPDATE_CHECKLIST\" -m \"Update-Checklist: done\"' を追加して push してください。"
+          exit 1
+
   check:
     name: Check
     runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
@@ -271,13 +311,13 @@ jobs:
             BODY=$(cat <<EOF
           ## Update dev-charter (${SOURCE_BRANCH}) to ${REMOTE}
 
-          \`git subtree pull\` has been applied automatically. Review the diff, then merge.
+          \`git subtree pull\` has been applied automatically. Review the diff, then merge with a **merge commit** (do not squash or rebase; the subtree trailers must stay in history).
 
           ---
 
           ## dev-charter（${SOURCE_BRANCH}）を ${REMOTE} に更新
 
-          \`git subtree pull\` を自動的に適用しました。差分を確認してマージしてください。
+          \`git subtree pull\` を自動的に適用しました。差分を確認し、**merge commit** でマージしてください（squash・rebase は不可。subtree の記録が履歴から消えます）。
           EOF
           )
           fi
