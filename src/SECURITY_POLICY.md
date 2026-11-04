@@ -232,7 +232,7 @@ CI での実行例（GitHub Actions）：
 | `scripts/check-markdown-heading-language.sh` | Markdown セクションヘッダの言語検証 |
 | `scripts/check-local-charter-version.sh` | ローカルの `../dev-charter` チェックアウトとの VERSION 差分をチェック（sibling が新しい場合も古い場合も警告のみ。ブロックしない） |
 | `scripts/check-charter-ci-template.sh` | `.github/workflows/dev-charter-check.yml` を README-jp.md の CI テンプレートと比較（不一致ならブロック） |
-| `scripts/check-charter-subtree-edit.sh` | `docs/dev-charter/` 配下がステージされていればブロック。ただし `MERGE_HEAD` が `git-subtree-dir` トレーラーを持つ場合（`git subtree add`/`pull`/`merge` が競合し手動コミットで完了させる場合）は誤検知しないよう除外する |
+| `scripts/check-charter-subtree-edit.sh` | `docs/dev-charter/` 配下がステージされていればブロック。ただし `MERGE_HEAD` が `git-subtree-dir` トレーラーを持つ場合（`git subtree add`/`pull`/`merge` が競合し手動コミットで完了させる場合）は誤検知しないよう除外する。別の subtree も守る場合は `CHARTER_PREFIX` を変えてもう1回呼び、`SUBTREE_UPSTREAM`・`SUBTREE_UPDATE_HINT` で案内文だけ差し替えられる |
 | `scripts/check-update-checklist.sh` | `docs/dev-charter/` のみを変更する差分（`origin/<default>` との差分全体）に、`Update-Checklist: done` trailer の commit も `docs/dev-charter/` 以外の変更も無ければブロック（pre-push ステージ。`pre-commit install --hook-type pre-push` が必要。commit 時は `git subtree pull` を止めないため検査しない。CI は `check-charter.yml` が同じ判定を行う） |
 | `scripts/check-language-pair-sync.sh` | `<name>-jp.<ext>` / `<name>.<ext>` ペアが片側のみステージされていればブロック |
 | `scripts/check-license-exists.sh` | リポジトリルートに `LICENSE*` が無ければブロック |
