@@ -212,12 +212,17 @@ jobs:
   gate:
     name: CI
     needs: [changes, security, lint, test, build]
-    # draft は always() でも実行しない: draft はそもそもマージ不可なので、
-    # チェックが未報告のままでも「詰まる」リスクがない（docs-only スキップとは
-    # 違い、gate 自体を丸ごとスキップしてよい）
-    if: always() && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
+    # draft でも実行する（スキップしない）: skipped の必須チェックは合格と同じに
+    # 扱われるため、draft 時の skipped が最新の判定として残ると、実際のテスト前に
+    # マージ可能に見えてしまう（Draft PRs 節参照）。draft では意図的に失敗させる
+    if: always()
     runs-on: ubuntu-latest
     steps:
+      - name: Fail on draft PRs
+        if: github.event_name == 'pull_request' && github.event.pull_request.draft
+        run: |
+          echo "::error::draft PR: tests were not run. Mark the PR ready for review."
+          exit 1
       - name: Verify required jobs succeeded
         run: |
           if [ "${{ needs.security.result }}" != "success" ]; then
@@ -451,17 +456,30 @@ concurrency:
 
 `ready_for_review` を `on.pull_request.types` に加えた上で、`changes`・`security`・`gate`
 に draft スキップの `if:` を付ける（`lint`/`test`/`build` は `changes` 経由で連鎖的に
-スキップされる）。デフォルトの `pull_request` トリガーは `opened`/`synchronize`/`reopened`
+スキップされる）。**`gate` だけはスキップせず、draft では実行して失敗させる**（後述）。デフォルトの `pull_request` トリガーは `opened`/`synchronize`/`reopened`
 のみで `ready_for_review` を含まないため、これを忘れると draft 解除時に再実行されず、
 古い（未評価の）ステータスのまま残ってしまう。
 
-`gate` を `if: always()` のままにせず draft でスキップしてよい理由：docs-only スキップは
-「コードが変わっていないので中身の検証は不要だが、必須チェックとしての合否報告は必要」
-（`gate` 自体は動いて `exit 0` する）。draft は「そもそも GitHub がマージを許可しない」ため、
-必須チェックが一切報告されなくてもブロック待ちにならない。よって `gate` ごとスキップできる。
+**`gate` を draft でスキップしてはいけない理由：** GitHub は skipped の必須チェックを合格と
+同じに扱う。draft のままなら PR はそもそもマージできないが、draft への push と `gh pr ready`
+が同じ秒に重なると、`synchronize`（draft）と `ready_for_review` の 2 つの実行が同じ
+`concurrency` グループで競合し、片方が取り消される。このとき draft 時の実行で `gate` が
+skipped のまま最新の判定として残ると、実際のテスト（取り消された実行の再実行分）がまだ
+待機中でも、必須チェックが「合格」になり、マージのボタンが有効になる
+（2026-11 に `python-preprint-publish-tracker` の PR で実際に発生。[Issue #209](https://github.com/y-marui/dev-charter/issues/209)）。
+[§ `gate` Is a Gate, Not Just a `needs` Aggregation](#gate-is-a-gate-not-just-a-needs-aggregation)
+と同じ種類の問題である。
 
-`.github/workflows/dev-charter-check.yml` も同様に draft をスキップする（[Version Check
-(CI)](../README.md#version-check-ci) 参照）。
+そのため `gate` は `if: always()` で draft でも実行し、draft では先頭の step で `exit 1` して
+**失敗させる**。ready 後の新しい実行の `gate` が、その失敗を上書きする。draft の間は `gate` が
+失敗するが、draft はマージ不可なので実害はない。`changes`・`security`・`lint`/`test`/`build`
+は従来どおり draft でスキップする（課金される job は `gate`（ubuntu の 1 job）だけ）。
+
+draft への push と ready 化が重なって ready 側の実行が取り消された場合は、`gate` が失敗の
+まま残る。安全側の挙動で、`gh run rerun` か draft に戻して再度 ready にすると解消する。
+
+`.github/workflows/dev-charter-check.yml` も同様に、`check` は draft でスキップし、`gate`
+は draft で失敗させる（[Version Check (CI)](../README.md#version-check-ci) 参照）。
 
 `check-charter.yml` が作成する `update-charter` PR も Draft で始まるため、この
 `ready_for_review` は更新 PR にも必須である。`gh pr ready` で Draft を解除した時点で
@@ -596,7 +614,8 @@ Rules:
 `name: Dev Charter` と一致させたもの。[§ Naming Convention](#naming-convention)参照）。
 同ワークフローの `check` job は `.github/workflows/dev-charter-check.yml` が呼び出す
 再利用ワークフロー（`check-charter.yml`）で、Dependabot PR・draft PR では job-level の
-`if:` でスキップされる。`ci.yml` とは別ワークフローファイルのため `gate` の `needs` には
+`if:` でスキップされる（`gate` は draft では実行して失敗させる。Dependabot PR では
+`skipped` を成功扱いする）。`ci.yml` とは別ワークフローファイルのため `gate` の `needs` には
 含められない（`needs` は同一ワークフローファイル内でしか機能しない）ので、Ruleset には
 別エントリとして登録する。`ci.yml` 側の `gate`（`name: CI`）と名前が異なるため、複数
 ワークフローの `gate` を同一 Ruleset に登録しても衝突しない。
