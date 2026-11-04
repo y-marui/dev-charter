@@ -15,7 +15,7 @@ and development rules used across projects.
 
 See the canonical [src/CHARTER_INDEX.md](src/CHARTER_INDEX.md) for the complete document list and topic-to-file lookup table.
 
-> **Note:** This repository's own root (`AI_CONTEXT.md`, `CLAUDE.md`, `GEMINI.md`,
+> **Note:** This repository's own root (`AI_CONTEXT.md`, `CLAUDE.md`,
 > `AGENTS.md`, this README) is for AI tools editing *dev-charter itself*. The
 > charter content distributed to adopting projects lives under
 > [`src/`](src/) and is published as the `full` and `lite` branches.

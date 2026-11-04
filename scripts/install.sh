@@ -195,7 +195,7 @@ if [ -d "$PREFIX" ]; then
 
 dev-charter updated at $PREFIX
 
-Next — paste this prompt into your AI tool (Claude Code, Copilot, Gemini, etc.):
+Next — paste this prompt into your AI tool (Claude Code, Copilot, etc.):
 
   $NEXT_PROMPT
   (English: $NEXT_PROMPT_EN)
@@ -259,7 +259,7 @@ cat <<EOF
 
 dev-charter installed at $PREFIX
 
-Next — paste this prompt into your AI tool (Claude Code, Copilot, Gemini, etc.):
+Next — paste this prompt into your AI tool (Claude Code, Copilot, etc.):
 
   $NEXT_PROMPT
   (English: $NEXT_PROMPT_EN)
