@@ -95,6 +95,8 @@ git subtree pull --prefix=docs/dev-charter dev-charter full --squash
 > `git checkout --theirs -- docs/dev-charter/ && git add docs/dev-charter/` で
 > 常に取り込み側を採用してから上記を実行してください。
 
+> **注意（更新 PR のマージ方法）：** 更新 PR（`update-charter` 等）は **merge commit** でマージする。squash merge・rebase merge は使わない。`git subtree pull --squash` は merge commit の第2親に `git-subtree-dir` / `git-subtree-split` を記録し、次回の `git subtree pull` はこれを手がかりに基点を探す。squash・rebase でマージすると記録が履歴から消え、全差し替えのフォールバックになる。
+
 更新後、以下のプロンプトを AI ツールに貼り付けてください：
 
 ```

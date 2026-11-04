@@ -96,6 +96,8 @@ git subtree pull --prefix=docs/dev-charter dev-charter full --squash
 > tree is never meant to be hand-edited locally, so always take the incoming side first —
 > `git checkout --theirs -- docs/dev-charter/ && git add docs/dev-charter/` — then proceed as above.
 
+> **Note (merging the update PR):** Merge update PRs (`update-charter` etc.) with a **merge commit**; never squash or rebase merge. `git subtree pull --squash` records `git-subtree-dir` / `git-subtree-split` in the second parent of its merge commit, and the next `git subtree pull` finds its base by those trailers. Squash or rebase merging drops them and forces a full re-sync fallback.
+
 After updating, paste the following prompt into your AI tool:
 
 ```
