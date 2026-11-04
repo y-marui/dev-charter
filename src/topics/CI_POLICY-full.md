@@ -393,6 +393,9 @@ macOS 版と同じ条件に加えて、次を守る：
   取得し直す。runner のイメージで `UV_PYTHON_INSTALL_DIR` を永続ボリューム内（例:
   `<キャッシュのマウント先>/uv-python`）に向けると、同じホストの全コンテナで 1 つを共有でき、
   作り直しても残る（3.11〜3.14 の取得が 6.6 秒から 1.1 秒に短縮、約 400MB。デスクトップでの実測）。
+  Raspberry Pi の runner では、イメージが `UV_PYTHON_INSTALL_DIR=/runner/.cache/uv-python` を設定済みで、
+  `/runner/.cache` は共有ボリューム `ar-cache` にマウントされており、永続を確認した。matrix で
+  その版を初めて使う run は `uv sync` が 150〜170 秒かかり、2 回目以降は 6〜9 秒に下がる
   runner は 1 台あたり同時に 1 job なので、matrix の要素数 × 実行時間が、runner が空いていなければ
   そのまま待ち時間になる。private リポジトリでは、サポート範囲を満たす最小の matrix にする
 - **runner の台数と性能差：** runner が少ないと、job が runner を占有する時間（キャッシュ保存を含む）が
