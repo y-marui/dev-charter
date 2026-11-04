@@ -20,15 +20,15 @@ dev-charter の各ドキュメントへのインデックス。
 | docs/ 構成、file-map.md、architecture.md、AI_CONTEXT.md 参照順、CONTRIBUTING.md | `DOCS_STRUCTURE.md` |
 | 言語選択（日本語・英語）、ドキュメントの正本、セクションヘッダ言語 | `LANGUAGE_POLICY.md` |
 | ライセンス選択（MIT・GPL・AGPL・CC）、著作権表記 | `LEGAL_POLICY.md` |
-| シークレット管理、git フック、pre-commit、セキュリティ設定 | `SECURITY_POLICY.md` |
+| シークレット管理、git フック、pre-commit、pre-push、セキュリティ設定 | `SECURITY_POLICY.md` |
 | アプリの対応言語、ローカライズ方針 | `LOCALIZATION_POLICY.md` |
 | 収益化、App Store、GitHub Sponsors、Buy Me a Coffee | `MONETIZATION_POLICY.md` |
 | チーム構成、git ワークフロー、Conventional Commits、ブランチ戦略、epic ブランチ、Draft PR、main の安定性 | `PROJECT_LIFECYCLE.md` |
 | UI デザイン、カラーパレット、ダークモード、アイコン（SF Symbols・Material Symbols） | `UI_GUIDELINES.md` |
 | dev-charter の初回導入手順（full版） | `INSTALL_CHECKLIST-full.md` |
 | dev-charter の初回導入手順（lite版） | `INSTALL_CHECKLIST-lite.md` |
-| dev-charter の更新手順（subtree pull 後、full版） | `UPDATE_CHECKLIST-full.md` |
-| dev-charter の更新手順（subtree pull 後、lite版） | `UPDATE_CHECKLIST-lite.md` |
+| dev-charter の更新手順（subtree pull 後、full版）、Update-Checklist trailer | `UPDATE_CHECKLIST-full.md` |
+| dev-charter の更新手順（subtree pull 後、lite版）、Update-Checklist trailer | `UPDATE_CHECKLIST-lite.md` |
 | GitHub Actions、CI ジョブ設計、ステータスチェック、Branch Protection（full版） | `topics/CI_POLICY-full.md` |
 | GitHub Actions、CI ジョブ設計、ステータスチェック、Branch Protection（lite版） | `topics/CI_POLICY-lite.md` |
 | GitHub リポジトリ設定、Ruleset、Dependabot、FUNDING.yml（full版） | `topics/GITHUB_SETTINGS-full.md` |
