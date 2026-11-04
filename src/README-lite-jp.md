@@ -79,6 +79,8 @@ git subtree pull --prefix=docs/dev-charter dev-charter lite --squash
 docs/dev-charter/UPDATE_CHECKLIST.md を実行して
 ```
 
+> **注意（`docs/dev-charter` のみの更新 PR）：** `docs/dev-charter/` だけを変更する差分は、`UPDATE_CHECKLIST` の実施を示す印がないと push 前（pre-push）と CI（`check-charter.yml`）で失敗する。チェックリストで `docs/dev-charter/` 以外のファイルを直した場合は不要。何も直す必要がなければ `git commit --allow-empty -m "chore: confirm UPDATE_CHECKLIST" -m "Update-Checklist: done"` を足して push する。
+
 ## Version Check (CI)
 
 `.github/workflows/dev-charter-check.yml` をプロジェクトに追加すると、

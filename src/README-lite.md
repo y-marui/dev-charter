@@ -80,6 +80,8 @@ After updating, paste the following prompt into your AI tool:
 Run docs/dev-charter/UPDATE_CHECKLIST.md
 ```
 
+> **Note (update PRs that only touch `docs/dev-charter`):** A diff that only changes `docs/dev-charter/` fails pre-push and CI (`check-charter.yml`) unless it carries a sign that `UPDATE_CHECKLIST` was run. Not needed if the checklist changed any file outside `docs/dev-charter/`. If nothing needed fixing, add `git commit --allow-empty -m "chore: confirm UPDATE_CHECKLIST" -m "Update-Checklist: done"` and push.
+
 ## Version Check (CI)
 
 Add `.github/workflows/dev-charter-check.yml` to your project to check for
