@@ -17,7 +17,7 @@ dev-charter の本体。他プロジェクトが `git subtree` で取り込む�
 `src/` 配下が採用先へ配布される憲章コンテンツの実体で、`full`/`lite` ブランチは
 `main` への push をきっかけに `scripts/publish-branch.sh` が `src/` から自動生成
 する（各ブランチへの分類ルールは `scripts/charter-manifest.txt` を参照）。
-リポジトリルート直下の `AI_CONTEXT.md`・`CLAUDE.md`・`GEMINI.md`・`AGENTS.md`・
+リポジトリルート直下の `AI_CONTEXT.md`・`CLAUDE.md`・`AGENTS.md`・
 `SECURITY.md`・`README.md`/`README-jp.md` は dev-charter 自体の編集専用で、配布対象には含まれない。
 
 ### Technology Stack
@@ -127,7 +127,7 @@ pre-commit は、シークレット・ローカル絶対パス・VERSION 日付�
 
 ## AI Tool Assignments
 
-- **使用ツール**：Claude Code、Codex、GitHub Copilot、Gemini CLI、ローカル LLM（Ollama）
+- **使用ツール**：Claude Code、Codex、GitHub Copilot、ローカル LLM（Ollama）
 - **標準担当の正本**：`AI_COLLABORATION_RULES.md` の「AI Tool Responsibilities」と「Rules for Multi-AI Usage」
 - **このリポジトリ固有の上書き**：なし
 
@@ -141,9 +141,9 @@ pre-commit は、シークレット・ローカル絶対パス・VERSION 日付�
 - GitHub 操作: 公式ホスト型 GitHub MCP Server（`https://api.githubcopilot.com/mcp/`）を使う。
   OAuth 動的クライアント登録に非対応のため、`gh auth token` の Bearer ヘッダーで認証する
   （`gh auth login` でトークンが失効・再発行されたら MCP サーバーの再登録が必要）
-- Gemini CLI・GitHub Copilot CLI はどちらも「MCP サーバとして公開する」モードを持たない
+- GitHub Copilot CLI は「MCP サーバとして公開する」モードを持たない
   （`mcp` サブコマンドは外部サーバに繋ぐクライアント管理のみ）。ヘッドレス CLI 呼び出し
-  （`gemini -p ...`、`copilot -p ... --allow-all-tools`）で運用する
+  （`copilot -p ... --allow-all-tools`）で運用する
 - GitHub Copilot coding agent（非同期・クラウド実行）は GitHub MCP Server の
   `assign_copilot_to_issue` ツール、または `gh issue edit --add-assignee copilot-swe-agent`
   で起動する。投げた後は非同期で PR が立つのを待つ形で、Codex MCP のような同期応答ではない
