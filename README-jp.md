@@ -16,7 +16,7 @@ AI支援ソフトウェアプロジェクトのための共有開発憲章。
 憲章ドキュメントの一覧とトピック別の参照先は、正本である [src/CHARTER_INDEX.md](src/CHARTER_INDEX.md) を参照してください。
 
 > **Note:** このリポジトリ自身のルート（`AI_CONTEXT.md`・`CLAUDE.md`・
-> `GEMINI.md`・`AGENTS.md`・この README）は、*dev-charter 自体を編集する* AI
+> `AGENTS.md`・この README）は、*dev-charter 自体を編集する* AI
 > ツール向けです。採用先プロジェクトへ配布される憲章コンテンツは
 > [`src/`](src/) 配下にあり、`full`/`lite` ブランチとして公開されます。
 

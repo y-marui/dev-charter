@@ -189,7 +189,7 @@ if (Test-Path $prefix) {
     Write-Host ''
     Write-Host "dev-charter updated at $prefix"
     Write-Host ''
-    Write-Host 'Next - paste this prompt into your AI tool (Claude Code, Copilot, Gemini, etc.):'
+    Write-Host 'Next - paste this prompt into your AI tool (Claude Code, Copilot, etc.):'
     Write-Host ''
     Write-Host "  $nextPrompt"
     Write-Host "  (English: $nextPromptEn)"
@@ -246,7 +246,7 @@ if ($branch -eq 'full') {
 Write-Host ''
 Write-Host "dev-charter installed at $prefix"
 Write-Host ''
-Write-Host 'Next - paste this prompt into your AI tool (Claude Code, Copilot, Gemini, etc.):'
+Write-Host 'Next - paste this prompt into your AI tool (Claude Code, Copilot, etc.):'
 Write-Host ''
 Write-Host "  $nextPrompt"
 Write-Host "  (English: $nextPromptEn)"
