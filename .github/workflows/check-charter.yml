@@ -271,13 +271,13 @@ jobs:
             BODY=$(cat <<EOF
           ## Update dev-charter (${SOURCE_BRANCH}) to ${REMOTE}
 
-          \`git subtree pull\` has been applied automatically. Review the diff, then merge.
+          \`git subtree pull\` has been applied automatically. Review the diff, then merge with a **merge commit** (do not squash or rebase; the subtree trailers must stay in history).
 
           ---
 
           ## dev-charter（${SOURCE_BRANCH}）を ${REMOTE} に更新
 
-          \`git subtree pull\` を自動的に適用しました。差分を確認してマージしてください。
+          \`git subtree pull\` を自動的に適用しました。差分を確認し、**merge commit** でマージしてください（squash・rebase は不可。subtree の記録が履歴から消えます）。
           EOF
           )
           fi
