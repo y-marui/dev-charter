@@ -116,7 +116,7 @@ modify, distribute, sublicense, and relicense your contributions under any licen
 - プロジェクト固有のセキュリティ設計・保証・脅威モデル（例: 「テレメトリやネットワーク送信を行わない」「信頼境界と許可リスト」）や、開発側のセキュリティチェックの一覧は、`docs/` の既存の文書（設計・仕様の文書、`DEVELOPING.md` 等）に置き、`SECURITY.md` には書かない。`SECURITY.md` は報告方法の定型文だけにする
 - 数値の SLA は書かない。守れない約束を載せないため
 - メールアドレスなどの個人の連絡先は載せない。報告経路は GitHub の Private vulnerability reporting（以下 PVR）にする
-- PVR は公開リポジトリでのみ使える。有効化の手順は [GITHUB_SETTINGS-full.md](GITHUB_SETTINGS-full.md) / [GITHUB_SETTINGS-lite.md](GITHUB_SETTINGS-lite.md) の「Private Vulnerability Reporting」を参照する。PVR が使えない private リポジトリや、有効化し忘れたリポジトリでは、文面の後半（脆弱性の詳細を含めずに連絡手段を尋ねる Issue）が代わりの経路になる
+- PVR は公開リポジトリでのみ使える。有効化の手順は [GITHUB_SETTINGS.md](GITHUB_SETTINGS.md) の「Private Vulnerability Reporting」を参照する。PVR が使えない private リポジトリや、有効化し忘れたリポジトリでは、文面の後半（脆弱性の詳細を含めずに連絡手段を尋ねる Issue）が代わりの経路になる
 - リポジトリ自身の脆弱性報告の受付を定めるもので、シークレット管理（[SECURITY_POLICY.md](../SECURITY_POLICY.md)）とは別の話
 
 ```markdown
